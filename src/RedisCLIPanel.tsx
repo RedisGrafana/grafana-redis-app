@@ -43,9 +43,9 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
     /**
      * Query
      */
-    const res = await (ds.query({
+    const res = await ((ds.query({
       targets: [{ query: replaceVariables(query) }],
-    } as DataQueryRequest<RedisQuery>) as Observable<DataQueryResponse>)
+    } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>)
       .pipe(
         switchMap$(response => response.data),
         switchMap$((data: DataFrame) => data.fields),
