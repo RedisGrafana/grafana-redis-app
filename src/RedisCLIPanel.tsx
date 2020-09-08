@@ -68,9 +68,9 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
     }
 
     /**
-     * Update Output
+     * Update Output and clear Query
      */
-    onOptionsChange({ ...options, output: `${output ? `${output}\n` : ''}${result}` });
+    onOptionsChange({ ...options, output: `${output ? `${output}\n` : ''}${result}`, query: '' });
   };
 
   /**
