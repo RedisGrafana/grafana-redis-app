@@ -1,0 +1,34 @@
+{
+  "dependencies": {
+    "grafanaVersion": "7.0.x",
+    "plugins": []
+  },
+  "id": "redis-cli-panel",
+  "info": {
+    "author": {
+      "name": "Redis Labs",
+      "url": "https://oss.redislabs.com"
+    },
+    "description": "Redis CLI",
+    "keywords": ["redis"],
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/grafana/simple-react-panel"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/grafana/simple-react-panel/blob/master/LICENSE"
+      }
+    ],
+    "logos": {
+      "large": "img/logo.svg",
+      "small": "img/logo.svg"
+    },
+    "screenshots": [],
+    "updated": "%TODAY%",
+    "version": "%VERSION%"
+  },
+  "name": "Redis CLI",
+  "type": "panel"
+}

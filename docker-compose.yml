@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  redis:
+    container_name: redis
+    image: redislabs/redismod:latest
+    ports:
+      - 6379:6379/tcp
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000/tcp
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+      - GF_ENABLE_GZIP=true
+      - GF_INSTALL_PLUGINS=redis-datasource
+    volumes:
+      - ./dist:/var/lib/grafana/plugins/redis-cli-panel
