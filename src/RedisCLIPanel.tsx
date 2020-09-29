@@ -6,10 +6,10 @@ import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
 import { PanelOptions, RedisQuery } from 'types';
 import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { stylesFactory } from '@grafana/ui';
+import { Button, stylesFactory } from '@grafana/ui';
 
 /**
- * Panel
+ * Redis CLI Panel
  */
 export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
   options,
@@ -29,16 +29,27 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
    */
   const runQuery = async (event: any) => {
     /**
-     * Return if not Enter or not command
+     * Return if not Enter or no query
      */
     if (event.key !== 'Enter' || !query) {
       return;
     }
 
     /**
+     * Get configured Data Source Id
+     */
+    const targets = data.request?.targets;
+    let datasource = '';
+    if (targets && targets.length && targets[0].datasource) {
+      datasource = targets[0].datasource;
+    } else {
+      return onOptionsChange({ ...options, output: 'Unknown Data Source' });
+    }
+
+    /**
      * Get Data Source
      */
-    const ds = await getDataSourceSrv().get();
+    const ds = await getDataSourceSrv().get(datasource);
 
     /**
      * Query
@@ -60,7 +71,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
     /**
      * Result
      */
-    let result = `${ds.meta.name}> ${query}\n`;
+    let result = `${ds.name}> ${query}\n`;
     if (res && res.length) {
       result += res.join('\n');
     } else {
@@ -102,11 +113,22 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
           onKeyPress={runQuery}
           value={query}
         />
+        <Button
+          variant="secondary"
+          onClick={() => {
+            onOptionsChange({ ...options, output: '' });
+          }}
+        >
+          Clear
+        </Button>
       </div>
     </div>
   );
 };
 
+/**
+ * Styles
+ */
 const getStyles = stylesFactory(() => {
   return {
     wrapper: css`
