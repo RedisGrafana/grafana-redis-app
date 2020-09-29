@@ -1,14 +1,14 @@
-import { PanelOptions } from 'types';
-import { PanelPlugin } from '@grafana/data';
-import { RedisCLIPanel } from './RedisCLIPanel';
+import { RootPage } from 'RootPage';
+import { AppPlugin } from '@grafana/data';
+import { ConfigCtrl } from './legacy/config';
+import { GlobalSettings } from './types';
 
 /**
- * Panel Plugin
+ * Legacy export for Config page
  */
-export const plugin = new PanelPlugin<PanelOptions>(RedisCLIPanel).setPanelOptions(builder => {
-  return builder.addNumberInput({
-    path: 'height',
-    name: 'TextArea height',
-    defaultValue: 12,
-  });
-});
+export { ConfigCtrl };
+
+/**
+ * Application Plug-in
+ */
+export const plugin = new AppPlugin<GlobalSettings>().setRootPage(RootPage);

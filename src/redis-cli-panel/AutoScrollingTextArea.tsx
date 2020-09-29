@@ -37,6 +37,6 @@ export default class AutoScrollingTextArea extends React.Component<TextareaProps
    * Render
    */
   render() {
-    return <TextArea {...this.props} css="" ref={element => (this.element = element)} />;
+    return <TextArea {...this.props} css="" ref={(element) => (this.element = element)} />;
   }
 }

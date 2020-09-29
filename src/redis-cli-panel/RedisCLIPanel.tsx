@@ -1,12 +1,12 @@
-import AutoScrollingTextarea from 'AutoScrollingTextArea';
 import { css, cx } from 'emotion';
 import React from 'react';
+import AutoScrollingTextarea from 'redis-cli-panel/AutoScrollingTextArea';
 import { Observable } from 'rxjs';
 import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
-import { PanelOptions, RedisQuery } from 'types';
 import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { Button, stylesFactory } from '@grafana/ui';
+import { PanelOptions, RedisQuery } from './types';
 
 /**
  * Redis CLI Panel
@@ -58,10 +58,10 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
       targets: [{ query: replaceVariables(query) }],
     } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>)
       .pipe(
-        switchMap$(response => response.data),
+        switchMap$((response) => response.data),
         switchMap$((data: DataFrame) => data.fields),
-        map$(field =>
-          field.values.toArray().map(value => {
+        map$((field) =>
+          field.values.toArray().map((value) => {
             return value;
           })
         )
@@ -107,7 +107,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
           name="query"
           placeholder="PING"
           className="gf-form-input"
-          onChange={event => {
+          onChange={(event) => {
             onOptionsChange({ ...options, query: event.target.value });
           }}
           onKeyPress={runQuery}
