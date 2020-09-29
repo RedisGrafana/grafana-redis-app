@@ -1,27 +1,34 @@
 {
   "dependencies": {
-    "grafanaVersion": "7.0.x",
+    "grafanaVersion": "7.x.x",
     "grafanaDependency": ">=7.1.0",
-    "plugins": []
+    "plugins": [
+      {
+        "type": "datasource",
+        "name": "Redis Data Source",
+        "id": "redis-datasource",
+        "version": "^1.2.0"
+      }
+    ]
   },
-  "id": "redis-cli-panel",
+  "id": "redis-app",
+  "includes": [
+    {
+      "addToNav": true,
+      "name": "Home",
+      "path": "/a/redis-app/",
+      "type": "page"
+    },
+    {
+      "name": "Redis CLI Panel",
+      "type": "panel"
+    }
+  ],
   "info": {
     "author": {
       "name": "Redis Labs",
       "url": "https://oss.redislabs.com"
     },
-    "description": "Redis CLI",
-    "keywords": ["redis", "plugin"],
-    "links": [
-      {
-        "name": "Website",
-        "url": "https://github.com/mikhailredis/redis-cli-panel"
-      },
-      {
-        "name": "License",
-        "url": "https://github.com/mikhailredis/redis-cli-panel/blob/master/LICENSE"
-      }
-    ],
     "logos": {
       "large": "img/logo.svg",
       "small": "img/logo.svg"
@@ -30,6 +37,6 @@
     "updated": "%TODAY%",
     "version": "%VERSION%"
   },
-  "name": "Redis CLI",
-  "type": "panel"
+  "name": "Redis Application",
+  "type": "app"
 }

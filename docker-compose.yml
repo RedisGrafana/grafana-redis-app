@@ -18,5 +18,10 @@ services:
       - GF_AUTH_BASIC_ENABLED=false
       - GF_ENABLE_GZIP=true
       - GF_INSTALL_PLUGINS=redis-datasource
+      # - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=redis-app
+      # Uncomment to run in debug mode
+      # - GF_LOG_LEVEL=debug
     volumes:
-      - ./dist:/var/lib/grafana/plugins/redis-cli-panel
+      - ./dist:/var/lib/grafana/plugins/redis-app
+      # Uncomment to preserve Grafana configuration
+      # - ./data:/var/lib/grafana

@@ -1,18 +1,18 @@
 {
   "author": "Redis Labs",
-  "description": "Redis CLI Panel for Grafana",
+  "description": "Redis Application for Grafana",
   "devDependencies": {
-    "@grafana/data": "7.1.5",
-    "@grafana/runtime": "7.1.5",
-    "@grafana/toolkit": "7.1.5",
-    "@grafana/ui": "7.1.5",
+    "@grafana/data": "7.2.0",
+    "@grafana/runtime": "7.2.0",
+    "@grafana/toolkit": "7.2.0",
+    "@grafana/ui": "7.2.0",
     "emotion": "10.0.27"
   },
   "engines": {
     "node": ">=12"
   },
   "license": "Apache-2.0",
-  "name": "redis-cli-panel",
+  "name": "redis-app",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "dev": "grafana-toolkit plugin:dev",

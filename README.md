@@ -1,50 +1,42 @@
-# Grafana Panel Plugin Template
+# Redis Application for Grafana
 
-<!--
-[![CircleCI](https://circleci.com/gh/grafana/simple-react-panel.svg?style=svg)](https://circleci.com/gh/grafana/simple-react-panel)
-[![David Dependency Status](https://david-dm.org/grafana/simple-react-panel.svg)](https://david-dm.org/grafana/simple-react-panel)
-[![David Dev Dependency Status](https://david-dm.org/grafana/simple-react-panel/dev-status.svg)](https://david-dm.org/grafana/simple-react-panel/?type=dev)
-[![Known Vulnerabilities](https://snyk.io/test/github/grafana/simple-react-panel/badge.svg)](https://snyk.io/test/github/grafana/simple-react-panel)
-[![Maintainability](https://api.codeclimate.com/v1/badges/1dee2585eb412f913cbb/maintainability)](https://codeclimate.com/github/grafana/simple-react-panel/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/1dee2585eb412f913cbb/test_coverage)](https://codeclimate.com/github/grafana/simple-react-panel/test_coverage) -->
+## Summary
 
-This template is a starting point for building Grafana Panel Plugins in Grafana 7.0+
+- [**Introduction**](#introduction)
+- [**Getting Started**](#getting-started)
+- [**License**](#license)
 
-## What is Grafana Panel Plugin?
+## Introduction
 
-Panels are the building blocks of Grafana. They allow you to visualize data in different ways. While Grafana has several types of panels already built-in, you can also build your own panel, to add support for other visualizations.
+### What is the Redis Application for Grafana?
 
-For more information about panels, refer to the documentation on [Panels](https://grafana.com/docs/grafana/latest/features/panels/panels/)
+The Redis Application, is a plug-in for Grafana that provides various panels for Redis Data Source and allows to
+build entirely customized dashboards, tuned to your needs.
 
-## Getting started
+### What is Grafana?
 
-1. Install dependencies
+If you are not familiar with Grafana yet, it is a very popular tool used to build dashboards allowing to monitor applications, infrastructures and any kind of software components.
 
-```BASH
-yarn install
+### What Grafana version is supported?
+
+Only Grafana 7.0 and later with a new plug-in platform supported.
+
+## Getting Started
+
+### Run using `docker-compose`
+
+Project provides `docker-compose.yml` to start Redis with Redis Labs modules and Grafana 7.0.
+
+**Start Redis and Grafana**
+
+```bash
+docker-compose up
 ```
 
-2. Build plugin in development mode or run in watch mode
+### Open Grafana
 
-```BASH
-yarn dev
-```
+Open Grafana in your browser [http://localhost:3000](http://localhost:3000) and configure Redis Data Source. You can add as many datasources as you want to support multiple Redis databases.
 
-or
+## License
 
-```BASH
-yarn watch
-```
-
-3. Build plugin in production mode
-
-```BASH
-yarn build
-```
-
-## Learn more
-
-- [Build a panel plugin tutorial](https://grafana.com/tutorials/build-a-panel-plugin)
-- [Grafana documentation](https://grafana.com/docs/)
-- [Grafana Tutorials](https://grafana.com/tutorials/) - Grafana Tutorials are step-by-step guides that help you make the most of Grafana
-- [Grafana UI Library](https://developers.grafana.com/ui) - UI components to help you build interfaces using Grafana Design System
+- Apache License Version 2.0, see [LICENSE](LICENSE)
