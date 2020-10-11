@@ -2077,18 +2077,18 @@ export const Help: { [key: string]: HelpCommand } = {
     summary: 'RedisTimeSeries is a Redis Module adding a Time Series data structure to Redis.',
     url: 'https://oss.redislabs.com/redistimeseries/commands',
   },
-  'TS.CREATE': {
+  'TS CREATE': {
     syntax: 'TS.CREATE key [RETENTION retentionTime] [UNCOMPRESSED] [CHUNK_SIZE size] [LABELS label value..]',
     summary: 'Create a new time-series.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tscreate',
   },
-  'TS.ALTER': {
+  'TS ALTER': {
     syntax: 'TS.ALTER key [RETENTION retentionTime] [LABELS label value..]',
     summary: 'Update the retention, labels of an existing key. The parameters are the same as TS.CREATE.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsalter',
   },
-  'TS.ADD': {
+  'TS ADD': {
     syntax:
       'TS.ADD key timestamp value [RETENTION retentionTime] [UNCOMPRESSED] [CHUNK_SIZE size] [ON_DUPLICATE policy] [LABELS label value..]',
     summary: 'Append (or create and append) a new sample to the series.',
@@ -2097,7 +2097,7 @@ export const Help: { [key: string]: HelpCommand } = {
     always O(M) when M is the amount of compaction rules or O(1) with no compaction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsadd',
   },
-  'TS.MADD': {
+  'TS MADD': {
     syntax: 'TS.MADD key timestamp value [key timestamp value ...]',
     summary: 'Append new samples to a list of series.',
     complexity:
@@ -2105,69 +2105,69 @@ export const Help: { [key: string]: HelpCommand } = {
       always O(N*M) when N is the amount of series updated and M is the amount of compaction rules or O(N) with no compaction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsmadd',
   },
-  'TS.INCRBY': {
+  'TS INCRBY': {
     syntax:
       'TS.INCRBY key value [TIMESTAMP timestamp] [RETENTION retentionTime] [UNCOMPRESSED] [CHUNK_SIZE size] [LABELS label value..]',
     summary: "Create a new sample that increments the latest sample's value.",
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsincrbytsdecrby',
   },
-  'TS.DECRBY': {
+  'TS DECRBY': {
     syntax:
       'TS.DECRBY key value [TIMESTAMP timestamp] [RETENTION retentionTime] [UNCOMPRESSED] [CHUNK_SIZE size] [LABELS label value..]',
     summary: "Create a new sample that decrements the latest sample's value.",
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsincrbytsdecrby',
   },
-  'TS.CREATERULE': {
+  'TS CREATERULE': {
     syntax: 'TS.CREATERULE sourceKey destKey AGGREGATION aggregationType timeBucket',
     summary: 'Create a compaction rule.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tscreaterule',
   },
-  'TS.DELETERULE': {
+  'TS DELETERULE': {
     syntax: 'TS.DELETERULE sourceKey destKey',
     summary: 'Delete a compaction rule.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsdeleterule',
   },
-  'TS.RANGE': {
+  'TS RANGE': {
     syntax: 'TS.RANGE key fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket]',
     summary: 'Query a range in forward direction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsrangetsrevrange',
   },
-  'TS.REVRANGE': {
+  'TS REVRANGE': {
     syntax: 'TS.REVRANGE key fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket]',
     summary: 'Query a range in reverse direction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsrangetsrevrange',
   },
-  'TS.MRANGE': {
+  'TS MRANGE': {
     syntax:
       'TS.MRANGE fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket] [WITHLABELS] FILTER filter..',
     summary: 'Query a range across multiple time-series by filters in forward direction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsmrangetsmrevrange',
   },
-  'TS.MREVRANGE': {
+  'TS MREVRANGE': {
     syntax:
       'TS.MREVRANGE fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket] [WITHLABELS] FILTER filter..',
     summary: 'Query a range across multiple time-series by filters in reverse direction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsmrangetsmrevrange',
   },
-  'TS.GET': {
+  'TS GET': {
     syntax: 'TS.GET key',
     summary: 'Get the last sample.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsget',
   },
-  'TS.MGET': {
+  'TS MGET': {
     syntax: 'TS.MGET [WITHLABELS] FILTER filter...',
     summary: 'Get the last samples matching the specific filter.',
     complexity: 'O(N), where N is a number of time-series that match the filters.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsmget',
   },
-  'TS.INFO': {
+  'TS INFO': {
     syntax: 'TS.INFO key',
     summary: 'Return information and statistics on the time-series.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsinfo',
   },
-  'TS.QUERYINDEX': {
+  'TS QUERYINDEX': {
     syntax: 'TS.QUERYINDEX filter...',
     summary: 'Get all the keys matching the filter list.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsqueryindex',
@@ -2185,84 +2185,84 @@ export const Help: { [key: string]: HelpCommand } = {
     summary: 'RedisGears is a serverless engine for transaction, batch and event-driven data processing in Redis.',
     url: 'https://oss.redislabs.com/redisgears/commands.html',
   },
-  'RG.ABORTEXECUTION': {
+  'RG ABORTEXECUTION': {
     syntax: 'RG.ABORTEXECUTION <id>',
     summary: 'Abort the execution of a function in mid-flight.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgabortexecution',
   },
-  'RG.CONFIGGET': {
+  'RG CONFIGGET': {
     syntax: 'RG.CONFIGGET <key> [...]',
     summary: 'Return the value of one or more built-in configuration or a user-defined options.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgconfigget',
   },
-  'RG.CONFIGSET': {
+  'RG CONFIGSET': {
     syntax: 'RG.CONFIGSET <key> <value> [...]',
     summary: 'Set the value of one ore more built-in configuration or a user-defined options.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgconfigset',
   },
-  'RG.DROPEXECUTION': {
+  'RG DROPEXECUTION': {
     syntax: 'RG.DROPEXECUTION <id>',
     summary: 'Remove the execution of a function from the executions list.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgdropexecution',
   },
-  'RG.DUMPEXECUTIONS': {
+  'RG DUMPEXECUTIONS': {
     syntax: 'RG.DUMPEXECUTIONS',
     summary:
       "Output the list of function executions . The executions list's length is capped by the MaxExecutions configuration option.",
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgdumpexecutions',
   },
-  'RG.DUMPREGISTRATIONS': {
+  'RG DUMPREGISTRATIONS': {
     syntax: 'RG.DUMPREGISTRATIONS',
     summary: 'Output the list of function registrations.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgdumpregistrations',
   },
-  'RG.GETEXECUTION': {
+  'RG GETEXECUTION': {
     syntax: 'RG.GETEXECUTION <id> [SHARD|CLUSTER]',
     summary: "Return the execution execution details of a function that's in the executions list.",
     url: 'https://oss.redislabs.com/redisgears/commands.html#rggetexecution',
   },
-  'RG.GETRESULTS': {
+  'RG GETRESULTS': {
     syntax: 'RG.GETRESULTS <id>',
     summary:
       "Return the results and errors from of the execution execution details of a function that's in the executions list.",
     url: 'https://oss.redislabs.com/redisgears/commands.html#rggetresults',
   },
-  'RG.GETRESULTSBLOCKING': {
+  'RG GETRESULTSBLOCKING': {
     syntax: 'RG.GETRESULTSBLOCKING <id>',
     summary: 'Cancel the UNBLOCKING argument of the RG.PYEXECUTE command.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rggetresultsblocking',
   },
-  'RG.INFOCLUSTER': {
+  'RG INFOCLUSTER': {
     syntax: 'RG.INFOCLUSTER',
     summary: 'Output information about the cluster.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rginfocluster',
   },
-  'RG.PYEXECUTE': {
+  'RG PYEXECUTE': {
     syntax: 'RG.PYEXECUTE "<function>" [UNBLOCKING] [REQUIREMENTS "<dep> ..."]',
     summary: 'Execute a Python function.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgpyexecute',
   },
-  'RG.PYSTATS': {
+  'RG PYSTATS': {
     syntax: 'RG.PYSTATS',
     summary: 'Return memory usage statistics from the Python interpreter.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgpystats',
   },
-  'RG.PYDUMPREQS': {
+  'RG PYDUMPREQS': {
     syntax: 'RG.PYDUMPREQS',
     summary: 'Return a list of all the python requirements available (with information about each requirement).',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgpydumpreqs',
   },
-  'RG.REFRESHCLUSTER': {
+  'RG REFRESHCLUSTER': {
     syntax: "Refresh the node's view of the cluster's topology.",
     summary: 'RG.REFRESHCLUSTER',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgrefreshcluster',
   },
-  'RG.TRIGGER': {
+  'RG TRIGGER': {
     syntax: 'RG.TRIGGER <trigger> [arg ...]',
     summary: 'Trigger the execution of a registered CommandReader function.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgtrigger',
   },
-  'RG.UNREGISTER': {
+  'RG UNREGISTER': {
     syntax: 'RG.UNREGISTER <id>',
     summary: 'Remove the registration of a function.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgunregister',
@@ -2280,7 +2280,7 @@ export const Help: { [key: string]: HelpCommand } = {
     summary: 'RediSearch is a Full-Text and Secondary Index engine over Redis.',
     url: 'https://oss.redislabs.com/redisearch/Commands/',
   },
-  'FT.CREATE': {
+  'FT CREATE': {
     syntax:
       'FT.CREATE {index} [ON {structure}] [PREFIX {count} {prefix} [{prefix} ..] [FILTER {filter}] [LANGUAGE {default_lang}] \
     [LANGUAGE_FIELD {lang_field}] [SCORE {default_score}] [SCORE_FIELD {score_field}] [PAYLOAD_FIELD {payload_field}] [MAXTEXTFIELDS] \
@@ -2290,7 +2290,7 @@ export const Help: { [key: string]: HelpCommand } = {
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftcreate',
   },
-  'FT.SEARCH': {
+  'FT SEARCH': {
     syntax:
       'FT.SEARCH {index} {query} [NOCONTENT] [VERBATIM] [NOSTOPWORDS] [WITHSCORES] [WITHPAYLOADS] [WITHSORTKEYS] \
     [FILTER {numeric_field} {min} {max}] ... [GEOFILTER {geo_field} {lon} {lat} {radius} m|km|mi|ft] \
@@ -2306,7 +2306,7 @@ export const Help: { [key: string]: HelpCommand } = {
     and return them.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsearch',
   },
-  'FT.AGGREGATE': {
+  'FT AGGREGATE': {
     syntax:
       'FT.AGGREGATE {index_name} {query_string} [VERBATIM] \
     [LOAD {nargs} {property} ...] [GROUPBY {nargs} {property} ... \
@@ -2320,37 +2320,37 @@ export const Help: { [key: string]: HelpCommand } = {
     of results returned.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftaggregate',
   },
-  'FT.EXPLAIN': {
+  'FT EXPLAIN': {
     syntax: 'FT.EXPLAIN {index} {query}',
     summary: 'Return the execution plan for a complex query.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftexplain',
   },
-  'FT.EXPLAINCLI': {
+  'FT EXPLAINCLI': {
     syntax: 'FT.EXPLAINCLI {index} {query}',
     summary: 'Return the execution plan for a complex query but formatted for easier reading',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftexplaincli',
   },
-  'FT.ALTER': {
+  'FT ALTER': {
     syntax: 'FT.ALTER {index} SCHEMA ADD {field} {options} ...',
     summary: 'Add a new field to the index.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftalter_schema_add',
   },
-  'FT.DROPINDEX': {
+  'FT DROPINDEX': {
     syntax: 'FT.DROPINDEX {index} [DD]',
     summary: 'Delete the index.',
     since: 'RediSearch 2.0',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftdropindex',
   },
-  'FT.ALIASADD': {
+  'FT ALIASADD': {
     syntax: 'FT.ALIASADD {name} {index}',
     summary: 'Add an alias from an index.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftaliasadd',
   },
-  'FT.ALIASUPDATE': {
+  'FT ALIASUPDATE': {
     syntax: 'FT.ALIASUPDATE {name} {index}',
     summary:
       'The FT.ALIASUPDATE command differs from the FT.ALIASADD command in that it will remove the alias association \
@@ -2358,77 +2358,77 @@ export const Help: { [key: string]: HelpCommand } = {
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftaliasupdate',
   },
-  'FT.ALIASDEL': {
+  'FT ALIASDEL': {
     syntax: 'FT.ALIASDEL {name}',
     summary: 'Remove an alias from an index.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftaliasdel',
   },
-  'FT.TAGVALS': {
+  'FT TAGVALS': {
     syntax: 'FT.TAGVALS {index} {field_name}',
     summary: 'Return the distinct tags indexed in a Tag field.',
     complexity: 'O(n), n being the cardinality of the tag field.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#fttagvals',
   },
-  'FT.SUGADD': {
+  'FT SUGADD': {
     syntax: 'FT.SUGADD {key} {string} {score} [INCR] [PAYLOAD {payload}]',
     summary:
       'Add a suggestion string to an auto-complete suggestion dictionary. This is disconnected from the index definitions, \
     and leaves creating and updating suggestions dictionaries to the user.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsugadd',
   },
-  'FT.SUGGET': {
+  'FT SUGGET': {
     syntax: 'FT.SUGGET {key} {prefix} [FUZZY] [WITHSCORES] [WITHPAYLOADS] [MAX num]',
     summary: 'Get completion suggestions for a prefix.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsugget',
   },
-  'FT.SUGDEL': {
+  'FT SUGDEL': {
     syntax: 'FT.SUGDEL {key} {string}',
     summary: 'Delete a string from a suggestion index.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsugdel',
   },
-  'FT.SUGLEN': {
+  'FT SUGLEN': {
     syntax: 'FT.SUGLEN {key}',
     summary: 'Get the size of an auto-complete suggestion dictionary.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsuglen',
   },
-  'FT.SYNUPDATE': {
+  'FT SYNUPDATE': {
     syntax: 'FT.SYNUPDATE <index name> <synonym group id> [SKIPINITIALSCAN] <term1> <term2> ...',
     summary: 'Update a synonym group.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsynupdate',
   },
-  'FT.SYNDUMP': {
+  'FT SYNDUMP': {
     syntax: 'FT.SYNDUMP <index name>',
     summary: 'Dump the contents of a synonym group.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsyndump',
   },
-  'FT.SPELLCHECK': {
+  'FT SPELLCHECK': {
     syntax: 'FT.SPELLCHECK {index} {query} [DISTANCE dist] [TERMS {INCLUDE | EXCLUDE} {dict} [TERMS ...]]',
     summary: 'Performs spelling correction on a query, returning suggestions for misspelled terms.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftspellcheck',
   },
-  'FT.DICTADD': {
+  'FT DICTADD': {
     syntax: 'FT.DICTADD {dict} {term} [{term} ...]',
     summary: 'Add terms to a dictionary.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftdictadd',
   },
-  'FT.DICTDEL': {
+  'FT DICTDEL': {
     syntax: 'FT.DICTDEL {dict} {term} [{term} ...]',
     summary: 'Delete terms from a dictionary.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftdictdel',
   },
-  'FT.DICTDUMP': {
+  'FT DICTDUMP': {
     syntax: 'FT.DICTDUMP {dict}',
     summary: 'Dump all terms in the given dictionary.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftdictdump',
   },
-  'FT.INFO': {
+  'FT INFO': {
     syntax: 'FT.INFO {index} ',
     summary: 'Return information and statistics on the index.',
     complexity: 'O(n), n being the cardinality of the tag field.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftinfo',
   },
-  'FT.CONFIG': {
+  'FT CONFIG': {
     syntax: 'FT.CONFIG <GET|HELP> {option}, FT.CONFIG SET {option} {value}',
     summary: 'Retrieves, describes and sets runtime configuration options.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftconfig',
@@ -2445,29 +2445,29 @@ export const Help: { [key: string]: HelpCommand } = {
     adjacency matrix in graphs and linear algebra to query the graph.',
     url: 'https://oss.redislabs.com/redisgraph/commands/',
   },
-  'GRAPH.QUERY': {
+  'GRAPH QUERY': {
     syntax: 'GRAPH.QUERY <graph name> {query}',
     summary: 'Execute the given query against a specified graph.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphquery',
   },
-  'GRAPH.PROFILE': {
+  'GRAPH PROFILE': {
     syntax: 'GRAPH.QUERY <graph name> {query}',
     summary: "Execute a query and produces an execution plan augmented with metrics for each operation's execution.",
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphprofile',
   },
-  'GRAPH.DELETE': {
+  'GRAPH DELETE': {
     syntax: 'GRAPH.DELETE <graph name>',
     summary: 'Completely removes the graph and all of its entities.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphdelete',
   },
-  'GRAPH.EXPLAIN': {
+  'GRAPH EXPLAIN': {
     syntax: 'GRAPH.EXPLAIN <graph name> {query}',
     summary:
       'Construct a query execution plan but does not run it. Inspect this execution plan to better \
     understand how your query will get executed.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphexplain',
   },
-  'GRAPH.SLOWLOG ': {
+  'GRAPH SLOWLOG ': {
     syntax: 'GRAPH.SLOWLOG ',
     summary: 'Return a list containing up to 10 of the slowest queries issued against the given graph ID.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphslowlog',
@@ -2484,61 +2484,61 @@ export const Help: { [key: string]: HelpCommand } = {
     summary: 'RedisAI is a Redis module for executing Deep Learning/Machine Learning models and managing their data.',
     url: 'https://oss.redislabs.com/redisai/commands/',
   },
-  'AI.TENSORSET': {
+  'AI TENSORSET': {
     syntax: 'AI.TENSORSET <key> <type> <shape> [shape ...] [BLOB <data> | VALUES <val> [val ...]]',
     summary: 'Store a tensor as the value of a key.',
     url: 'https://oss.redislabs.com/redisai/commands/#aitensorset',
   },
-  'AI.TENSORGET': {
+  'AI TENSORGET': {
     syntax: 'AI.TENSORGET <key> [META] [format]',
     summary: "Return a tensor stored as key's value.",
     url: 'https://oss.redislabs.com/redisai/commands/#aitensorget',
   },
-  'AI.MODELSET': {
+  'AI MODELSET': {
     syntax:
       'AI.MODELSET <key> <backend> <device> [TAG tag] [BATCHSIZE n [MINBATCHSIZE m]] \
     [INPUTS <name> ...] [OUTPUTS name ...] BLOB <model>',
     summary: 'Store a model as the value of a key.',
     url: 'https://oss.redislabs.com/redisai/commands/#aimodelset',
   },
-  'AI.MODELGET': {
+  'AI MODELGET': {
     syntax: 'AI.MODELGET <key> [META] [BLOB]',
     summary: "Return a model's metadata and blob stored as a key's value.",
     url: 'https://oss.redislabs.com/redisai/commands/#aimodelget',
   },
-  'AI.MODELDEL': {
+  'AI MODELDEL': {
     syntax: 'AI.MODELDEL <key>',
     summary: "Delete a model stored as a key's value.",
     url: 'https://oss.redislabs.com/redisai/commands/#aimodeldel',
   },
-  'AI.MODELRUN': {
+  'AI MODELRUN': {
     syntax: 'AI.MODELRUN <key> INPUTS <input> [input ...] OUTPUTS <output> [output ...]',
     summary: "Run a model stored as a key's value using its specified backend and device.",
     warning: 'Intermediate memory overhead.',
     url: 'https://oss.redislabs.com/redisai/commands/#aimodelrun',
   },
-  'AI.SCRIPTSET': {
+  'AI SCRIPTSET': {
     syntax: 'AI.SCRIPTSET <key> <device> [TAG tag] SOURCE "<script>"',
     summary: 'Store a TorchScript as the value of a key.',
     url: 'https://oss.redislabs.com/redisai/commands/#aiscriptset',
   },
-  'AI.SCRIPTGET': {
+  'AI SCRIPTGET': {
     syntax: 'AI.SCRIPTGET <key> [META] [SOURCE]',
     summary: "Return the TorchScript stored as a key's value.",
     url: 'https://oss.redislabs.com/redisai/commands/#aiscriptget',
   },
-  'AI.SCRIPTDEL': {
+  'AI SCRIPTDEL': {
     syntax: 'AI.SCRIPTDEL <key>',
     summary: "Delete a script stored as a key's value.",
     url: 'https://oss.redislabs.com/redisai/commands/#aiscriptdel',
   },
-  'AI.SCRIPTRUN': {
+  'AI SCRIPTRUN': {
     syntax: 'AI.SCRIPTRUN <key> <function> INPUTS <input> [input ...] OUTPUTS <output> [output ...]',
     summary: "Run a script stored as a key's value on its specified device.",
     warning: 'Intermediate memory overhead.',
     url: 'https://oss.redislabs.com/redisai/commands/#aiscriptrun',
   },
-  'AI.DAGRUN': {
+  'AI DAGRUN': {
     syntax:
       'AI.DAGRUN [LOAD <n> <key-1> <key-2> ... <key-n>] [PERSIST <n> <key-1> <key-2> ... <key-n>] \
     |> <command> [|>  command ...]',
@@ -2546,17 +2546,17 @@ export const Help: { [key: string]: HelpCommand } = {
     warning: 'Intermediate memory overhead.',
     url: 'https://oss.redislabs.com/redisai/commands/#aidagrun',
   },
-  'AI.DAGRUN_RO': {
+  'AI DAGRUN_RO': {
     syntax: 'AI.DAGRUN_RO [LOAD <n> <key-1> <key-2> ... <key-n>] |> <command> [|>  command ...]',
     summary: 'Read-only variant of AI.DAGRUN.',
     url: 'https://oss.redislabs.com/redisai/commands/#aidagrun_ro',
   },
-  'AI.INFO': {
+  'AI INFO': {
     syntax: 'AI.INFO <key> [RESETSTAT]',
     summary: 'Return information about the execution a model or a script.',
     url: 'https://oss.redislabs.com/redisai/commands/#aiinfo',
   },
-  'AI.CONFIG': {
+  'AI CONFIG': {
     syntax: 'AI.CONFIG <BACKENDSPATH <path>> | <LOADBACKEND <backend> <path>>',
     summary: 'Set the value of configuration directives at run-time, and allows loading DL/ML backends dynamically.',
     url: 'https://oss.redislabs.com/redisai/commands/#aiconfig',
