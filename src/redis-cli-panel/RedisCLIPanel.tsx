@@ -93,7 +93,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
    */
   const onQueryChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.toUpperCase();
-    const q = query?.split('/s+./');
+    const q = query?.split(/[\s+\.]/);
     let help: HelpCommand = {};
 
     /**

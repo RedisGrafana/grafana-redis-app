@@ -230,14 +230,14 @@ export const Help: { [key: string]: HelpCommand } = {
     syntax:
       'CLIENT KILL [ip:port] [ID client-id] [TYPE normal|master|slave|pubsub] [USER username] [ADDR ip:port] [SKIPME yes/no]',
     summary: 'Kill the connection of a client.',
-    complexity: 'O(N) where N is the number of client connections',
+    complexity: 'O(N) where N is the number of client connections.',
     since: '2.4.0',
     url: 'https://redis.io/commands/client-kill',
   },
   'CLIENT LIST': {
     syntax: 'CLIENT LIST [TYPE normal|master|replica|pubsub]',
     summary: 'Get the list of client connections.',
-    complexity: 'O(N) where N is the number of client connections',
+    complexity: 'O(N) where N is the number of client connections.',
     since: '2.4.0',
     url: 'https://redis.io/commands/client-list',
   },
@@ -370,7 +370,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   'CLUSTER INFO': {
     syntax: 'CLUSTER INFO',
-    summary: 'Provides info about Redis Cluster node state',
+    summary: 'Provides info about Redis Cluster node state.',
     complexity: 'O(1)',
     since: '3.0.0',
     url: 'https://redis.io/commands/cluster-info',
@@ -542,7 +542,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   'DEBUG SEGFAULT': {
     syntax: 'DEBUG SEGFAULT',
-    summary: 'Make the server crash',
+    summary: 'Make the server crash.',
     danger: 'Performs an invalid memory access that crashes Redis.',
     since: '1.0.0',
     url: 'https://redis.io/commands/debug-segfault',
@@ -573,7 +573,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   DISCARD: {
     syntax: 'DISCARD',
-    summary: 'Discard all commands issued after MULTI',
+    summary: 'Discard all commands issued after MULTI.',
     since: '2.0.0',
     url: 'https://redis.io/commands/discard',
   },
@@ -643,7 +643,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   FLUSHDB: {
     syntax: 'FLUSHDB [ASYNC]',
-    summary: 'Remove all keys from the current database',
+    summary: 'Remove all keys from the current database.',
     danger: 'May cause data loss in Production environment.',
     since: '1.0.0',
     url: 'https://redis.io/commands/flushdb',
@@ -871,7 +871,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   LOLWUT: {
     syntax: 'LOLWUT [VERSION version]',
-    summary: 'Display some computer art and the Redis version',
+    summary: 'Display some computer art and the Redis version.',
     since: '5.0.0',
     url: 'https://redis.io/commands/lolwut',
   },
@@ -897,7 +897,8 @@ export const Help: { [key: string]: HelpCommand } = {
     syntax: 'LINDEX key index',
     summary: 'Get an element from a list by its index.',
     complexity:
-      'O(N) where N is the number of elements to traverse to get to the element at index. This makes asking for the first or the last element of the list O(1).',
+      'O(N) where N is the number of elements to traverse to get to the element at index. This makes asking for \
+      the first or the last element of the list O(1).',
     since: '1.0.0',
     url: 'https://redis.io/commands/lindex',
   },
@@ -905,7 +906,9 @@ export const Help: { [key: string]: HelpCommand } = {
     syntax: 'LINSERT key BEFORE|AFTER pivot element',
     summary: 'Insert an element before or after another element in a list.',
     complexity:
-      'O(N) where N is the number of elements to traverse before seeing the value pivot. This means that inserting somewhere on the left end on the list (head) can be considered O(1) and inserting somewhere on the right end (tail) is O(N).',
+      'O(N) where N is the number of elements to traverse before seeing the value pivot. This means that inserting \
+      somewhere on the left end on the list (head) can be considered O(1) and inserting somewhere on the right \
+      end (tail) is O(N).',
     since: '2.2.0',
     url: 'https://redis.io/commands/linsert',
   },
@@ -1217,7 +1220,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   QUIT: {
     syntax: 'QUIT',
-    summary: 'Close the connection',
+    summary: 'Close the connection.',
     since: '1.0.0',
     url: 'https://redis.io/commands/quit',
   },
@@ -1361,7 +1364,7 @@ export const Help: { [key: string]: HelpCommand } = {
   'SCRIPT FLUSH': {
     syntax: 'SCRIPT FLUSH',
     summary: 'Remove all the scripts from the script cache.',
-    complexity: 'O(N) with N being the number of scripts in cache',
+    complexity: 'O(N) with N being the number of scripts in cache.',
     since: '2.6.0',
     url: 'https://redis.io/commands/script-flush',
   },
@@ -1395,7 +1398,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   SELECT: {
     syntax: 'SELECT index',
-    summary: 'Change the selected database for the current connection',
+    summary: 'Change the selected database for the current connection.',
     since: '1.0.0',
     url: 'https://redis.io/commands/select',
   },
@@ -1507,7 +1510,7 @@ export const Help: { [key: string]: HelpCommand } = {
   SORT: {
     syntax:
       'SORT key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA] [STORE destination]',
-    summary: 'Sort the elements in a list, set or sorted set',
+    summary: 'Sort the elements in a list, set or sorted set.',
     complexity:
       'O(N+M*log(M)) where N is the number of elements in the list or set to sort, and M \
       the number of returned elements. When the elements are not sorted, complexity is \
@@ -1539,7 +1542,7 @@ export const Help: { [key: string]: HelpCommand } = {
   STRALGO: {
     syntax: 'STRALGO LCS algo-specific-argument [algo-specific-argument ...]',
     summary: 'Run algorithms (currently LCS) against strings.',
-    complexity: 'For LCS O(strlen(s1)*strlen(s2))',
+    complexity: 'For LCS O(strlen(s1)*strlen(s2)).',
     since: '6.0.0',
     url: 'https://redis.io/commands/stralgo',
   },
@@ -1573,7 +1576,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   SWAPDB: {
     syntax: 'SWAPDB index1 index2',
-    summary: 'Swaps two Redis databases',
+    summary: 'Swaps two Redis databases.',
     since: '4.0.0',
     url: 'https://redis.io/commands/swapdb',
   },
@@ -1694,7 +1697,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   ZINTERSTORE: {
     syntax: 'ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX]',
-    summary: 'Intersect multiple sorted sets and store the resulting sorted set in a new key',
+    summary: 'Intersect multiple sorted sets and store the resulting sorted set in a new key.',
     complexity:
       'O(N*K)+O(M*log(M)) worst case with N being the smallest input sorted set, K being the number of input \
       sorted sets and M being the number of elements in the resulting sorted set.',
@@ -1869,7 +1872,7 @@ export const Help: { [key: string]: HelpCommand } = {
     summary: 'Incrementally iterate Set elements.',
     complexity:
       'O(1) for every call. O(N) for a complete iteration, including enough command calls for the cursor to \
-      return back to 0. N is the number of elements inside the collection..',
+      return back to 0. N is the number of elements inside the collection.',
     since: '2.8.0',
     url: 'https://redis.io/commands/sscan',
   },
@@ -1878,7 +1881,7 @@ export const Help: { [key: string]: HelpCommand } = {
     summary: 'Incrementally iterate hash fields and associated values.',
     complexity:
       'O(1) for every call. O(N) for a complete iteration, including enough command calls for the cursor to \
-      return back to 0. N is the number of elements inside the collection..',
+      return back to 0. N is the number of elements inside the collection.',
     since: '2.8.0',
     url: 'https://redis.io/commands/hscan',
   },
@@ -1887,7 +1890,7 @@ export const Help: { [key: string]: HelpCommand } = {
     summary: 'Incrementally iterate sorted sets elements and associated scores.',
     complexity:
       'O(1) for every call. O(N) for a complete iteration, including enough command calls for the cursor to \
-      return back to 0. N is the number of elements inside the collection..',
+      return back to 0. N is the number of elements inside the collection.',
     since: '2.8.0',
     url: 'https://redis.io/commands/zscan',
   },
@@ -2068,27 +2071,27 @@ export const Help: { [key: string]: HelpCommand } = {
 
   /**
    * RedisTimeSeries
-   * @see https://oss.redislabs.com/redistimeseries/commands/
+   * @see https://oss.redislabs.com/redistimeseries/
    */
   TS: {
     syntax:
       'TS.CREATE, TS.ALTER, TS.ADD, TS.MADD, TS.INCRBY, TS.DECRBY, TS.CREATERULE, TS.DELETERULE, TS.RANGE, TS.REVRANGE, \
     TS.MRANGE, TS.MREVRANGE, TS.GET, TS.MGET, TS.INFO, TS.QUERYINDEX',
     summary: 'RedisTimeSeries is a Redis Module adding a Time Series data structure to Redis.',
-    url: 'https://oss.redislabs.com/redistimeseries/commands',
+    url: 'https://oss.redislabs.com/redistimeseries/',
   },
-  'TS.CREATE': {
+  'TS CREATE': {
     syntax: 'TS.CREATE key [RETENTION retentionTime] [UNCOMPRESSED] [CHUNK_SIZE size] [LABELS label value..]',
     summary: 'Create a new time-series.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tscreate',
   },
-  'TS.ALTER': {
+  'TS ALTER': {
     syntax: 'TS.ALTER key [RETENTION retentionTime] [LABELS label value..]',
     summary: 'Update the retention, labels of an existing key. The parameters are the same as TS.CREATE.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsalter',
   },
-  'TS.ADD': {
+  'TS ADD': {
     syntax:
       'TS.ADD key timestamp value [RETENTION retentionTime] [UNCOMPRESSED] [CHUNK_SIZE size] [ON_DUPLICATE policy] [LABELS label value..]',
     summary: 'Append (or create and append) a new sample to the series.',
@@ -2097,7 +2100,7 @@ export const Help: { [key: string]: HelpCommand } = {
     always O(M) when M is the amount of compaction rules or O(1) with no compaction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsadd',
   },
-  'TS.MADD': {
+  'TS MADD': {
     syntax: 'TS.MADD key timestamp value [key timestamp value ...]',
     summary: 'Append new samples to a list of series.',
     complexity:
@@ -2105,69 +2108,69 @@ export const Help: { [key: string]: HelpCommand } = {
       always O(N*M) when N is the amount of series updated and M is the amount of compaction rules or O(N) with no compaction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsmadd',
   },
-  'TS.INCRBY': {
+  'TS INCRBY': {
     syntax:
       'TS.INCRBY key value [TIMESTAMP timestamp] [RETENTION retentionTime] [UNCOMPRESSED] [CHUNK_SIZE size] [LABELS label value..]',
     summary: "Create a new sample that increments the latest sample's value.",
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsincrbytsdecrby',
   },
-  'TS.DECRBY': {
+  'TS DECRBY': {
     syntax:
       'TS.DECRBY key value [TIMESTAMP timestamp] [RETENTION retentionTime] [UNCOMPRESSED] [CHUNK_SIZE size] [LABELS label value..]',
     summary: "Create a new sample that decrements the latest sample's value.",
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsincrbytsdecrby',
   },
-  'TS.CREATERULE': {
+  'TS CREATERULE': {
     syntax: 'TS.CREATERULE sourceKey destKey AGGREGATION aggregationType timeBucket',
     summary: 'Create a compaction rule.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tscreaterule',
   },
-  'TS.DELETERULE': {
+  'TS DELETERULE': {
     syntax: 'TS.DELETERULE sourceKey destKey',
     summary: 'Delete a compaction rule.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsdeleterule',
   },
-  'TS.RANGE': {
+  'TS RANGE': {
     syntax: 'TS.RANGE key fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket]',
     summary: 'Query a range in forward direction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsrangetsrevrange',
   },
-  'TS.REVRANGE': {
+  'TS REVRANGE': {
     syntax: 'TS.REVRANGE key fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket]',
     summary: 'Query a range in reverse direction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsrangetsrevrange',
   },
-  'TS.MRANGE': {
+  'TS MRANGE': {
     syntax:
       'TS.MRANGE fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket] [WITHLABELS] FILTER filter..',
     summary: 'Query a range across multiple time-series by filters in forward direction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsmrangetsmrevrange',
   },
-  'TS.MREVRANGE': {
+  'TS MREVRANGE': {
     syntax:
       'TS.MREVRANGE fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket] [WITHLABELS] FILTER filter..',
     summary: 'Query a range across multiple time-series by filters in reverse direction.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsmrangetsmrevrange',
   },
-  'TS.GET': {
+  'TS GET': {
     syntax: 'TS.GET key',
     summary: 'Get the last sample.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsget',
   },
-  'TS.MGET': {
+  'TS MGET': {
     syntax: 'TS.MGET [WITHLABELS] FILTER filter...',
     summary: 'Get the last samples matching the specific filter.',
     complexity: 'O(N), where N is a number of time-series that match the filters.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsmget',
   },
-  'TS.INFO': {
+  'TS INFO': {
     syntax: 'TS.INFO key',
     summary: 'Return information and statistics on the time-series.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsinfo',
   },
-  'TS.QUERYINDEX': {
+  'TS QUERYINDEX': {
     syntax: 'TS.QUERYINDEX filter...',
     summary: 'Get all the keys matching the filter list.',
     url: 'https://oss.redislabs.com/redistimeseries/commands/#tsqueryindex',
@@ -2175,7 +2178,7 @@ export const Help: { [key: string]: HelpCommand } = {
 
   /**
    * RedisGears
-   * @see https://oss.redislabs.com/redisgears/commands.html
+   * @see https://oss.redislabs.com/redisgears
    */
   RG: {
     syntax:
@@ -2183,86 +2186,86 @@ export const Help: { [key: string]: HelpCommand } = {
     RG.GETEXECUTION, RG.GETRESULTS, RG.GETRESULTSBLOCKING, RG.INFOCLUSTER, RG.PYEXECUTE, RG.PYSTATS, RG.PYDUMPREQS, \
     RG.REFRESHCLUSTER, RG.TRIGGER, RG.UNREGISTER',
     summary: 'RedisGears is a serverless engine for transaction, batch and event-driven data processing in Redis.',
-    url: 'https://oss.redislabs.com/redisgears/commands.html',
+    url: 'https://oss.redislabs.com/redisgears',
   },
-  'RG.ABORTEXECUTION': {
+  'RG ABORTEXECUTION': {
     syntax: 'RG.ABORTEXECUTION <id>',
     summary: 'Abort the execution of a function in mid-flight.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgabortexecution',
   },
-  'RG.CONFIGGET': {
+  'RG CONFIGGET': {
     syntax: 'RG.CONFIGGET <key> [...]',
     summary: 'Return the value of one or more built-in configuration or a user-defined options.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgconfigget',
   },
-  'RG.CONFIGSET': {
+  'RG CONFIGSET': {
     syntax: 'RG.CONFIGSET <key> <value> [...]',
     summary: 'Set the value of one ore more built-in configuration or a user-defined options.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgconfigset',
   },
-  'RG.DROPEXECUTION': {
+  'RG DROPEXECUTION': {
     syntax: 'RG.DROPEXECUTION <id>',
     summary: 'Remove the execution of a function from the executions list.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgdropexecution',
   },
-  'RG.DUMPEXECUTIONS': {
+  'RG DUMPEXECUTIONS': {
     syntax: 'RG.DUMPEXECUTIONS',
     summary:
       "Output the list of function executions . The executions list's length is capped by the MaxExecutions configuration option.",
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgdumpexecutions',
   },
-  'RG.DUMPREGISTRATIONS': {
+  'RG DUMPREGISTRATIONS': {
     syntax: 'RG.DUMPREGISTRATIONS',
     summary: 'Output the list of function registrations.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgdumpregistrations',
   },
-  'RG.GETEXECUTION': {
+  'RG GETEXECUTION': {
     syntax: 'RG.GETEXECUTION <id> [SHARD|CLUSTER]',
     summary: "Return the execution execution details of a function that's in the executions list.",
     url: 'https://oss.redislabs.com/redisgears/commands.html#rggetexecution',
   },
-  'RG.GETRESULTS': {
+  'RG GETRESULTS': {
     syntax: 'RG.GETRESULTS <id>',
     summary:
       "Return the results and errors from of the execution execution details of a function that's in the executions list.",
     url: 'https://oss.redislabs.com/redisgears/commands.html#rggetresults',
   },
-  'RG.GETRESULTSBLOCKING': {
+  'RG GETRESULTSBLOCKING': {
     syntax: 'RG.GETRESULTSBLOCKING <id>',
     summary: 'Cancel the UNBLOCKING argument of the RG.PYEXECUTE command.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rggetresultsblocking',
   },
-  'RG.INFOCLUSTER': {
+  'RG INFOCLUSTER': {
     syntax: 'RG.INFOCLUSTER',
     summary: 'Output information about the cluster.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rginfocluster',
   },
-  'RG.PYEXECUTE': {
+  'RG PYEXECUTE': {
     syntax: 'RG.PYEXECUTE "<function>" [UNBLOCKING] [REQUIREMENTS "<dep> ..."]',
     summary: 'Execute a Python function.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgpyexecute',
   },
-  'RG.PYSTATS': {
+  'RG PYSTATS': {
     syntax: 'RG.PYSTATS',
     summary: 'Return memory usage statistics from the Python interpreter.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgpystats',
   },
-  'RG.PYDUMPREQS': {
+  'RG PYDUMPREQS': {
     syntax: 'RG.PYDUMPREQS',
     summary: 'Return a list of all the python requirements available (with information about each requirement).',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgpydumpreqs',
   },
-  'RG.REFRESHCLUSTER': {
+  'RG REFRESHCLUSTER': {
     syntax: "Refresh the node's view of the cluster's topology.",
     summary: 'RG.REFRESHCLUSTER',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgrefreshcluster',
   },
-  'RG.TRIGGER': {
+  'RG TRIGGER': {
     syntax: 'RG.TRIGGER <trigger> [arg ...]',
     summary: 'Trigger the execution of a registered CommandReader function.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgtrigger',
   },
-  'RG.UNREGISTER': {
+  'RG UNREGISTER': {
     syntax: 'RG.UNREGISTER <id>',
     summary: 'Remove the registration of a function.',
     url: 'https://oss.redislabs.com/redisgears/commands.html#rgunregister',
@@ -2270,7 +2273,7 @@ export const Help: { [key: string]: HelpCommand } = {
 
   /**
    * RediSearch
-   * @see https://oss.redislabs.com/redisearch/Commands/
+   * @see https://oss.redislabs.com/redisearch/
    */
   FT: {
     syntax:
@@ -2278,9 +2281,9 @@ export const Help: { [key: string]: HelpCommand } = {
     FT.ALIASDEL, FT.TAGVALS, FT.SUGADD, FT.SUGGET, FT.SUGDEL, FT.SUGLEN, FT.SYNUPDATE, FT.SYNDUMP, FT.SPELLCHECK, FT.DICTADD, \
     FT.DICTDEL, FT.DICTDUMP, FT.INFO, FT.CONFIG',
     summary: 'RediSearch is a Full-Text and Secondary Index engine over Redis.',
-    url: 'https://oss.redislabs.com/redisearch/Commands/',
+    url: 'https://oss.redislabs.com/redisearch/',
   },
-  'FT.CREATE': {
+  'FT CREATE': {
     syntax:
       'FT.CREATE {index} [ON {structure}] [PREFIX {count} {prefix} [{prefix} ..] [FILTER {filter}] [LANGUAGE {default_lang}] \
     [LANGUAGE_FIELD {lang_field}] [SCORE {default_score}] [SCORE_FIELD {score_field}] [PAYLOAD_FIELD {payload_field}] [MAXTEXTFIELDS] \
@@ -2290,7 +2293,7 @@ export const Help: { [key: string]: HelpCommand } = {
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftcreate',
   },
-  'FT.SEARCH': {
+  'FT SEARCH': {
     syntax:
       'FT.SEARCH {index} {query} [NOCONTENT] [VERBATIM] [NOSTOPWORDS] [WITHSCORES] [WITHPAYLOADS] [WITHSORTKEYS] \
     [FILTER {numeric_field} {min} {max}] ... [GEOFILTER {geo_field} {lon} {lat} {radius} m|km|mi|ft] \
@@ -2306,7 +2309,7 @@ export const Help: { [key: string]: HelpCommand } = {
     and return them.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsearch',
   },
-  'FT.AGGREGATE': {
+  'FT AGGREGATE': {
     syntax:
       'FT.AGGREGATE {index_name} {query_string} [VERBATIM] \
     [LOAD {nargs} {property} ...] [GROUPBY {nargs} {property} ... \
@@ -2320,37 +2323,37 @@ export const Help: { [key: string]: HelpCommand } = {
     of results returned.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftaggregate',
   },
-  'FT.EXPLAIN': {
+  'FT EXPLAIN': {
     syntax: 'FT.EXPLAIN {index} {query}',
     summary: 'Return the execution plan for a complex query.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftexplain',
   },
-  'FT.EXPLAINCLI': {
+  'FT EXPLAINCLI': {
     syntax: 'FT.EXPLAINCLI {index} {query}',
     summary: 'Return the execution plan for a complex query but formatted for easier reading',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftexplaincli',
   },
-  'FT.ALTER': {
+  'FT ALTER': {
     syntax: 'FT.ALTER {index} SCHEMA ADD {field} {options} ...',
     summary: 'Add a new field to the index.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftalter_schema_add',
   },
-  'FT.DROPINDEX': {
+  'FT DROPINDEX': {
     syntax: 'FT.DROPINDEX {index} [DD]',
     summary: 'Delete the index.',
     since: 'RediSearch 2.0',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftdropindex',
   },
-  'FT.ALIASADD': {
+  'FT ALIASADD': {
     syntax: 'FT.ALIASADD {name} {index}',
     summary: 'Add an alias from an index.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftaliasadd',
   },
-  'FT.ALIASUPDATE': {
+  'FT ALIASUPDATE': {
     syntax: 'FT.ALIASUPDATE {name} {index}',
     summary:
       'The FT.ALIASUPDATE command differs from the FT.ALIASADD command in that it will remove the alias association \
@@ -2358,77 +2361,77 @@ export const Help: { [key: string]: HelpCommand } = {
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftaliasupdate',
   },
-  'FT.ALIASDEL': {
+  'FT ALIASDEL': {
     syntax: 'FT.ALIASDEL {name}',
     summary: 'Remove an alias from an index.',
     complexity: 'O(1)',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftaliasdel',
   },
-  'FT.TAGVALS': {
+  'FT TAGVALS': {
     syntax: 'FT.TAGVALS {index} {field_name}',
     summary: 'Return the distinct tags indexed in a Tag field.',
     complexity: 'O(n), n being the cardinality of the tag field.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#fttagvals',
   },
-  'FT.SUGADD': {
+  'FT SUGADD': {
     syntax: 'FT.SUGADD {key} {string} {score} [INCR] [PAYLOAD {payload}]',
     summary:
       'Add a suggestion string to an auto-complete suggestion dictionary. This is disconnected from the index definitions, \
     and leaves creating and updating suggestions dictionaries to the user.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsugadd',
   },
-  'FT.SUGGET': {
+  'FT SUGGET': {
     syntax: 'FT.SUGGET {key} {prefix} [FUZZY] [WITHSCORES] [WITHPAYLOADS] [MAX num]',
     summary: 'Get completion suggestions for a prefix.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsugget',
   },
-  'FT.SUGDEL': {
+  'FT SUGDEL': {
     syntax: 'FT.SUGDEL {key} {string}',
     summary: 'Delete a string from a suggestion index.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsugdel',
   },
-  'FT.SUGLEN': {
+  'FT SUGLEN': {
     syntax: 'FT.SUGLEN {key}',
     summary: 'Get the size of an auto-complete suggestion dictionary.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsuglen',
   },
-  'FT.SYNUPDATE': {
+  'FT SYNUPDATE': {
     syntax: 'FT.SYNUPDATE <index name> <synonym group id> [SKIPINITIALSCAN] <term1> <term2> ...',
     summary: 'Update a synonym group.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsynupdate',
   },
-  'FT.SYNDUMP': {
+  'FT SYNDUMP': {
     syntax: 'FT.SYNDUMP <index name>',
     summary: 'Dump the contents of a synonym group.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftsyndump',
   },
-  'FT.SPELLCHECK': {
+  'FT SPELLCHECK': {
     syntax: 'FT.SPELLCHECK {index} {query} [DISTANCE dist] [TERMS {INCLUDE | EXCLUDE} {dict} [TERMS ...]]',
     summary: 'Performs spelling correction on a query, returning suggestions for misspelled terms.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftspellcheck',
   },
-  'FT.DICTADD': {
+  'FT DICTADD': {
     syntax: 'FT.DICTADD {dict} {term} [{term} ...]',
     summary: 'Add terms to a dictionary.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftdictadd',
   },
-  'FT.DICTDEL': {
+  'FT DICTDEL': {
     syntax: 'FT.DICTDEL {dict} {term} [{term} ...]',
     summary: 'Delete terms from a dictionary.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftdictdel',
   },
-  'FT.DICTDUMP': {
+  'FT DICTDUMP': {
     syntax: 'FT.DICTDUMP {dict}',
     summary: 'Dump all terms in the given dictionary.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftdictdump',
   },
-  'FT.INFO': {
-    syntax: 'FT.INFO {index} ',
+  'FT INFO': {
+    syntax: 'FT.INFO {index}',
     summary: 'Return information and statistics on the index.',
     complexity: 'O(n), n being the cardinality of the tag field.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftinfo',
   },
-  'FT.CONFIG': {
+  'FT CONFIG': {
     syntax: 'FT.CONFIG <GET|HELP> {option}, FT.CONFIG SET {option} {value}',
     summary: 'Retrieves, describes and sets runtime configuration options.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftconfig',
@@ -2436,109 +2439,109 @@ export const Help: { [key: string]: HelpCommand } = {
 
   /**
    * RedisGraph
-   * @see https://oss.redislabs.com/redisgraph/commands/
+   * @see https://oss.redislabs.com/redisgraph/
    */
   GRAPH: {
-    syntax: 'GRAPH.QUERY, GRAPH.PROFILE, GRAPH.DELETE, GRAPH.EXPLAIN',
+    syntax: 'GRAPH.QUERY, GRAPH.PROFILE, GRAPH.DELETE, GRAPH.EXPLAIN, GRAPH SLOWLOG',
     summary:
       'RedisGraph is the first queryable Property Graph database to use sparse matrices to represent the \
     adjacency matrix in graphs and linear algebra to query the graph.',
-    url: 'https://oss.redislabs.com/redisgraph/commands/',
+    url: 'https://oss.redislabs.com/redisgraph/',
   },
-  'GRAPH.QUERY': {
+  'GRAPH QUERY': {
     syntax: 'GRAPH.QUERY <graph name> {query}',
     summary: 'Execute the given query against a specified graph.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphquery',
   },
-  'GRAPH.PROFILE': {
+  'GRAPH PROFILE': {
     syntax: 'GRAPH.QUERY <graph name> {query}',
     summary: "Execute a query and produces an execution plan augmented with metrics for each operation's execution.",
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphprofile',
   },
-  'GRAPH.DELETE': {
+  'GRAPH DELETE': {
     syntax: 'GRAPH.DELETE <graph name>',
     summary: 'Completely removes the graph and all of its entities.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphdelete',
   },
-  'GRAPH.EXPLAIN': {
+  'GRAPH EXPLAIN': {
     syntax: 'GRAPH.EXPLAIN <graph name> {query}',
     summary:
       'Construct a query execution plan but does not run it. Inspect this execution plan to better \
     understand how your query will get executed.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphexplain',
   },
-  'GRAPH.SLOWLOG ': {
-    syntax: 'GRAPH.SLOWLOG ',
+  'GRAPH SLOWLOG': {
+    syntax: 'GRAPH.SLOWLOG',
     summary: 'Return a list containing up to 10 of the slowest queries issued against the given graph ID.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphslowlog',
   },
 
   /**
    * RedisAI
-   * @see https://oss.redislabs.com/redisai/commands/
+   * @see https://oss.redislabs.com/redisai/
    */
   AI: {
     syntax:
       'AI.TENSORSET, AI.TENSORGET, AI.MODELSET, AI.MODELGET, AI.MODELDEL, AI.MODELRUN, AI.SCRIPTSET, AI.SCRIPTGET, \
       AI.SCRIPTDEL, AI.SCRIPTRUN, AI.DAGRUN, AI.DAGRUN_RO, AI.INFO, AI.CONFIG',
     summary: 'RedisAI is a Redis module for executing Deep Learning/Machine Learning models and managing their data.',
-    url: 'https://oss.redislabs.com/redisai/commands/',
+    url: 'https://oss.redislabs.com/redisai/',
   },
-  'AI.TENSORSET': {
+  'AI TENSORSET': {
     syntax: 'AI.TENSORSET <key> <type> <shape> [shape ...] [BLOB <data> | VALUES <val> [val ...]]',
     summary: 'Store a tensor as the value of a key.',
     url: 'https://oss.redislabs.com/redisai/commands/#aitensorset',
   },
-  'AI.TENSORGET': {
+  'AI TENSORGET': {
     syntax: 'AI.TENSORGET <key> [META] [format]',
     summary: "Return a tensor stored as key's value.",
     url: 'https://oss.redislabs.com/redisai/commands/#aitensorget',
   },
-  'AI.MODELSET': {
+  'AI MODELSET': {
     syntax:
       'AI.MODELSET <key> <backend> <device> [TAG tag] [BATCHSIZE n [MINBATCHSIZE m]] \
     [INPUTS <name> ...] [OUTPUTS name ...] BLOB <model>',
     summary: 'Store a model as the value of a key.',
     url: 'https://oss.redislabs.com/redisai/commands/#aimodelset',
   },
-  'AI.MODELGET': {
+  'AI MODELGET': {
     syntax: 'AI.MODELGET <key> [META] [BLOB]',
     summary: "Return a model's metadata and blob stored as a key's value.",
     url: 'https://oss.redislabs.com/redisai/commands/#aimodelget',
   },
-  'AI.MODELDEL': {
+  'AI MODELDEL': {
     syntax: 'AI.MODELDEL <key>',
     summary: "Delete a model stored as a key's value.",
     url: 'https://oss.redislabs.com/redisai/commands/#aimodeldel',
   },
-  'AI.MODELRUN': {
+  'AI MODELRUN': {
     syntax: 'AI.MODELRUN <key> INPUTS <input> [input ...] OUTPUTS <output> [output ...]',
     summary: "Run a model stored as a key's value using its specified backend and device.",
     warning: 'Intermediate memory overhead.',
     url: 'https://oss.redislabs.com/redisai/commands/#aimodelrun',
   },
-  'AI.SCRIPTSET': {
+  'AI SCRIPTSET': {
     syntax: 'AI.SCRIPTSET <key> <device> [TAG tag] SOURCE "<script>"',
     summary: 'Store a TorchScript as the value of a key.',
     url: 'https://oss.redislabs.com/redisai/commands/#aiscriptset',
   },
-  'AI.SCRIPTGET': {
+  'AI SCRIPTGET': {
     syntax: 'AI.SCRIPTGET <key> [META] [SOURCE]',
     summary: "Return the TorchScript stored as a key's value.",
     url: 'https://oss.redislabs.com/redisai/commands/#aiscriptget',
   },
-  'AI.SCRIPTDEL': {
+  'AI SCRIPTDEL': {
     syntax: 'AI.SCRIPTDEL <key>',
     summary: "Delete a script stored as a key's value.",
     url: 'https://oss.redislabs.com/redisai/commands/#aiscriptdel',
   },
-  'AI.SCRIPTRUN': {
+  'AI SCRIPTRUN': {
     syntax: 'AI.SCRIPTRUN <key> <function> INPUTS <input> [input ...] OUTPUTS <output> [output ...]',
     summary: "Run a script stored as a key's value on its specified device.",
     warning: 'Intermediate memory overhead.',
     url: 'https://oss.redislabs.com/redisai/commands/#aiscriptrun',
   },
-  'AI.DAGRUN': {
+  'AI DAGRUN': {
     syntax:
       'AI.DAGRUN [LOAD <n> <key-1> <key-2> ... <key-n>] [PERSIST <n> <key-1> <key-2> ... <key-n>] \
     |> <command> [|>  command ...]',
@@ -2546,19 +2549,375 @@ export const Help: { [key: string]: HelpCommand } = {
     warning: 'Intermediate memory overhead.',
     url: 'https://oss.redislabs.com/redisai/commands/#aidagrun',
   },
-  'AI.DAGRUN_RO': {
+  'AI DAGRUN_RO': {
     syntax: 'AI.DAGRUN_RO [LOAD <n> <key-1> <key-2> ... <key-n>] |> <command> [|>  command ...]',
     summary: 'Read-only variant of AI.DAGRUN.',
     url: 'https://oss.redislabs.com/redisai/commands/#aidagrun_ro',
   },
-  'AI.INFO': {
+  'AI INFO': {
     syntax: 'AI.INFO <key> [RESETSTAT]',
     summary: 'Return information about the execution a model or a script.',
     url: 'https://oss.redislabs.com/redisai/commands/#aiinfo',
   },
-  'AI.CONFIG': {
+  'AI CONFIG': {
     syntax: 'AI.CONFIG <BACKENDSPATH <path>> | <LOADBACKEND <backend> <path>>',
     summary: 'Set the value of configuration directives at run-time, and allows loading DL/ML backends dynamically.',
     url: 'https://oss.redislabs.com/redisai/commands/#aiconfig',
+  },
+
+  /**
+   * RedisJSON
+   * @see https://oss.redislabs.com/redisjson/
+   */
+  JSON: {
+    syntax:
+      'JSON.DEL, JSON.GET, JSON.MGET, JSON.SET, JSON.TYPE, JSON.NUMINCRBY, JSON.NUMMULTBY, JSON.STRAPPEND, \
+    JSON.STRLEN, JSON.ARRAPPEND, JSON.ARRINDEX, JSON.ARRINSERT, JSON.ARRLEN, JSON.ARRPOP, JSON.ARRTRIM, JSON.OBJKEYS, \
+    JSON.OBJLEN, JSON.DEBUG, JSON.RESP',
+    summary:
+      'RedisJSON is a Redis module that implements ECMA-404 The JSON Data Interchange Standard as a native data type.',
+    url: 'https://oss.redislabs.com/redisjson/',
+  },
+  'JSON DEL': {
+    syntax: 'JSON.DEL <key> [path]',
+    summary: 'Delete a value.',
+    complexity: 'O(N), where N is the size of the deleted value.',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsondel',
+  },
+  'JSON GET': {
+    syntax:
+      'JSON.GET <key> [INDENT indentation-string] [NEWLINE line-break-string] [SPACE space-string] [NOESCAPE] [path ...]',
+    summary: 'Return the value at path in JSON serialized form.',
+    complexity: 'O(N), where N is the size of the value.',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonget',
+  },
+  'JSON MGET': {
+    syntax: 'JSON.MGET <key> [key ...] <path>',
+    summary:
+      'Returns the values at path from multiple key s. Non-existing keys and non-existing paths are reported as null.',
+    complexity: 'O(M*N), where M is the number of keys and N is the size of the value.',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonmget',
+  },
+  'JSON SET': {
+    syntax: 'JSON.SET <key> <path> <json> [NX | XX]',
+    summary: 'Sets the JSON value at path in key.',
+    complexity: 'O(M+N), where M is the size of the original value (if it exists) and N is the size of the new value.',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonset',
+  },
+  'JSON TYPE': {
+    syntax: 'JSON.TYPE <key> [path]',
+    summary: 'Report the type of JSON value at path.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsontype',
+  },
+  'JSON NUMINCRBY': {
+    syntax: 'JSON.NUMINCRBY <key> <path> <number>',
+    summary: 'Increments the number value stored at path by number.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonnumincrby',
+  },
+  'JSON NUMMULTBY': {
+    syntax: 'JSON.NUMMULTBY <key> <path> <number>',
+    summary: 'Multiplies the number value stored at path by number.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonnummultby',
+  },
+  'JSON STRAPPEND': {
+    syntax: 'JSON.STRAPPEND <key> [path] <json-string>',
+    summary: 'Append the json-string value(s) the string at path.',
+    complexity: "O(N), where N is the new string's length.",
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonstrappend',
+  },
+  'JSON STRLEN': {
+    syntax: 'JSON.STRLEN <key> [path]',
+    summary: 'Report the length of the JSON String at path in key.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonstrlen',
+  },
+  'JSON ARRAPPEND': {
+    syntax: 'JSON.ARRAPPEND <key> <path> <json> [json ...]',
+    summary: 'Append the json value(s) into the array at path after the last element in it.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonarrappend',
+  },
+  'JSON ARRINDEX': {
+    syntax: 'JSON.ARRINDEX <key> <path> <json-scalar> [start [stop]]',
+    summary: 'Search for the first occurrence of a scalar JSON value in an array.',
+    complexity: "O(N), where N is the array's size.",
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonarrindex',
+  },
+  'JSON ARRINSERT': {
+    syntax: 'JSON.ARRINSERT <key> <path> <index> <json> [json ...]',
+    summary: 'Insert the json value(s) into the array at path before the index (shifts to the right).',
+    complexity: "O(N), where N is the array's size.",
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonarrinsert',
+  },
+  'JSON ARRLEN': {
+    syntax: 'JSON.ARRLEN <key> [path]',
+    summary: 'Report the length of the JSON Array at path in key.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonarrlen',
+  },
+  'JSON ARRPOP': {
+    syntax: 'JSON.ARRPOP <key> [path [index]]',
+    summary: 'Remove and return element from the index in the array.',
+    complexity: "O(N), where N is the array's size for index other than the last element, O(1) otherwise.",
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonarrpop',
+  },
+  'JSON ARRTRIM': {
+    syntax: 'JSON.ARRTRIM <key> <path> <start> <stop>',
+    summary: 'Trim an array so that it contains only the specified inclusive range of elements.',
+    complexity: "O(N), where N is the array's size.",
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonarrtrim',
+  },
+  'JSON OBJKEYS': {
+    syntax: 'JSON.OBJKEYS <key> [path]',
+    summary: "Return the keys in the object that's referenced by path.",
+    complexity: 'O(N), where N is the number of keys in the object.',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonobjkeys',
+  },
+  'JSON OBJLEN': {
+    syntax: 'JSON.OBJLEN <key> [path]',
+    summary: 'Report the number of keys in the JSON Object at path in key.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonobjlen',
+  },
+  'JSON DEBUG': {
+    syntax: 'JSON.DEBUG <subcommand & arguments>',
+    summary: 'Report information.',
+    complexity: 'O(N), where N is the size of the JSON value.',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsondebug',
+  },
+  'JSON RESP': {
+    syntax: 'JSON.RESP <key> [path]',
+    summary: 'Return the JSON in key in Redis Serialization Protocol (RESP).',
+    complexity: 'O(N), where N is the size of the JSON value.',
+    url: 'https://oss.redislabs.com/redisjson/commands/#jsonresp',
+  },
+
+  /**
+   * RedisBloom
+   * @see https://oss.redislabs.com/redisbloom/
+   */
+  BF: {
+    syntax: 'BF.RESERVE, BF.ADD, BF.MADD, BF.INSERT, BF.EXISTS, BF.MEXISTS, BF.SCANDUMP, BF.LOADCHUNK, BF.INFO',
+    summary: 'RedisBloom Bloom Filter',
+    url: 'https://oss.redislabs.com/redisbloom/Bloom_Commands/',
+  },
+  'BF RESERVE': {
+    syntax: 'BF.RESERVE {key} {error_rate} {capacity} [EXPANSION expansion] [NONSCALING]',
+    summary: 'Create an empty Bloom Filter with a given desired error ratio and initial capacity.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisbloom/Bloom_Commands/#bfreserve',
+  },
+  'BF ADD': {
+    syntax: 'BF.ADD {key} {item}',
+    summary: 'Add an item to the Bloom Filter, creating the filter if it does not yet exist.',
+    complexity: 'O(log N), where N is the number of stacked filters in the data structure.',
+    url: 'https://oss.redislabs.com/redisbloom/Bloom_Commands/#bfadd',
+  },
+  'BF MADD': {
+    syntax: 'BF.MADD {key} {item} [item...]',
+    summary: 'Add one or more items to the Bloom Filter, creating the filter if it does not yet exist.',
+    complexity: 'O(log N), where N is the number of stacked filters in the data structure.',
+    url: 'https://oss.redislabs.com/redisbloom/Bloom_Commands/#bfmadd',
+  },
+  'BF INSERT': {
+    syntax:
+      'BF.INSERT {key} [CAPACITY {cap}] [ERROR {error}] [EXPANSION expansion] [NOCREATE] [NONSCALING] ITEMS {item...}',
+    summary: 'Add one or more items to the bloom filter, by default creating it if it does not yet exist.',
+    complexity: 'O(log N), where N is the number of stacked filters in the data structure.',
+    url: 'https://oss.redislabs.com/redisbloom/Bloom_Commands/#bfinsert',
+  },
+  'BF EXISTS': {
+    syntax: 'BF.EXISTS {key} {item}',
+    summary: 'Determine whether an item may exist in the Bloom Filter or not.',
+    complexity: 'O(log N), where N is the number of stacked filters in the data structure.',
+    url: 'https://oss.redislabs.com/redisbloom/Bloom_Commands/#bfexists',
+  },
+  'BF MEXISTS': {
+    syntax: 'BF.MEXISTS {key} {item} [item...]',
+    summary: 'Determine if one or more items may exist in the filter or not.',
+    complexity: 'O(log N), where N is the number of stacked filters in the data structure.',
+    url: 'https://oss.redislabs.com/redisbloom/Bloom_Commands/#bfmexists',
+  },
+  'BF SCANDUMP': {
+    syntax: 'BF.SCANDUMP {key} {iter}',
+    summary: 'Begin an incremental save of the bloom filter.',
+    complexity: 'O(log N), where N is the number of stacked filters in the data structure.',
+    url: 'https://oss.redislabs.com/redisbloom/Bloom_Commands/#bfscandump',
+  },
+  'BF LOADCHUNK': {
+    syntax: 'BF.LOADCHUNK {key} {iter} {data}',
+    summary: 'Restore a filter previously saved using SCANDUMP.',
+    complexity: 'O(log N), where N is the number of stacked filters in the data structure.',
+    url: 'https://oss.redislabs.com/redisbloom/Bloom_Commands/#bfloadchunk',
+  },
+  'BF INFO': {
+    syntax: 'BF.INFO {key}',
+    summary: 'Return information about key.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisbloom/Bloom_Commands/#bfinfo',
+  },
+  CF: {
+    syntax:
+      'CF.RESERVE, CF.ADD, CF.ADDNX, CF.INSERT, CF.INSERTNX, CF.EXISTS, CF.DEL, CF.COUNT, CF.SCANDUMP, CF.LOADCHUNK, CF.INFO',
+    summary: 'RedisBloom Cuckoo Filter',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/',
+  },
+  'CF RESERVE': {
+    syntax: 'CF.RESERVE {key} {capacity} [BUCKETSIZE bucketSize] [MAXITERATIONS maxIterations] [EXPANSION expansion]',
+    summary: 'Create an empty cuckoo filter with an initial capacity of {capacity} items.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfreserve',
+  },
+  'CF ADD': {
+    syntax: 'CF.ADD {key} {item}',
+    summary: 'Add an item to the cuckoo filter, creating the filter if it does not exist.',
+    complexity: 'O(log N)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfadd',
+  },
+  'CF ADDNX': {
+    syntax: 'CF.ADDNX {key} {item}',
+    summary: 'Add an item to a cuckoo filter if the item did not exist previously.',
+    complexity: 'O(log N)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfaddnx',
+  },
+  'CF INSERT': {
+    syntax: 'CF.INSERT {key} [CAPACITY {cap}] [NOCREATE] ITEMS {item ...}',
+    summary: 'Add one or more items to a cuckoo filter.',
+    complexity: 'O(log N)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfinsert',
+  },
+  'CF INSERTNX': {
+    syntax: 'CF.INSERTNX {key} [CAPACITY {cap}] [NOCREATE] ITEMS {item ...}',
+    summary:
+      'Add one or more items to a cuckoo filter, allowing the filter to be created with a custom capacity if it does not yet exist.',
+    complexity: 'O(log N)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfinsertnx',
+  },
+  'CF EXISTS': {
+    syntax: 'CF.EXISTS {key} {item}',
+    summary: 'Check if an item exists in a Cuckoo Filter.',
+    complexity: 'O(log N)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfexists',
+  },
+  'CF DEL': {
+    syntax: 'CF.DEL {key} {item}',
+    summary: 'Deletes an item once from the filter.',
+    complexity: 'O(log N)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfdel',
+  },
+  'CF COUNT': {
+    syntax: 'CF.COUNT {key} {item}',
+    summary: 'Returns the number of times an item may be in the filter.',
+    complexity: 'O(log N)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfcount',
+  },
+  'CF SCANDUMP': {
+    syntax: 'CF.SCANDUMP {key} {iter}',
+    summary: 'Begins an incremental save of the cuckoo filter.',
+    complexity: 'O(log N)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfscandump',
+  },
+  'CF LOADCHUNK': {
+    syntax: 'CF.LOADCHUNK {key} {iter} {data}',
+    summary: 'Restores a filter previously saved using SCANDUMP.',
+    complexity: 'O(log N)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfloadchunk',
+  },
+  'CF INFO': {
+    syntax: 'CF.INFO {key}',
+    summary: 'Return information about key.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisbloom/Cuckoo_Commands/#cfinfo',
+  },
+  CMS: {
+    syntax: 'CMS.INITBYDIM, CMS.INITBYPROB, CMS.INCRBY, CMS.QUERY, CMS.MERGE, CMS.INFO',
+    summary: 'RedisBloom Count-Min Sketch',
+    url: 'https://oss.redislabs.com/redisbloom/CountMinSketch_Commands/',
+  },
+  'CMS INITBYDIM': {
+    syntax: 'CMS.INITBYDIM key width depth',
+    summary: 'Initializes a Count-Min Sketch to dimensions specified by user.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisbloom/CountMinSketch_Commands/#cmsinitbydim',
+  },
+  'CMS INITBYPROB': {
+    syntax: 'CMS.INITBYPROB key error probability',
+    summary: 'Initializes a Count-Min Sketch to accommodate requested capacity.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisbloom/CountMinSketch_Commands/#cmsinitbyprob',
+  },
+  'CMS INCRBY': {
+    syntax: 'CMS.INCRBY key item increment [item increment ...]',
+    summary: 'Increases the count of item by increment.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisbloom/CountMinSketch_Commands/#cmsincrby',
+  },
+  'CMS QUERY': {
+    syntax: 'CMS.QUERY key item [item ...]',
+    summary: 'Returns count for item. Multiple items can be queried with one call.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisbloom/CountMinSketch_Commands/#cmsquery',
+  },
+  'CMS MERGE': {
+    syntax: 'CMS.MERGE dest numKeys src1 [src2 ...] [WEIGHTS weight1 ...] ',
+    summary: 'Merges several sketches into one sketch.',
+    complexity: 'O(n)',
+    url: 'https://oss.redislabs.com/redisbloom/CountMinSketch_Commands/#cmsmerge',
+  },
+  'CMS INFO': {
+    syntax: 'CMS.INFO key',
+    summary: 'Returns width, depth and total count of the sketch.',
+    complexity: 'O(n) due to fill rate percentage',
+    url: 'https://oss.redislabs.com/redisbloom/CountMinSketch_Commands/#cmsinfo',
+  },
+  TOPK: {
+    syntax: 'TOPK.RESERVE, TOPK.ADD, TOPK.INCRBY, TOPK.QUERY, TOPK.COUNT, TOPK.LIST, TOPK.INFO',
+    summary: 'RedisBloom TopK Filter',
+    url: 'https://oss.redislabs.com/redisbloom/TopK_Commands/',
+  },
+  'TOPK RESERVE': {
+    syntax: 'TOPK.RESERVE key topk width depth decay',
+    summary: 'Initializes a TopK with specified parameters.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisbloom/TopK_Commands/#topkreserve',
+  },
+  'TOPK ADD': {
+    syntax: 'TOPK.ADD key item [item ...]',
+    summary: 'Adds an item to the data structure',
+    complexity: 'O(k + depth)',
+    url: 'https://oss.redislabs.com/redisbloom/TopK_Commands/#topkadd',
+  },
+  'TOPK INCRBY': {
+    syntax: 'TOPK.INCRBY key item increment [item increment ...]',
+    summary: 'Increase the score of an item in the data structure by increment.',
+    complexity: 'O(k + (increment * depth))',
+    url: 'https://oss.redislabs.com/redisbloom/TopK_Commands/#topkincrby',
+  },
+  'TOPK QUERY': {
+    syntax: 'TOPK.QUERY key item [item ...]',
+    summary: 'Checks whether an item is one of Top-K items.',
+    complexity: 'O(k)',
+    url: 'https://oss.redislabs.com/redisbloom/TopK_Commands/#topkquery',
+  },
+  'TOPK COUNT': {
+    syntax: 'TOPK.COUNT key item [item ...]',
+    summary: 'Returns count for an item.',
+    complexity: 'O(k + depth)',
+    url: 'https://oss.redislabs.com/redisbloom/TopK_Commands/#topkcount',
+  },
+  'TOPK LIST': {
+    syntax: 'TOPK.LIST key',
+    summary: 'Return full list of items in Top K list.',
+    complexity: 'O(k)',
+    url: 'https://oss.redislabs.com/redisbloom/TopK_Commands/#topklist',
+  },
+  'TOPK INFO': {
+    syntax: 'TOPK.INFO key',
+    summary: 'Returns number of required items (k), width, depth and decay values.',
+    complexity: 'O(1)',
+    url: 'https://oss.redislabs.com/redisbloom/TopK_Commands/#topkinfo',
   },
 };

@@ -1,10 +1,15 @@
 import { css } from 'emotion';
-import { stylesFactory } from '@grafana/ui';
+import { stylesFactory, useTheme } from '@grafana/ui';
 
 /**
  * Styles
  */
 export const Styles = stylesFactory(() => {
+  const theme = useTheme();
+
+  /**
+   * Return
+   */
   return {
     wrapper: css`
       position: relative;
@@ -23,7 +28,7 @@ export const Styles = stylesFactory(() => {
       -webkit-box-flex: 1;
       flex-grow: 1;
       box-shadow: 1px 1px 5px 3px grey;
-      background-color: #ffffff;
+      background-color: ${theme.isLight ? '#ffffff' : '#000000'};
     `,
     warning: css`
       color: #9f6000;
