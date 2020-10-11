@@ -230,14 +230,14 @@ export const Help: { [key: string]: HelpCommand } = {
     syntax:
       'CLIENT KILL [ip:port] [ID client-id] [TYPE normal|master|slave|pubsub] [USER username] [ADDR ip:port] [SKIPME yes/no]',
     summary: 'Kill the connection of a client.',
-    complexity: 'O(N) where N is the number of client connections',
+    complexity: 'O(N) where N is the number of client connections.',
     since: '2.4.0',
     url: 'https://redis.io/commands/client-kill',
   },
   'CLIENT LIST': {
     syntax: 'CLIENT LIST [TYPE normal|master|replica|pubsub]',
     summary: 'Get the list of client connections.',
-    complexity: 'O(N) where N is the number of client connections',
+    complexity: 'O(N) where N is the number of client connections.',
     since: '2.4.0',
     url: 'https://redis.io/commands/client-list',
   },
@@ -370,7 +370,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   'CLUSTER INFO': {
     syntax: 'CLUSTER INFO',
-    summary: 'Provides info about Redis Cluster node state',
+    summary: 'Provides info about Redis Cluster node state.',
     complexity: 'O(1)',
     since: '3.0.0',
     url: 'https://redis.io/commands/cluster-info',
@@ -542,7 +542,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   'DEBUG SEGFAULT': {
     syntax: 'DEBUG SEGFAULT',
-    summary: 'Make the server crash',
+    summary: 'Make the server crash.',
     danger: 'Performs an invalid memory access that crashes Redis.',
     since: '1.0.0',
     url: 'https://redis.io/commands/debug-segfault',
@@ -573,7 +573,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   DISCARD: {
     syntax: 'DISCARD',
-    summary: 'Discard all commands issued after MULTI',
+    summary: 'Discard all commands issued after MULTI.',
     since: '2.0.0',
     url: 'https://redis.io/commands/discard',
   },
@@ -643,7 +643,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   FLUSHDB: {
     syntax: 'FLUSHDB [ASYNC]',
-    summary: 'Remove all keys from the current database',
+    summary: 'Remove all keys from the current database.',
     danger: 'May cause data loss in Production environment.',
     since: '1.0.0',
     url: 'https://redis.io/commands/flushdb',
@@ -871,7 +871,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   LOLWUT: {
     syntax: 'LOLWUT [VERSION version]',
-    summary: 'Display some computer art and the Redis version',
+    summary: 'Display some computer art and the Redis version.',
     since: '5.0.0',
     url: 'https://redis.io/commands/lolwut',
   },
@@ -897,7 +897,8 @@ export const Help: { [key: string]: HelpCommand } = {
     syntax: 'LINDEX key index',
     summary: 'Get an element from a list by its index.',
     complexity:
-      'O(N) where N is the number of elements to traverse to get to the element at index. This makes asking for the first or the last element of the list O(1).',
+      'O(N) where N is the number of elements to traverse to get to the element at index. This makes asking for \
+      the first or the last element of the list O(1).',
     since: '1.0.0',
     url: 'https://redis.io/commands/lindex',
   },
@@ -905,7 +906,9 @@ export const Help: { [key: string]: HelpCommand } = {
     syntax: 'LINSERT key BEFORE|AFTER pivot element',
     summary: 'Insert an element before or after another element in a list.',
     complexity:
-      'O(N) where N is the number of elements to traverse before seeing the value pivot. This means that inserting somewhere on the left end on the list (head) can be considered O(1) and inserting somewhere on the right end (tail) is O(N).',
+      'O(N) where N is the number of elements to traverse before seeing the value pivot. This means that inserting \
+      somewhere on the left end on the list (head) can be considered O(1) and inserting somewhere on the right \
+      end (tail) is O(N).',
     since: '2.2.0',
     url: 'https://redis.io/commands/linsert',
   },
@@ -1217,7 +1220,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   QUIT: {
     syntax: 'QUIT',
-    summary: 'Close the connection',
+    summary: 'Close the connection.',
     since: '1.0.0',
     url: 'https://redis.io/commands/quit',
   },
@@ -1361,7 +1364,7 @@ export const Help: { [key: string]: HelpCommand } = {
   'SCRIPT FLUSH': {
     syntax: 'SCRIPT FLUSH',
     summary: 'Remove all the scripts from the script cache.',
-    complexity: 'O(N) with N being the number of scripts in cache',
+    complexity: 'O(N) with N being the number of scripts in cache.',
     since: '2.6.0',
     url: 'https://redis.io/commands/script-flush',
   },
@@ -1395,7 +1398,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   SELECT: {
     syntax: 'SELECT index',
-    summary: 'Change the selected database for the current connection',
+    summary: 'Change the selected database for the current connection.',
     since: '1.0.0',
     url: 'https://redis.io/commands/select',
   },
@@ -1507,7 +1510,7 @@ export const Help: { [key: string]: HelpCommand } = {
   SORT: {
     syntax:
       'SORT key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA] [STORE destination]',
-    summary: 'Sort the elements in a list, set or sorted set',
+    summary: 'Sort the elements in a list, set or sorted set.',
     complexity:
       'O(N+M*log(M)) where N is the number of elements in the list or set to sort, and M \
       the number of returned elements. When the elements are not sorted, complexity is \
@@ -1539,7 +1542,7 @@ export const Help: { [key: string]: HelpCommand } = {
   STRALGO: {
     syntax: 'STRALGO LCS algo-specific-argument [algo-specific-argument ...]',
     summary: 'Run algorithms (currently LCS) against strings.',
-    complexity: 'For LCS O(strlen(s1)*strlen(s2))',
+    complexity: 'For LCS O(strlen(s1)*strlen(s2)).',
     since: '6.0.0',
     url: 'https://redis.io/commands/stralgo',
   },
@@ -1573,7 +1576,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   SWAPDB: {
     syntax: 'SWAPDB index1 index2',
-    summary: 'Swaps two Redis databases',
+    summary: 'Swaps two Redis databases.',
     since: '4.0.0',
     url: 'https://redis.io/commands/swapdb',
   },
@@ -1694,7 +1697,7 @@ export const Help: { [key: string]: HelpCommand } = {
   },
   ZINTERSTORE: {
     syntax: 'ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX]',
-    summary: 'Intersect multiple sorted sets and store the resulting sorted set in a new key',
+    summary: 'Intersect multiple sorted sets and store the resulting sorted set in a new key.',
     complexity:
       'O(N*K)+O(M*log(M)) worst case with N being the smallest input sorted set, K being the number of input \
       sorted sets and M being the number of elements in the resulting sorted set.',
@@ -1869,7 +1872,7 @@ export const Help: { [key: string]: HelpCommand } = {
     summary: 'Incrementally iterate Set elements.',
     complexity:
       'O(1) for every call. O(N) for a complete iteration, including enough command calls for the cursor to \
-      return back to 0. N is the number of elements inside the collection..',
+      return back to 0. N is the number of elements inside the collection.',
     since: '2.8.0',
     url: 'https://redis.io/commands/sscan',
   },
@@ -1878,7 +1881,7 @@ export const Help: { [key: string]: HelpCommand } = {
     summary: 'Incrementally iterate hash fields and associated values.',
     complexity:
       'O(1) for every call. O(N) for a complete iteration, including enough command calls for the cursor to \
-      return back to 0. N is the number of elements inside the collection..',
+      return back to 0. N is the number of elements inside the collection.',
     since: '2.8.0',
     url: 'https://redis.io/commands/hscan',
   },
@@ -1887,7 +1890,7 @@ export const Help: { [key: string]: HelpCommand } = {
     summary: 'Incrementally iterate sorted sets elements and associated scores.',
     complexity:
       'O(1) for every call. O(N) for a complete iteration, including enough command calls for the cursor to \
-      return back to 0. N is the number of elements inside the collection..',
+      return back to 0. N is the number of elements inside the collection.',
     since: '2.8.0',
     url: 'https://redis.io/commands/zscan',
   },
@@ -2423,7 +2426,7 @@ export const Help: { [key: string]: HelpCommand } = {
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftdictdump',
   },
   'FT INFO': {
-    syntax: 'FT.INFO {index} ',
+    syntax: 'FT.INFO {index}',
     summary: 'Return information and statistics on the index.',
     complexity: 'O(n), n being the cardinality of the tag field.',
     url: 'https://oss.redislabs.com/redisearch/Commands/#ftinfo',
@@ -2468,7 +2471,7 @@ export const Help: { [key: string]: HelpCommand } = {
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphexplain',
   },
   'GRAPH SLOWLOG': {
-    syntax: 'GRAPH.SLOWLOG ',
+    syntax: 'GRAPH.SLOWLOG',
     summary: 'Return a list containing up to 10 of the slowest queries issued against the given graph ID.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphslowlog',
   },
