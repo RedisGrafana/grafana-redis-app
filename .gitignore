@@ -21,6 +21,7 @@ coverage
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 dist/
+redis-datasource/
 artifacts/
 work/
 ci/

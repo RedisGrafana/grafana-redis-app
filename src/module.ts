@@ -1,6 +1,6 @@
 import { RootPage } from 'components';
 import { AppPlugin } from '@grafana/data';
-import { ConfigCtrl } from './legacy/config';
+import { ConfigCtrl } from './components';
 import { GlobalSettings } from './types';
 
 /**

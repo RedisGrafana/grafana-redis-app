@@ -13,6 +13,7 @@ node_modules
 coverage
 data
 dist
+redis-datasource
 img
 .idea
 redis
