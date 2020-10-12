@@ -8,7 +8,7 @@ import { PanelOptions } from './types';
 export const plugin = new PanelPlugin<PanelOptions>(RedisCLIPanel).setPanelOptions((builder) => {
   return builder.addNumberInput({
     path: 'height',
-    name: 'TextArea height',
+    name: 'Textarea height',
     defaultValue: 12,
   });
 });

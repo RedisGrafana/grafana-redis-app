@@ -5,7 +5,7 @@
       "name": "Redis Labs",
       "url": "https://oss.redislabs.com"
     },
-    "description": "Redis CLI pane;",
+    "description": "Redis CLI panel",
     "logos": {
       "large": "img/logo.svg",
       "small": "img/logo.svg"

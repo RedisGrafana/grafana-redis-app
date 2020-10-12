@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { AppRootProps } from '@grafana/data';
-import { GlobalSettings } from './types';
+import { GlobalSettings } from '../types';
 
 /**
  * Properties
