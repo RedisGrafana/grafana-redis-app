@@ -10,8 +10,7 @@
 
 ### What is the Redis Application for Grafana?
 
-The Redis Application, is a plug-in for Grafana that provides various panels for Redis Data Source and allows to
-build entirely customized dashboards, tuned to your needs.
+The Redis Application, is a plug-in for Grafana that provides custom panels for (Redis Data Source)[https://grafana.com/grafana/plugins/redis-datasource].
 
 ### What is Grafana?
 
@@ -20,6 +19,10 @@ If you are not familiar with Grafana yet, it is a very popular tool used to buil
 ### What Grafana version is supported?
 
 Only Grafana 7.0 and later with a new plug-in platform supported.
+
+### What kind of panels it provides?
+
+- Redis CLI panel with expirience similar to `redis-cli`.
 
 ## Getting Started
 
@@ -35,7 +38,7 @@ docker-compose up
 
 ### Open Grafana
 
-Open Grafana in your browser [http://localhost:3000](http://localhost:3000) and configure Redis Data Source. You can add as many datasources as you want to support multiple Redis databases.
+Open Grafana in your browser and configure Redis Data Source. You can add as many data sources as you want to support multiple Redis databases.
 
 ## License
 
