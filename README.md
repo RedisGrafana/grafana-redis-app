@@ -4,6 +4,8 @@
 
 - [**Introduction**](#introduction)
 - [**Getting Started**](#getting-started)
+- [**Feedback**](#feedback)
+- [**Contributing**](#contributing)
 - [**License**](#license)
 
 ## Introduction
@@ -36,7 +38,7 @@ docker-compose up
 
 ### Open Grafana
 
-Open Grafana in your browser and configure Redis Data Source. You can add as many data sources as you want to support multiple Redis databases.
+Open Grafana in your browser, configure Redis Data Source and enable Redis Application plug-in. You can add as many data sources as you want to support multiple Redis databases.
 
 ## Feedback
 
