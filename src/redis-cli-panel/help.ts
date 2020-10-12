@@ -2862,7 +2862,7 @@ export const Help: { [key: string]: HelpCommand } = {
     url: 'https://oss.redislabs.com/redisbloom/CountMinSketch_Commands/#cmsquery',
   },
   'CMS MERGE': {
-    syntax: 'CMS.MERGE dest numKeys src1 [src2 ...] [WEIGHTS weight1 ...] ',
+    syntax: 'CMS.MERGE dest numKeys src1 [src2 ...] [WEIGHTS weight1 ...]',
     summary: 'Merges several sketches into one sketch.',
     complexity: 'O(n)',
     url: 'https://oss.redislabs.com/redisbloom/CountMinSketch_Commands/#cmsmerge',
