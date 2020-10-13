@@ -128,6 +128,7 @@ export class RootPage extends PureComponent<Props, State> {
       text: 'Home',
       url: path,
       id: 'home',
+      icon: 'fa fa-fw fa-database',
       active: true,
     });
 
