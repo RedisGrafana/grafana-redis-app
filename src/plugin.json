@@ -22,6 +22,10 @@
     {
       "name": "Redis CLI Panel",
       "type": "panel"
+    },
+    {
+      "name": "Redis Application",
+      "path": "img/redis-app.png"
     }
   ],
   "info": {
