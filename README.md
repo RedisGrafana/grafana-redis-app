@@ -1,4 +1,4 @@
-# Redis Application for Grafana
+# Redis Application plug-in for Grafana
 
 ![Application](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-app.png)
 
@@ -31,9 +31,29 @@ Only Grafana 7.0 and later with a new plug-in platform supported.
 
 - Redis CLI panel with expirience similar to [redis-cli](https://redis.io/topics/rediscli).
 
+### How to build Application
+
+To learn how to build Redis Application plug-in from scratch and register in new or existing Grafana please take a look at [BUILD](https://github.com/RedisGrafana/grafana-redis-app/blob/master/BUILD.md) instructions.
+
 ## Getting Started
 
-### Run using `docker-compose`
+### Install using `grafana-cli`
+
+Use the `grafana-cli` tool to install from the commandline:
+
+```bash
+grafana-cli plugins install redis-app
+```
+
+### Run using `docker`
+
+```bash
+docker run -d -p 3000:3000 --name=grafana -e "GF_INSTALL_PLUGINS=redis-app" grafana/grafana
+```
+
+### Run using `docker-compose` for development
+
+Application plug-in have to be built following [BUILD](https://github.com/RedisGrafana/grafana-redis-app/blob/master/BUILD.md) instructions before starting using `docker-compose.yml` file.
 
 Project provides `docker-compose.yml` to start Redis with Redis Labs modules and Grafana 7.0.
 
@@ -43,7 +63,7 @@ docker-compose up
 
 ### Open Grafana
 
-Open Grafana in your browser, configure Redis Data Source and enable Redis Application plug-in. You can add as many data sources as you want to support multiple Redis databases.
+Open Grafana in your browser, enable Redis Application plug-in and configure Redis Data Sources.
 
 ## Feedback
 
@@ -60,4 +80,4 @@ We love to hear from users, developers and the whole community interested by thi
 
 ## License
 
-- Apache License Version 2.0, see [LICENSE](LICENSE).
+- Apache License Version 2.0, see [LICENSE](https://github.com/RedisGrafana/grafana-redis-app/blob/master/LICENSE).
