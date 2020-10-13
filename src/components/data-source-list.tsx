@@ -4,6 +4,7 @@ import {
   RedisAI,
   RedisBloom,
   RedisCube,
+  RediSearch,
   RedisGears,
   RedisGraph,
   RedisJSON,
@@ -109,7 +110,7 @@ export const DataSourceList: FC<Props> = ({ datasources }) => {
                       )}
                       {redis.commands?.indexOf('FT.INFO') !== -1 && (
                         <Container margin="xs">
-                          <RedisGears size={32} fill={fill} />
+                          <RediSearch size={32} fill={fill} />
                         </Container>
                       )}
                       {redis.commands?.indexOf('JSON.GET') !== -1 && (
