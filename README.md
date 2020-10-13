@@ -33,7 +33,7 @@ Only Grafana 7.0 and later with a new plug-in platform supported.
 
 ### How to build Application
 
-To learn how to build Redis Application plug-in from scratch and register in new or existing Grafana please take a look at [BUILD](https://github.com/RedisGrafana/grafana-redis-app/blob/master/BUILD.md) instructions.
+To learn how to build Redis Application plug-in and register in the new or existing Grafana please take a look at [BUILD](https://github.com/RedisGrafana/grafana-redis-app/blob/master/BUILD.md) instructions.
 
 ## Getting Started
 

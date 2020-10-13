@@ -14,7 +14,7 @@ git clone https://github.com/RedisGrafana/grafana-redis-app.git
 
 ## Build Application
 
-- Install latest version of Node.js using [Node Version Manager](https://github.com/nvm-sh/nvm)
+- Install the latest version of Node.js using [Node Version Manager](https://github.com/nvm-sh/nvm)
 
 - Install `yarn` to build Application
 
