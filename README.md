@@ -8,6 +8,7 @@
 ## Summary
 
 - [**Introduction**](#introduction)
+- [**Redis CLI panel**](#redis-cli-panel)
 - [**Getting Started**](#getting-started)
 - [**Feedback**](#feedback)
 - [**Contributing**](#contributing)
@@ -37,7 +38,7 @@ To learn how to build Redis Application plug-in and register in the new or exist
 
 ## Redis CLI panel
 
-This panel provided expirience similar to [redis-cli](https://redis.io/topics/rediscli).
+This panel provides expirience similar to [redis-cli](https://redis.io/topics/rediscli).
 
 ![CLI](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-cli-panel.png)
 
