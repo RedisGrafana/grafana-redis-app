@@ -56,7 +56,7 @@ vi /etc/grafana/grafana.ini
 allow_loading_unsigned_plugins = redis-app
 ```
 
-- Verify that plugin registered
+- Verify that plugin is registered
 
 ```bash
 tail -100 /var/log/grafana/grafana.log

@@ -3,7 +3,7 @@
 ![Application](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-app.png)
 
 [![Grafana 7](https://img.shields.io/badge/Grafana-7-blue)](https://www.grafana.com)
-[![Grafana-Redis-Datasource](https://img.shields.io/badge/GrafanaRedisDatasource-powered-red)](https://github.com/RedisTimeSeries/grafana-redis-datasource)
+[![Grafana-Redis-Datasource](https://img.shields.io/badge/RedisDataSource-red)](https://github.com/RedisTimeSeries/grafana-redis-datasource)
 
 ## Summary
 
@@ -29,11 +29,17 @@ Only Grafana 7.0 and later with a new plug-in platform supported.
 
 ### What kind of panels it provides?
 
-- Redis CLI panel with expirience similar to [redis-cli](https://redis.io/topics/rediscli).
+- Redis CLI panel
 
 ### How to build Application
 
 To learn how to build Redis Application plug-in and register in the new or existing Grafana please take a look at [BUILD](https://github.com/RedisGrafana/grafana-redis-app/blob/master/BUILD.md) instructions.
+
+## Redis CLI panel
+
+This panel provided expirience similar to [redis-cli](https://redis.io/topics/rediscli).
+
+![CLI](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-cli-panel.png)
 
 ## Getting Started
 
