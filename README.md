@@ -1,5 +1,10 @@
 # Redis Application for Grafana
 
+![Application](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-app.png)
+
+[![Grafana 7](https://img.shields.io/badge/Grafana-7-blue)](https://www.grafana.com)
+[![Grafana-Redis-Datasource](https://img.shields.io/badge/GrafanaRedisDatasource-powered-red)](https://github.com/RedisTimeSeries/grafana-redis-datasource)
+
 ## Summary
 
 - [**Introduction**](#introduction)
