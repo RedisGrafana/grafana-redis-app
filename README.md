@@ -38,7 +38,7 @@ To learn how to build Redis Application plug-in and register in the new or exist
 
 ## Redis CLI panel
 
-This panel provides expirience similar to [redis-cli](https://redis.io/topics/rediscli).
+This panel provides [Redis command line interface](https://redis.io/topics/rediscli), a simple panel that allows to send commands to Redis, and read the replies sent by the server, directly from the Grafana.
 
 ![CLI](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-cli-panel.png)
 
