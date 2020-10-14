@@ -19,10 +19,11 @@ export const Styles = stylesFactory(() => {
         Courier New, monospace;
     `,
     help: css`
-      position: relative;
+      position: absolute;
+      bottom: 100px;
+      left: 10px;
+      width: calc(100% - 22px);
       min-height: 124px;
-      margin: 16px;
-      margin-top: -140px;
       padding: 16px;
       border-radius: 5px;
       -webkit-box-flex: 1;
