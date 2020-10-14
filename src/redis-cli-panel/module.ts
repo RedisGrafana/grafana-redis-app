@@ -1,5 +1,5 @@
 import { PanelPlugin } from '@grafana/data';
-import { RedisCLIPanel } from './RedisCLIPanel';
+import { RedisCLIPanel } from './components';
 import { PanelOptions } from './types';
 
 /**

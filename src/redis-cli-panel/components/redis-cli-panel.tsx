@@ -1,14 +1,14 @@
 import { css, cx } from 'emotion';
 import React, { ChangeEvent } from 'react';
-import AutoScrollingTextarea from 'redis-cli-panel/AutoScrollingTextArea';
 import { Observable } from 'rxjs';
 import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
 import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { Button } from '@grafana/ui';
-import { Help } from './help';
-import { Styles } from './styles';
-import { HelpCommand, PanelOptions, RedisQuery } from './types';
+import { Help } from '../help';
+import { Styles } from '../styles';
+import { HelpCommand, PanelOptions, RedisQuery } from '../types';
+import AutoScrollingTextarea from './auto-scrolling-text-area';
 
 /**
  * Redis CLI Panel
