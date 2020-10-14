@@ -11,6 +11,7 @@ import {
   RedisTimeSeries,
 } from 'icons';
 import React, { FC } from 'react';
+import { RedisCommand } from 'types';
 import { Container, HorizontalGroup, InfoBox, LinkButton, VerticalGroup } from '@grafana/ui';
 
 /**
@@ -35,7 +36,7 @@ export const DataSourceList: FC<Props> = ({ datasources }) => {
         <div className="page-action-bar">
           <div className="page-action-bar__spacer" />
           <LinkButton href="datasources/new" icon="database">
-            Add data source
+            Add Redis Data Source
           </LinkButton>
         </div>
         <InfoBox title="Please add Redis Data Sources." url={'https://grafana.com/plugins/redis-datasource'}>
@@ -53,7 +54,7 @@ export const DataSourceList: FC<Props> = ({ datasources }) => {
       <div className="page-action-bar">
         <div className="page-action-bar__spacer" />
         <LinkButton href="datasources/new" icon="database">
-          Add data source
+          Add Redis Data Source
         </LinkButton>
       </div>
 
@@ -93,37 +94,37 @@ export const DataSourceList: FC<Props> = ({ datasources }) => {
                           <HighAvailability size={32} fill={fill} />
                         </Container>
                       )}
-                      {redis.commands?.indexOf('RG.PYEXECUTE') !== -1 && (
+                      {redis.commands?.indexOf(RedisCommand.REDISGEARS) !== -1 && (
                         <Container margin="xs">
                           <RedisGears size={32} fill={fill} />
                         </Container>
                       )}
-                      {redis.commands?.indexOf('TS.INFO') !== -1 && (
+                      {redis.commands?.indexOf(RedisCommand.REDISTIMESERIES) !== -1 && (
                         <Container margin="xs">
                           <RedisTimeSeries size={32} fill={fill} />
                         </Container>
                       )}
-                      {redis.commands?.indexOf('AI.INFO') !== -1 && (
+                      {redis.commands?.indexOf(RedisCommand.REDISAI) !== -1 && (
                         <Container margin="xs">
                           <RedisAI size={32} fill={fill} />
                         </Container>
                       )}
-                      {redis.commands?.indexOf('FT.INFO') !== -1 && (
+                      {redis.commands?.indexOf(RedisCommand.REDISEARCH) !== -1 && (
                         <Container margin="xs">
                           <RediSearch size={32} fill={fill} />
                         </Container>
                       )}
-                      {redis.commands?.indexOf('JSON.GET') !== -1 && (
+                      {redis.commands?.indexOf(RedisCommand.REDISJSON) !== -1 && (
                         <Container margin="xs">
                           <RedisJSON size={32} fill={fill} />
                         </Container>
                       )}
-                      {redis.commands?.indexOf('GRAPH.QUERY') !== -1 && (
+                      {redis.commands?.indexOf(RedisCommand.REDISGRAPH) !== -1 && (
                         <Container margin="xs">
                           <RedisGraph size={32} fill={fill} />
                         </Container>
                       )}
-                      {redis.commands?.indexOf('BF.INFO') !== -1 && (
+                      {redis.commands?.indexOf(RedisCommand.REDISBLOOM) !== -1 && (
                         <Container margin="xs">
                           <RedisBloom size={32} fill={fill} />
                         </Container>

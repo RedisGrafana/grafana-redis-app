@@ -4,6 +4,27 @@
 export interface GlobalSettings {}
 
 /**
+ * Data Source types
+ */
+export enum DataSourceType {
+  REDIS = 'redis-datasource',
+}
+
+/**
+ * Redis commands
+ */
+export enum RedisCommand {
+  COMMAND = 'command',
+  REDISGEARS = 'RG.PYEXECUTE',
+  REDISTIMESERIES = 'TS.INFO',
+  REDISAI = 'AI.INFO',
+  REDISEARCH = 'FT.INFO',
+  REDISJSON = 'JSON.GET',
+  REDISGRAPH = 'GRAPH.QUERY',
+  REDISBLOOM = 'BF.INFO',
+}
+
+/**
  * SVG
  */
 export interface SVGProps extends React.HTMLAttributes<SVGElement> {

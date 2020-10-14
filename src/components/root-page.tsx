@@ -11,7 +11,7 @@ import {
 import { getBackendSrv, getDataSourceSrv } from '@grafana/runtime';
 import { InfoBox } from '@grafana/ui';
 import { RedisQuery } from '../redis-cli-panel/types';
-import { GlobalSettings } from '../types';
+import { DataSourceType, GlobalSettings, RedisCommand } from '../types';
 import { DataSourceList } from './data-source-list';
 
 /**
@@ -62,7 +62,7 @@ export class RootPage extends PureComponent<Props, State> {
       .get('/api/datasources')
       .then((result: any) => {
         return result.filter((ds: any) => {
-          return ds.type === 'redis-datasource';
+          return ds.type === DataSourceType.REDIS;
         });
       });
 
@@ -82,7 +82,7 @@ export class RootPage extends PureComponent<Props, State> {
          * Execute query
          */
         const query = ((redis.query({
-          targets: [{ query: 'command' }],
+          targets: [{ query: RedisCommand.COMMAND }],
         } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>).toPromise();
 
         /**

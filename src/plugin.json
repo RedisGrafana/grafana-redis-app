@@ -17,8 +17,16 @@
       "addToNav": true,
       "defaultNav": true,
       "name": "Home",
-      "path": "/a/redis-app/",
+      "path": "a/redis-app/",
+      "role": "Admin",
       "type": "page"
+    },
+    {
+      "type": "dashboard",
+      "name": "Redis CLI",
+      "path": "dashboards/redis-cli.json",
+      "role": "Admin",
+      "addToNav": true
     },
     {
       "name": "Redis CLI Panel",
