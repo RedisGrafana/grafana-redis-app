@@ -17,7 +17,7 @@
       "addToNav": true,
       "defaultNav": true,
       "name": "Home",
-      "path": "a/redis-app/",
+      "path": "/a/redis-app/",
       "role": "Admin",
       "type": "page"
     },
