@@ -7,7 +7,7 @@ import { TextArea } from '@grafana/ui';
 type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 /**
- * Auto scrolling Textarea
+ * Auto scrolling text area
  */
 export default class AutoScrollingTextArea extends React.Component<TextareaProps & { autoScroll?: boolean }, {}> {
   element: HTMLTextAreaElement | null | undefined;
