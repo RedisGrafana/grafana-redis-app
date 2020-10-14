@@ -65,7 +65,7 @@ export const DataSourceList: FC<Props> = ({ datasources }) => {
 
             return (
               <li className="card-item-wrapper" key={index} aria-label="check-card">
-                <a className="card-item" href={`/datasources/edit/${redis.id}`}>
+                <a className="card-item" href={`datasources/edit/${redis.id}`}>
                   <HorizontalGroup justify="space-between">
                     <HorizontalGroup justify="flex-start">
                       <Container margin="xs">
