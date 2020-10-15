@@ -1,0 +1,78 @@
+{
+  "dependencies": {
+    "grafanaDependency": ">=7.1.0",
+    "grafanaVersion": "7.x.x",
+    "plugins": [
+      {
+        "id": "redis-datasource",
+        "name": "Redis Data Source",
+        "type": "datasource",
+        "version": "^1.2.0"
+      }
+    ]
+  },
+  "id": "redis-app",
+  "includes": [
+    {
+      "addToNav": true,
+      "defaultNav": true,
+      "name": "Home",
+      "path": "/a/redis-app/",
+      "role": "Admin",
+      "type": "page"
+    },
+    {
+      "type": "dashboard",
+      "name": "Redis CLI",
+      "path": "dashboards/redis-cli.json",
+      "role": "Admin",
+      "addToNav": true
+    },
+    {
+      "type": "dashboard",
+      "name": "Redis Overview",
+      "path": "dashboards/redis-overview.json",
+      "role": "Admin",
+      "addToNav": true
+    },
+    {
+      "name": "Redis CLI Panel",
+      "type": "panel"
+    }
+  ],
+  "info": {
+    "author": {
+      "name": "Redis Labs",
+      "url": "https://oss.redislabs.com"
+    },
+    "keywords": ["redis", "timeseries", "plugin"],
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/RedisGrafana/grafana-redis-app"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/RedisGrafana/grafana-redis-app/blob/master/LICENSE"
+      }
+    ],
+    "logos": {
+      "large": "img/logo.svg",
+      "small": "img/logo.svg"
+    },
+    "screenshots": [
+      {
+        "name": "Redis Application",
+        "path": "img/redis-app.png"
+      },
+      {
+        "name": "Redis CLI Panel",
+        "path": "img/redis-cli-panel.png"
+      }
+    ],
+    "updated": "2020-10-15",
+    "version": "1.0.0"
+  },
+  "name": "Redis Application",
+  "type": "app"
+}
