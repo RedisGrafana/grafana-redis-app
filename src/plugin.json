@@ -29,6 +29,13 @@
       "addToNav": true
     },
     {
+      "type": "dashboard",
+      "name": "Redis Overview",
+      "path": "dashboards/redis-overview.json",
+      "role": "Admin",
+      "addToNav": true
+    },
+    {
       "name": "Redis CLI Panel",
       "type": "panel"
     }
