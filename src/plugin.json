@@ -22,18 +22,18 @@
       "type": "page"
     },
     {
-      "type": "dashboard",
+      "addToNav": true,
       "name": "Redis CLI",
       "path": "dashboards/redis-cli.json",
       "role": "Admin",
-      "addToNav": true
+      "type": "dashboard"
     },
     {
-      "type": "dashboard",
+      "addToNav": true,
       "name": "Redis Overview",
       "path": "dashboards/redis-overview.json",
       "role": "Admin",
-      "addToNav": true
+      "type": "dashboard"
     },
     {
       "name": "Redis CLI Panel",
@@ -45,6 +45,7 @@
       "name": "Redis Labs",
       "url": "https://oss.redislabs.com"
     },
+    "description": "Redis Application",
     "keywords": ["redis", "timeseries", "plugin"],
     "links": [
       {
