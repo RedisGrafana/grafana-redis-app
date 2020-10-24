@@ -2,6 +2,7 @@
 
 ## v1.0.1
 
+- Add GitHub action to sign release #13
 - Signed release
 
 ## v1.0.0
