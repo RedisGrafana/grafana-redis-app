@@ -4,6 +4,7 @@
 
 [![Grafana 7](https://img.shields.io/badge/Grafana-7-orange)](https://www.grafana.com)
 [![Grafana-Redis-Datasource](https://img.shields.io/badge/RedisDataSource-red)](https://github.com/RedisTimeSeries/grafana-redis-datasource)
+[![Downloads](https://img.shields.io/badge/dynamic/json?color=green&label=downloads&query=%24.downloads&url=https%3A%2F%2Fgrafana.com%2Fapi%2Fplugins%2Fredis-app)](https://grafana.com/grafana/plugins/redis-app)
 
 ## Summary
 
