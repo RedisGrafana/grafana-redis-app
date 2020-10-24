@@ -6,12 +6,8 @@ labels: 'kind/question'
 assignees: ''
 
 ---
-<!--
-  To make it easier for us to help you, please include as much useful information as possible.
--->
-
 ## Summary
+<!-- Please include as much useful information as possible. -->
 
 ## Relevant information
-
 <!-- Provide as much useful information as you can -->
