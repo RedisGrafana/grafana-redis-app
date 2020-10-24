@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.0.1
+
+- Signed release
+
 ## v1.0.0
 
 - Initial release based on Grafana 7.2.0 and Redis Data Source 1.2.0.
