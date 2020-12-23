@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow, ShallowWrapper } from 'enzyme';
+import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
 import { AppPluginMeta, PluginType } from '@grafana/data';
 import { InfoBox } from '@grafana/ui';
@@ -7,6 +7,9 @@ import { DataSourceType, RedisCommand } from '../types';
 import { RootPage } from './root-page';
 import { DataSourceList } from './data-source-list';
 
+/**
+ * Meta
+ */
 const getMeta = (): AppPluginMeta => ({
   id: '',
   name: '',
@@ -27,9 +30,14 @@ const getMeta = (): AppPluginMeta => ({
   },
 });
 
-type ShallowComponent = ShallowWrapper<RootPage['props'], RootPage['state'], RootPage>;
-
+/**
+ * DataSourceMock
+ */
 const getDataSourceMock = jest.fn().mockImplementation(() => Promise.resolve([]));
+
+/**
+ * RedisMock
+ */
 const redisMock = {
   query: jest.fn().mockImplementation(
     () =>
@@ -54,8 +62,14 @@ const redisMock = {
       })
   ),
 };
+/**
+ * GetRedisMock
+ */
 const getRedisMock = jest.fn().mockImplementation(() => Promise.resolve(redisMock));
 
+/**
+ * Mock @grafana/runtime
+ */
 jest.mock('@grafana/runtime', () => ({
   getBackendSrv: () => ({
     get: getDataSourceMock,
@@ -65,6 +79,9 @@ jest.mock('@grafana/runtime', () => ({
   }),
 }));
 
+/**
+ * RootPage
+ */
 describe('RootPage', () => {
   const meta = getMeta();
   const path = '/app';
@@ -77,6 +94,9 @@ describe('RootPage', () => {
     redisMock.query.mockClear();
   });
 
+  /**
+   * Mounting
+   */
   describe('Mounting', () => {
     it('Should update navigation', () => {
       const wrapper = shallow<RootPage>(
@@ -123,6 +143,10 @@ describe('RootPage', () => {
       });
     });
   });
+
+  /**
+   * updateNav
+   */
   describe('updateNav', () => {
     it('Should call onNavChanged prop', () => {
       const wrapper = shallow<RootPage>(
@@ -151,6 +175,9 @@ describe('RootPage', () => {
     });
   });
 
+  /**
+   * rendering
+   */
   describe('rendering', () => {
     it('Should show message if loading=true', (done) => {
       const wrapper = shallow<RootPage>(

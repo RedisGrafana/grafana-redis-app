@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
-import { Container, HorizontalGroup, InfoBox, LinkButton, VerticalGroup } from '@grafana/ui';
+import { InfoBox } from '@grafana/ui';
 import { RedisCommand } from 'types';
 import {
   HighAvailability,
@@ -18,6 +18,9 @@ import { DataSourceList } from './data-source-list';
 
 type ShallowComponent = ShallowWrapper<typeof DataSourceList>;
 
+/**
+ * DataSourceList
+ */
 describe('DataSourceList', () => {
   const FILLS = {
     success: '#DC382D',
@@ -27,21 +30,29 @@ describe('DataSourceList', () => {
     success: 'Working as expected',
     error: `Can't retrieve a list of commands`,
   };
+
   it('If datasources.length=0 should show no items message', () => {
     const wrapper = shallow(<DataSourceList datasources={[]} />);
     const testedComponent = wrapper.findWhere((node) => node.is(InfoBox));
     expect(testedComponent.exists()).toBeTruthy();
   });
+
   it('If datasources is undefined should not show no items message', () => {
     const wrapper = shallow(<DataSourceList datasources={void 0} />);
     const testedComponent = wrapper.findWhere((node) => node.is(InfoBox));
     expect(testedComponent.exists()).not.toBeTruthy();
   });
 
+  /**
+   * Item
+   */
   describe('Item', () => {
     const getItem = (wrapper: ShallowComponent): ShallowWrapper =>
       wrapper.findWhere((node) => node.hasClass('card-item-wrapper')).first();
 
+    /**
+     * RedisCube
+     */
     describe('RedisCube', () => {
       it('Should render', () => {
         const datasources = [
@@ -72,6 +83,9 @@ describe('DataSourceList', () => {
       });
     });
 
+    /**
+     * Name
+     */
     describe('Name', () => {
       it('Should render name', () => {
         const datasources = [
@@ -88,6 +102,9 @@ describe('DataSourceList', () => {
       });
     });
 
+    /**
+     * Url
+     */
     describe('Url', () => {
       it('Should render url', () => {
         const datasources = [
@@ -104,6 +121,9 @@ describe('DataSourceList', () => {
       });
     });
 
+    /**
+     * Title
+     */
     describe('Title', () => {
       it('If there are not any commands should show title', () => {
         const datasources = [
@@ -132,6 +152,9 @@ describe('DataSourceList', () => {
       });
     });
 
+    /**
+     * MultiLayerSecurity
+     */
     describe('MultiLayerSecurity', () => {
       it('if jsonData.tlsAuth=true should be shown', () => {
         const datasources = [
@@ -182,6 +205,9 @@ describe('DataSourceList', () => {
       });
     });
 
+    /**
+     * HighAvailability
+     */
     describe('HighAvailability ', () => {
       it('if jsonData.client matches with "cluster" should be shown', () => {
         const datasources = [
@@ -230,6 +256,10 @@ describe('DataSourceList', () => {
         expect(testedComponent.exists()).not.toBeTruthy();
       });
     });
+
+    /**
+     * Tests for similar components
+     */
     const tests = [
       {
         name: 'RedisGears',
