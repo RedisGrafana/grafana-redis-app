@@ -5,9 +5,8 @@ import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
 import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { Button } from '@grafana/ui';
-import { Help } from '../help';
 import { Styles } from '../styles';
-import { HelpCommand, PanelOptions, RedisQuery } from '../types';
+import { Help, HelpCommand, PanelOptions, RedisQuery } from '../types';
 import AutoScrollingTextarea from './auto-scrolling-text-area';
 
 /**
