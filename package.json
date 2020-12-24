@@ -6,7 +6,11 @@
     "@grafana/runtime": "7.2.0",
     "@grafana/toolkit": "7.2.0",
     "@grafana/ui": "7.2.0",
-    "emotion": "10.0.27"
+    "@types/enzyme": "^3.10.8",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
+    "emotion": "10.0.27",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.5"
   },
   "engines": {
     "node": ">=12"
@@ -19,6 +23,7 @@
     "format": "prettier --write \"**\"",
     "start": "docker-compose up",
     "test": "grafana-toolkit plugin:test",
+    "test:coverage": "jest --config ./jest.config.js",
     "watch": "grafana-toolkit plugin:dev --watch"
   },
   "version": "1.1.0"
