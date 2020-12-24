@@ -3,8 +3,7 @@ import { shallow, ShallowWrapper } from 'enzyme';
 import { Observable } from 'rxjs';
 import { PanelData, LoadingState } from '@grafana/data';
 import { Button } from '@grafana/ui';
-import { PanelOptions } from '../types';
-import { Help } from '../help';
+import { PanelOptions, Help } from '../types';
 import { RedisCLIPanel } from './redis-cli-panel';
 import AutoScrollingTextarea from './auto-scrolling-text-area';
 
@@ -30,7 +29,7 @@ const getOptions = ({ help = {}, ...overrideOptions }: OverrideOptions = {}): Pa
 
 type ShallowComponent = ShallowWrapper<typeof RedisCLIPanel>;
 
-const getDataSourceQueryResult = (values) => ({
+const getDataSourceQueryResult = (values: string[]) => ({
   data: [
     {
       fields: [
