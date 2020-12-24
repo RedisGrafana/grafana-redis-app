@@ -1,0 +1,42 @@
+import { HelpCommand } from 'redis-cli-panel/types';
+
+/**
+ * RedisGraph
+ * @see https://oss.redislabs.com/redisgraph/
+ */
+export const RedisGraphHelp: { [key: string]: HelpCommand } = {
+  GRAPH: {
+    syntax: 'GRAPH.QUERY, GRAPH.PROFILE, GRAPH.DELETE, GRAPH.EXPLAIN, GRAPH SLOWLOG',
+    summary:
+      'RedisGraph is the first queryable Property Graph database to use sparse matrices to represent the \
+    adjacency matrix in graphs and linear algebra to query the graph.',
+    url: 'https://oss.redislabs.com/redisgraph/',
+  },
+  'GRAPH QUERY': {
+    syntax: 'GRAPH.QUERY <graph name> {query}',
+    summary: 'Execute the given query against a specified graph.',
+    url: 'https://oss.redislabs.com/redisgraph/commands/#graphquery',
+  },
+  'GRAPH PROFILE': {
+    syntax: 'GRAPH.QUERY <graph name> {query}',
+    summary: "Execute a query and produces an execution plan augmented with metrics for each operation's execution.",
+    url: 'https://oss.redislabs.com/redisgraph/commands/#graphprofile',
+  },
+  'GRAPH DELETE': {
+    syntax: 'GRAPH.DELETE <graph name>',
+    summary: 'Completely removes the graph and all of its entities.',
+    url: 'https://oss.redislabs.com/redisgraph/commands/#graphdelete',
+  },
+  'GRAPH EXPLAIN': {
+    syntax: 'GRAPH.EXPLAIN <graph name> {query}',
+    summary:
+      'Construct a query execution plan but does not run it. Inspect this execution plan to better \
+    understand how your query will get executed.',
+    url: 'https://oss.redislabs.com/redisgraph/commands/#graphexplain',
+  },
+  'GRAPH SLOWLOG': {
+    syntax: 'GRAPH.SLOWLOG',
+    summary: 'Return a list containing up to 10 of the slowest queries issued against the given graph ID.',
+    url: 'https://oss.redislabs.com/redisgraph/commands/#graphslowlog',
+  },
+};
