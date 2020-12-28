@@ -128,26 +128,34 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
       </div>
 
       {query && help && (
-        <div className={cx(styles.help)}>
-          {help.danger && <h3 className={cx(styles.danger)}>{help.danger}</h3>}
-          {help.warning && <h3 className={cx(styles.warning)}>{help.warning}</h3>}
+        <div className={cx(styles.help)} id="help">
+          {help.danger && (
+            <h3 id="help-danger" className={cx(styles.danger)}>
+              {help.danger}
+            </h3>
+          )}
+          {help.warning && (
+            <h3 id="help-warning" className={cx(styles.warning)}>
+              {help.warning}
+            </h3>
+          )}
 
-          <h4>{help.syntax}</h4>
-          <div>{help.summary}</div>
+          <h4 id="help-syntax">{help.syntax}</h4>
+          <div id="help-summary">{help.summary}</div>
 
           {help.complexity && (
-            <div>
+            <div id="help-complexity">
               <b>Time complexity:</b> {help.complexity}
             </div>
           )}
 
           {help.since && (
-            <div>
+            <div id="help-since">
               <b>Since:</b> {help.since}
             </div>
           )}
 
-          <div className={cx(styles.url)}>
+          <div id="help-url" className={cx(styles.url)}>
             <a target="_blank" href={help.url}>
               {help.url}
             </a>
