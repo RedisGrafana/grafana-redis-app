@@ -3,6 +3,9 @@ import { config, setLocationSrv } from '@grafana/runtime';
 import { shallow } from 'enzyme';
 import { Config } from './config';
 
+/*
+ Plugin
+ */
 const getPlugin = (overridePlugin: any = { meta: {} }) => ({
   ...overridePlugin,
   meta: {
@@ -11,8 +14,15 @@ const getPlugin = (overridePlugin: any = { meta: {} }) => ({
   },
 });
 
+/*
+ Config
+ */
 describe('Config', () => {
   let initialDataSources = config.datasources;
+
+  /*
+   Initialization
+   */
   describe('Initialization', () => {
     it('If plugin is not enabled, state should have isEnabled = false and isConfigured = false', () => {
       const plugin = getPlugin({ meta: { enabled: false } });
@@ -47,6 +57,9 @@ describe('Config', () => {
     });
   });
 
+  /*
+   Rendering
+   */
   describe('rendering', () => {
     beforeAll(() => {
       config.datasources = {
@@ -105,6 +118,9 @@ describe('Config', () => {
     });
   });
 
+  /*
+   Methods
+   */
   describe('Methods', () => {
     beforeAll(() => {
       jest.spyOn(window.location, 'reload').mockImplementation(() => null);
