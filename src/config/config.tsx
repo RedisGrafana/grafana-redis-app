@@ -79,7 +79,7 @@ export class Config extends PureComponent<Props, State> {
         <InfoBox>
           <h2>Redis Application</h2>
           <p>
-            The Redis Application, is a plug-in for Grafana that provides custom panels for
+            The Redis Application, is a plug-in for Grafana that provides custom panels for{' '}
             <a target="_blank" href="https://grafana.com/grafana/plugins/redis-datasource">
               Redis Data Source
             </a>
