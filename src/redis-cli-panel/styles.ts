@@ -20,9 +20,12 @@ export const Styles = stylesFactory(() => {
         Courier New, monospace;
       height: 100%;
     `,
+    form: css`
+      height: calc(100% - 40px);
+    `,
     help: css`
       position: absolute;
-      bottom: 100px;
+      bottom: 80px;
       left: 10px;
       width: calc(100% - 22px);
       min-height: 124px;
