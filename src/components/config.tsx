@@ -4,8 +4,14 @@ import { BackendSrv, config, getBackendSrv, getLocationSrv } from '@grafana/runt
 import { Button, InfoBox } from '@grafana/ui';
 import { GlobalSettings } from '../types';
 
+/**
+ * Plug-in Path
+ */
 const HOME_PATH = 'a/redis-app/';
 
+/**
+ * Page Properties
+ */
 interface Props extends PluginConfigPageProps<AppPluginMeta<GlobalSettings>> {}
 
 /**
@@ -20,11 +26,23 @@ interface State {
  * Config component
  */
 export class Config extends PureComponent<Props, State> {
+  /**
+   * Object to get the current page
+   */
   static getLocation(): Location {
     return window.location;
   }
 
+  /**
+   * Service to communicate via http(s) to a remote backend such as the Grafana backend, a datasource etc.
+   */
   private backendSrv: BackendSrv = getBackendSrv();
+
+  /**
+   * Constructor
+   *
+   * @param props {Props} Properties
+   */
   constructor(props: Props) {
     super(props);
 
@@ -34,6 +52,9 @@ export class Config extends PureComponent<Props, State> {
     };
   }
 
+  /**
+   * Mount
+   */
   componentDidMount(): void {
     if (this.props.plugin.meta?.enabled) {
       const datasources = Object.values(config.datasources).filter((ds) => {
@@ -50,6 +71,9 @@ export class Config extends PureComponent<Props, State> {
     }
   }
 
+  /**
+   * Update
+   */
   onUpdate = () => {
     if (!this.state.isEnabled) {
       return;
@@ -58,6 +82,9 @@ export class Config extends PureComponent<Props, State> {
     this.goHome();
   };
 
+  /**
+   * Home
+   */
   goHome = (): void => {
     getLocationSrv().update({
       path: HOME_PATH,
@@ -65,22 +92,36 @@ export class Config extends PureComponent<Props, State> {
     });
   };
 
+  /**
+   * Plug-in Settings
+   *
+   * @param settings Plugin Settings
+   */
   updatePluginSettings = (settings: { enabled: boolean; jsonData: unknown; pinned: boolean }): Promise<undefined> => {
     return this.backendSrv.post(`api/plugins/${this.props.plugin.meta.id}/settings`, settings);
   };
 
+  /**
+   * Plug-in disable
+   */
   onDisable = () => {
     this.updatePluginSettings({ enabled: false, jsonData: {}, pinned: false }).then(() => {
       Config.getLocation().reload();
     });
   };
 
+  /**
+   * Plug-in enable
+   */
   onEnable = () => {
     this.updatePluginSettings({ enabled: true, jsonData: {}, pinned: true }).then(() => {
       Config.getLocation().assign(HOME_PATH);
     });
   };
 
+  /**
+   * Page Render
+   */
   render() {
     const { isConfigured, isEnabled } = this.state;
 
