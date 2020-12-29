@@ -13,10 +13,12 @@ export const Styles = stylesFactory(() => {
   return {
     wrapper: css`
       position: relative;
+      min-height: 100px;
     `,
     textarea: css`
       font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
         Courier New, monospace;
+      height: 100%;
     `,
     help: css`
       position: absolute;
