@@ -15,13 +15,6 @@ import {
  */
 export interface PanelOptions {
   /**
-   * TextArea Height
-   *
-   * @type {number}
-   */
-  height: number;
-
-  /**
    * Query command
    *
    * @type {string}
