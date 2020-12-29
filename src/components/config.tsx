@@ -1,18 +1,24 @@
 import React, { PureComponent } from 'react';
-import { config, getLocationSrv, getBackendSrv, BackendSrv } from '@grafana/runtime';
+import { AppPluginMeta, PluginConfigPageProps } from '@grafana/data';
+import { BackendSrv, config, getBackendSrv, getLocationSrv } from '@grafana/runtime';
 import { Button, InfoBox } from '@grafana/ui';
-import { PluginConfigPageProps, AppPluginMeta } from '@grafana/data';
 import { GlobalSettings } from '../types';
 
 const HOME_PATH = 'a/redis-app/';
 
 interface Props extends PluginConfigPageProps<AppPluginMeta<GlobalSettings>> {}
 
+/**
+ * State
+ */
 interface State {
   isConfigured: boolean;
   isEnabled: boolean;
 }
 
+/**
+ * Config component
+ */
 export class Config extends PureComponent<Props, State> {
   static getLocation(): Location {
     return window.location;
