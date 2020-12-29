@@ -14,6 +14,10 @@ interface State {
 }
 
 export class Config extends PureComponent<Props, State> {
+  static getLocation(): Location {
+    return window.location;
+  }
+
   private backendSrv: BackendSrv = getBackendSrv();
   constructor(props: Props) {
     super(props);
@@ -61,13 +65,13 @@ export class Config extends PureComponent<Props, State> {
 
   onDisable = () => {
     this.updatePluginSettings({ enabled: false, jsonData: {}, pinned: false }).then(() => {
-      window.location.reload();
+      Config.getLocation().reload();
     });
   };
 
   onEnable = () => {
     this.updatePluginSettings({ enabled: true, jsonData: {}, pinned: true }).then(() => {
-      window.location.assign(HOME_PATH);
+      Config.getLocation().assign(HOME_PATH);
     });
   };
 

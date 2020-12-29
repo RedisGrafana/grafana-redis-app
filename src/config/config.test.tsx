@@ -20,6 +20,13 @@ const getPlugin = (overridePlugin: any = { meta: {} }) => ({
 describe('Config', () => {
   let initialDataSources = config.datasources;
 
+  beforeAll(() => {
+    jest.spyOn(Config, 'getLocation').mockImplementation((): any => ({
+      assign: jest.fn(),
+      reload: jest.fn(),
+    }));
+  });
+
   /*
    Initialization
    */
@@ -122,11 +129,6 @@ describe('Config', () => {
    Methods
    */
   describe('Methods', () => {
-    beforeAll(() => {
-      jest.spyOn(window.location, 'reload').mockImplementation(() => null);
-      jest.spyOn(window.location, 'assign').mockImplementation(() => null);
-    });
-
     it('onUpdate should call goHome method', () => {
       const plugin = getPlugin({ meta: { enabled: true } });
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
