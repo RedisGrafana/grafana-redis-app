@@ -138,7 +138,7 @@ export class Config extends PureComponent<Props, State> {
           </p>
           {isConfigured ? (
             <p>
-              Click <b>Update</b> to edit the Application configuration.
+              Click <b>Update</b> to reload the Application configuration.
             </p>
           ) : (
             <p>
