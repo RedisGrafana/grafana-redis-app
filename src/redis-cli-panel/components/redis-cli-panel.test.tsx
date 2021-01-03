@@ -109,7 +109,6 @@ describe('RedisCLIPanel', () => {
       const testedComponent = wrapper.find(AutoScrollingTextarea);
       expect(testedComponent.exists()).toBeTruthy();
       expect(testedComponent.prop('value')).toEqual(options.output);
-      expect(testedComponent.prop('rows')).toEqual(options.height);
     });
 
     /*
