@@ -23,10 +23,6 @@
 
 The Redis Application, is a plug-in for Grafana that provides custom panels for [Redis Data Source](https://grafana.com/grafana/plugins/redis-datasource).
 
-### What is the Redis Data Source for Grafana?
-
-If you’re not familiar with Grafana, it’s a very popular tool used to build dashboards to monitor applications, infrastructures, and software components. The Redis Data Source for Grafana is a plug-in that allows users to connect to the Redis database and build dashboards in Grafana to easily monitor Redis and application data. It provides an out-of-the-box predefined dashboard, but also lets you build customized dashboards tuned to your specific needs.
-
 ### What Grafana version is supported?
 
 Only Grafana 7.0 and later with a new plug-in platform supported.
@@ -63,17 +59,21 @@ docker run -d -p 3000:3000 --name=grafana -e "GF_INSTALL_PLUGINS=redis-app" graf
 
 ### Run using `docker-compose` for development
 
-Application plug-in have to be built following [BUILD](https://github.com/RedisGrafana/grafana-redis-app/blob/master/BUILD.md) instructions before starting using `docker-compose.yml` file.
+Application plug-in and Redis Data Source have to be built following [BUILD](https://github.com/RedisGrafana/grafana-redis-app/blob/master/BUILD.md) instructions before starting using `docker-compose-dev.yml` file.
 
-Project provides `docker-compose.yml` to start Redis with Redis Labs modules and Grafana 7.0.
+Project provides `docker-compose-dev.yml` to start Redis with Redis Labs modules and Grafana 7.0.
 
 ```bash
-docker-compose up
+docker-compose -f docker-compose-dev.yml up
 ```
 
 ### Open Grafana
 
 Open Grafana in your browser, enable Redis Application plug-in and configure Redis Data Sources.
+
+## Learn more
+
+- [Real-time observability with Redis and Grafana](https://grafana.com/go/observabilitycon/real-time-observability-with-redis-and-grafana/)
 
 ## Feedback
 
