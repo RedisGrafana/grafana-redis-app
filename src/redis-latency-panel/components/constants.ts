@@ -1,6 +1,9 @@
 import { FieldName } from '../types';
 
-export const DISPLAY_NAME_BY_FIELD_NAME = {
+/**
+ * Table Field names
+ */
+export const DisplayNameByFieldName = {
   [FieldName.Command]: 'Command',
   [FieldName.Calls]: 'Number of calls',
   [FieldName.Duration]: 'Total Duration',
@@ -8,4 +11,7 @@ export const DISPLAY_NAME_BY_FIELD_NAME = {
   [FieldName.Latency]: 'Latency',
 };
 
-export const DEFAULT_INTERVAL = 1800000;
+/**
+ * Default refresh interval
+ */
+export const DefaultInterval = 1000;

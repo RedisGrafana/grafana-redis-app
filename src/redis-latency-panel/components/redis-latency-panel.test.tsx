@@ -3,9 +3,12 @@ import { Observable } from 'rxjs';
 import { toDataFrame, FieldType } from '@grafana/data';
 import { shallow } from 'enzyme';
 import { RedisLatencyPanel } from './redis-latency-panel';
-import { DISPLAY_NAME_BY_FIELD_NAME } from './constants';
+import { DisplayNameByFieldName } from './constants';
 import { FieldName } from '../types';
 
+/**
+ * Query Result
+ */
 const getDataSourceQueryResult = (fields: Array<{ name: FieldName; type: FieldType; values: number[] }>) => ({
   data: [
     toDataFrame({
@@ -178,7 +181,7 @@ describe('RedisLatencyPanel', () => {
         ].map((field) => ({
           ...field,
           config: {
-            displayName: DISPLAY_NAME_BY_FIELD_NAME[field.name as FieldName],
+            displayName: DisplayNameByFieldName[field.name as FieldName],
           },
         })),
       });

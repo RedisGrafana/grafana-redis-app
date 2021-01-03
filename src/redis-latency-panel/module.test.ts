@@ -14,7 +14,7 @@ describe('RedisLatencyPanel', () => {
     expect(builder.addNumberInput).toHaveBeenCalledWith({
       path: 'interval',
       name: 'How often to update data in ms',
-      defaultValue: 1800000,
+      defaultValue: 1000,
     });
   });
 });

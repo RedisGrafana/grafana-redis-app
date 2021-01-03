@@ -1,5 +1,6 @@
 import { PanelPlugin } from '@grafana/data';
 import { RedisLatencyPanel } from './components';
+import { DefaultInterval } from './components/constants';
 import { PanelOptions } from './types';
 
 /**
@@ -9,6 +10,6 @@ export const plugin = new PanelPlugin<PanelOptions>(RedisLatencyPanel).setPanelO
   return builder.addNumberInput({
     path: 'interval',
     name: 'How often to update data in ms',
-    defaultValue: 1800000, // 30 minutes,
+    defaultValue: DefaultInterval,
   });
 });
