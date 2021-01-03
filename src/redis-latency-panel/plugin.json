@@ -6,6 +6,10 @@
       "url": "https://oss.redislabs.com"
     },
     "description": "Redis Latency panel",
+    "logos": {
+      "large": "img/logo.svg",
+      "small": "img/logo.svg"
+    },
     "screenshots": [],
     "updated": "%TODAY%",
     "version": "%VERSION%"
