@@ -123,8 +123,8 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
         `
       )}
     >
-      <div className="gf-form">
-        <AutoScrollingTextarea className={cx(styles.textarea)} value={output} rows={options.height} />
+      <div className={cx('gf-form', styles.form)}>
+        <AutoScrollingTextarea className={cx(styles.textarea)} value={output} />
       </div>
 
       {query && help && (

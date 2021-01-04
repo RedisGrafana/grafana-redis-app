@@ -18,12 +18,12 @@
   "license": "Apache-2.0",
   "name": "redis-app",
   "scripts": {
-    "build": "grafana-toolkit plugin:build",
+    "build": "grafana-toolkit plugin:build --coverage",
     "dev": "grafana-toolkit plugin:dev",
     "format": "prettier --write \"**\"",
     "start": "docker-compose up",
-    "test": "grafana-toolkit plugin:test",
-    "test:coverage": "jest --config ./jest.config.js",
+    "start:dev": "docker-compose -f docker-compose-dev.yml up",
+    "test": "grafana-toolkit plugin:test --coverage",
     "watch": "grafana-toolkit plugin:dev --watch"
   },
   "version": "1.1.0"
