@@ -278,6 +278,13 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
     /**
      * Return Table
      */
-    return <Table data={tableDataFrame} width={width} height={height} />;
+    return (
+      <Table
+        data={tableDataFrame}
+        initialSortBy={[{ displayName: DisplayNameByFieldName[FieldName.Latency], desc: true }]}
+        width={width}
+        height={height}
+      />
+    );
   }
 }
