@@ -8,9 +8,14 @@ import {
   FieldType,
   getDisplayProcessor,
   toDataFrame,
+  dateTime,
+  GraphSeriesValue,
+  GraphSeriesXY,
+  DateTime,
+  getSeriesTimeStep,
 } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { Table } from '@grafana/ui';
+import { Graph, Table } from '@grafana/ui';
 import {
   DefaultInterval,
   DisplayNameByFieldName,
@@ -19,6 +24,9 @@ import {
   RedisQuery,
   State,
   ValuesForCalculation,
+  ViewMode,
+  SeriesValue,
+  SeriesMap,
 } from '../types';
 
 /**
@@ -172,12 +180,83 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
     return tableDataFrame;
   }
 
+  static getSeriesMap(seriesMap: SeriesMap, dataFrame: DataFrame, values: any[], time: DateTime): SeriesMap {
+    const commandField = dataFrame.fields.find((field) => field.name === FieldName.Command);
+    const commands = commandField?.values.toArray() || [];
+    const result = {
+      ...seriesMap,
+    };
+    commands.forEach((command: string, index: number) => {
+      const value = {
+        time,
+        value: values[index],
+      };
+      if (!result[command]) {
+        result[command] = [value];
+      } else {
+        result[command] = result[command].concat(value);
+      }
+    });
+    return result;
+  }
+
+  static getGraphSeries(seriesMap: SeriesMap): GraphSeriesXY[] {
+    return Object.entries(seriesMap).map(([command, seriesValues]: [string, SeriesValue[]], index) => {
+      const { times, values } = seriesValues.reduce(
+        (acc: { times: DateTime[]; values: number[] }, { time, value }) => ({
+          times: acc.times.concat([time]),
+          values: acc.values.concat([value]),
+        }),
+        { times: [], values: [] }
+      );
+      const seriesDataFrame = toDataFrame({
+        name: command,
+        fields: [
+          {
+            type: FieldType.time,
+            name: 'time',
+            values: times,
+          },
+          {
+            type: FieldType.number,
+            name: 'value',
+            values,
+            config: {
+              unit: 'µs',
+            },
+          },
+        ],
+      });
+      seriesDataFrame.fields = seriesDataFrame.fields.map((field) => ({
+        ...field,
+        display: getDisplayProcessor({ field }),
+      }));
+      const data: GraphSeriesValue[][] = [];
+      for (let i = 0; i < times.length; i++) {
+        data.push([times[i].valueOf(), values[i]]);
+      }
+      return {
+        seriesIndex: index,
+        yAxis: { index: 0 },
+        label: command,
+        isVisible: true,
+        data,
+        timeField: seriesDataFrame.fields[0],
+        valueField: seriesDataFrame.fields[1],
+        timeStep: getSeriesTimeStep(seriesDataFrame.fields[0]),
+      };
+    });
+  }
+
   /**
    * State
    */
   state = {
     currentDataFrame: this.props.data.series[0],
     tableDataFrame: RedisLatencyPanel.getTableDataFrame(this.props.data.series[0], this.props.data.series[0]),
+    seriesMap: RedisLatencyPanel.getSeriesMap({}, this.props.data.series[0], [], dateTime()),
+    firstUpdatedTime: dateTime(),
+    lastUpdatedTime: dateTime(),
   };
 
   requestDataTimer?: NodeJS.Timeout | undefined;
@@ -243,6 +322,18 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
        * Data Frame Table
        */
       const newTableDataFrame = RedisLatencyPanel.getTableDataFrame(this.state.currentDataFrame, newDataFrame);
+      const latencyValues = RedisLatencyPanel.getLatencyValues(
+        RedisLatencyPanel.getValuesForCalculation(this.state.currentDataFrame),
+        RedisLatencyPanel.getValuesForCalculation(newDataFrame),
+        newDataFrame.length
+      );
+      const lastUpdatedTime = dateTime();
+      const newSeriesMap = RedisLatencyPanel.getSeriesMap(
+        this.state.seriesMap,
+        newDataFrame,
+        latencyValues,
+        lastUpdatedTime
+      );
 
       /**
        * Set State
@@ -250,6 +341,8 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
       this.setState({
         currentDataFrame: newDataFrame,
         tableDataFrame: newTableDataFrame,
+        seriesMap: newSeriesMap,
+        lastUpdatedTime,
       });
     }, this.props.options.interval || DefaultInterval);
   }
@@ -263,16 +356,34 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
       delete this.requestDataTimer;
     }
   }
-
   /**
    * Render
    */
   render() {
-    const { width, height } = this.props;
-    const { tableDataFrame } = this.state;
+    const { width, height, options } = this.props;
+    const { tableDataFrame, seriesMap, firstUpdatedTime, lastUpdatedTime } = this.state;
 
     if (!tableDataFrame) {
       return null;
+    }
+
+    if (options.viewMode === ViewMode.Graph) {
+      return (
+        <Graph
+          width={width}
+          height={height}
+          series={RedisLatencyPanel.getGraphSeries(seriesMap)}
+          timeRange={{
+            from: firstUpdatedTime,
+            to: lastUpdatedTime,
+            raw: {
+              from: firstUpdatedTime,
+              to: lastUpdatedTime,
+            },
+          }}
+          showLines
+        />
+      );
     }
 
     /**

@@ -10,8 +10,9 @@ describe('RedisLatencyPanel', () => {
   });
 
   it('Should add interval input', () => {
-    const builder = {
-      addNumberInput: jest.fn(),
+    const builder: any = {
+      addNumberInput: jest.fn().mockImplementation(() => builder),
+      addRadio: jest.fn().mockImplementation(() => builder),
     };
     plugin['registerOptionEditors'](builder);
     expect(builder.addNumberInput).toHaveBeenCalledWith({

@@ -1,10 +1,11 @@
-import { DataFrame, DataQuery, PanelProps } from '@grafana/data';
+import { DataFrame, DataQuery, PanelProps, DateTime } from '@grafana/data';
 
 /**
  * Panel Options
  */
 export interface PanelOptions {
   interval: number;
+  viewMode: ViewMode;
 }
 
 /**
@@ -41,6 +42,17 @@ export interface State {
    * @type {DataFrame | null}
    */
   currentDataFrame: DataFrame | null;
+  seriesMap: SeriesMap;
+  lastUpdatedTime: DateTime;
+}
+
+export interface SeriesMap {
+  [key: string]: SeriesValue[];
+}
+
+export interface SeriesValue {
+  time: DateTime;
+  value: number;
 }
 
 /**
@@ -84,3 +96,11 @@ export const DisplayNameByFieldName = {
  * Default refresh interval
  */
 export const DefaultInterval = 1000;
+
+/**
+ * View Modes
+ */
+export enum ViewMode {
+  Table = 'Table',
+  Graph = 'Graph',
+}

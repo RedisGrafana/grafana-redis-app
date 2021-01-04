@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
-import { FieldType, toDataFrame } from '@grafana/data';
+import { FieldType, toDataFrame, dateTime, GraphSeriesXY } from '@grafana/data';
 import { RedisLatencyPanel } from './redis-latency-panel';
-import { FieldName, DisplayNameByFieldName } from '../types';
+import { FieldName, ViewMode, DisplayNameByFieldName, SeriesMap } from '../types';
 
 /**
  * Query Result
@@ -56,7 +56,9 @@ jest.mock('@grafana/runtime', () => ({
  * Latency Panel
  */
 describe('RedisLatencyPanel', () => {
-  const getComponent = (props: any) => <RedisLatencyPanel {...props} />;
+  const getComponent = ({ options = { interval: 1000, viewMode: ViewMode.Table }, ...restProps }: any) => (
+    <RedisLatencyPanel {...restProps} options={options} />
+  );
   describe('getLatencyValue', () => {
     it('Should calc correctly', () => {
       const duration = 100;
@@ -191,6 +193,73 @@ describe('RedisLatencyPanel', () => {
     });
   });
 
+  describe('getSeriesMap', () => {
+    it('Should add value to seriesMap', () => {
+      const seriesMap = {
+        info: [
+          {
+            time: dateTime(),
+            value: 20,
+          },
+        ],
+      };
+      const dataFrame = toDataFrame({
+        name: 'data',
+        fields: [
+          {
+            type: FieldType.string,
+            name: FieldName.Command,
+            values: ['get', 'info'],
+          },
+        ],
+      });
+      const time = dateTime();
+      const values = [10, 20];
+      const result = RedisLatencyPanel.getSeriesMap(seriesMap, dataFrame, values, time);
+      const expectedResult: SeriesMap = {
+        get: [
+          {
+            time,
+            value: values[0],
+          },
+        ],
+        info: [
+          ...seriesMap.info,
+          {
+            time,
+            value: values[1],
+          },
+        ],
+      };
+      expect(result).toEqual(expectedResult);
+    });
+  });
+
+  describe('getGraphSeries', () => {
+    it('Should return series for each command', () => {
+      const seriesMap = {
+        get: [
+          {
+            time: dateTime(),
+            value: 100,
+          },
+        ],
+        info: [
+          {
+            time: dateTime(),
+            value: 10,
+          },
+          {
+            time: dateTime().add(10, 'seconds'),
+            value: 20,
+          },
+        ],
+      };
+      const result: GraphSeriesXY[] = RedisLatencyPanel.getGraphSeries(seriesMap);
+      expect(result.length).toEqual(Object.keys(seriesMap).length);
+    });
+  });
+
   describe('RequestData', () => {
     const data = {
       series: [
@@ -214,10 +283,7 @@ describe('RedisLatencyPanel', () => {
 
     describe('Mount', () => {
       it('If options.interval is filled should set interval', () => {
-        const options = {
-          interval: 1000,
-        };
-        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data }));
         const testedMethod = jest
           .spyOn(wrapper.instance(), 'setRequestDataInterval')
           .mockImplementation(() => Promise.resolve());
@@ -238,30 +304,24 @@ describe('RedisLatencyPanel', () => {
 
     describe('Update', () => {
       it('If options.interval was changed should set interval', () => {
-        const options = {
-          interval: 1000,
-        };
-        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data }));
         const testedMethod = jest
           .spyOn(wrapper.instance(), 'setRequestDataInterval')
           .mockImplementation(() => Promise.resolve());
         wrapper.instance().componentDidMount();
         expect(testedMethod).toHaveBeenCalled();
         testedMethod.mockClear();
-        wrapper.setProps({ options: { interval: 2000 } });
+        wrapper.setProps({ options: { interval: 2000, viewMode: ViewMode.Table } });
         expect(testedMethod).toHaveBeenCalled();
         testedMethod.mockClear();
-        wrapper.setProps({ options: { interval: 2000 } });
+        wrapper.setProps({ options: { interval: 2000, viewMode: ViewMode.Table } });
         expect(testedMethod).not.toHaveBeenCalled();
       });
     });
 
     describe('Unmount', () => {
       it('Should clear interval', () => {
-        const options = {
-          interval: 1000,
-        };
-        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval').mockImplementation(() => {});
         wrapper.instance().componentWillUnmount();
         expect(testedMethod).toHaveBeenCalled();
@@ -272,6 +332,7 @@ describe('RedisLatencyPanel', () => {
       it('Should set timer and request data with interval', (done) => {
         const options = {
           interval: 1000,
+          viewMode: ViewMode.Table,
         };
         const getTableDataFrameMock = jest.spyOn(RedisLatencyPanel, 'getTableDataFrame');
         const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
@@ -305,6 +366,7 @@ describe('RedisLatencyPanel', () => {
       it('Should clear interval before setting new one', (done) => {
         const options = {
           interval: 1000,
+          viewMode: ViewMode.Table,
         };
         const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
@@ -318,6 +380,7 @@ describe('RedisLatencyPanel', () => {
       it('Should use passed datasource', (done) => {
         const options = {
           interval: 1000,
+          viewMode: ViewMode.Table,
         };
         const overrideData = {
           ...data,
@@ -341,6 +404,7 @@ describe('RedisLatencyPanel', () => {
       it('Should clear interval', (done) => {
         const options = {
           interval: 1000,
+          viewMode: ViewMode.Table,
         };
         const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
         setImmediate(() => {
