@@ -38,6 +38,10 @@
     {
       "name": "Redis CLI Panel",
       "type": "panel"
+    },
+    {
+      "name": "Redis Latency Panel",
+      "type": "panel"
     }
   ],
   "info": {
