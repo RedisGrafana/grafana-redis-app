@@ -1,7 +1,6 @@
 import { PanelPlugin } from '@grafana/data';
 import { RedisLatencyPanel } from './components';
-import { DefaultInterval } from './components/constants';
-import { PanelOptions } from './types';
+import { DefaultInterval, PanelOptions } from './types';
 
 /**
  * Panel Plugin

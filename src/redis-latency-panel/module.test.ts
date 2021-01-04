@@ -1,6 +1,9 @@
 import { PanelPlugin } from '@grafana/data';
 import { plugin } from './module';
 
+/**
+ * Latency Panel
+ */
 describe('RedisLatencyPanel', () => {
   it('Should be instance of PanelPlugin', () => {
     expect(plugin).toBeInstanceOf(PanelPlugin);

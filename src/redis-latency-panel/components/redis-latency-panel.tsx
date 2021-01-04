@@ -7,34 +7,19 @@ import {
   DataQueryResponse,
   FieldType,
   getDisplayProcessor,
-  PanelProps,
   toDataFrame,
 } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { Table } from '@grafana/ui';
-import { FieldName, PanelOptions, RedisQuery } from '../types';
-import { DefaultInterval, DisplayNameByFieldName } from './constants';
-
-/**
- * Properties
- */
-interface Props extends PanelProps<PanelOptions> {}
-
-/**
- * State
- */
-interface State {
-  tableDataFrame: DataFrame | null;
-  currentDataFrame: DataFrame | null;
-}
-
-/**
- * Calculation
- */
-interface ValuesForCalculation {
-  calls: number[];
-  duration: number[];
-}
+import {
+  DefaultInterval,
+  DisplayNameByFieldName,
+  FieldName,
+  Props,
+  RedisQuery,
+  State,
+  ValuesForCalculation,
+} from '../types';
 
 /**
  * Redis Latency Panel

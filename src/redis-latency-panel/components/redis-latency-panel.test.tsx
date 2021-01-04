@@ -1,10 +1,9 @@
 import React from 'react';
-import { Observable } from 'rxjs';
-import { toDataFrame, FieldType } from '@grafana/data';
 import { shallow } from 'enzyme';
+import { Observable } from 'rxjs';
+import { FieldType, toDataFrame } from '@grafana/data';
 import { RedisLatencyPanel } from './redis-latency-panel';
-import { DisplayNameByFieldName } from './constants';
-import { FieldName } from '../types';
+import { FieldName, DisplayNameByFieldName } from '../types';
 
 /**
  * Query Result
@@ -53,6 +52,9 @@ jest.mock('@grafana/runtime', () => ({
   }),
 }));
 
+/**
+ * Latency Panel
+ */
 describe('RedisLatencyPanel', () => {
   const getComponent = (props: any) => <RedisLatencyPanel {...props} />;
   describe('getLatencyValue', () => {
