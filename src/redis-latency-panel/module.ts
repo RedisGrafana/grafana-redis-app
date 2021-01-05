@@ -1,6 +1,6 @@
 import { PanelPlugin } from '@grafana/data';
 import { RedisLatencyPanel } from './components';
-import { DefaultInterval, PanelOptions, ViewMode } from './types';
+import { DefaultInterval, PanelOptions, ViewMode, MaxItemsPerSeries } from './types';
 
 /**
  * Panel Plugin
@@ -28,5 +28,10 @@ export const plugin = new PanelPlugin<PanelOptions>(RedisLatencyPanel).setPanelO
           },
         ],
       },
+    })
+    .addNumberInput({
+      path: 'maxItemsPerSeries',
+      name: 'How many items could be kept per command',
+      defaultValue: MaxItemsPerSeries,
     });
 });

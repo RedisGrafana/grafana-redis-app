@@ -1,4 +1,4 @@
-import { DataFrame, DataQuery, PanelProps, DateTime } from '@grafana/data';
+import { DataFrame, DataQuery, PanelProps, DateTime, TimeRange } from '@grafana/data';
 
 /**
  * Panel Options
@@ -6,6 +6,7 @@ import { DataFrame, DataQuery, PanelProps, DateTime } from '@grafana/data';
 export interface PanelOptions {
   interval: number;
   viewMode: ViewMode;
+  maxItemsPerSeries: number;
 }
 
 /**
@@ -18,6 +19,25 @@ export interface RedisQuery extends DataQuery {
    * @type {string}
    */
   query?: string;
+  /**
+   * Redis Command type
+   *
+   * @type {string}
+   */
+  type?: string;
+  /**
+   * Redis Command
+   *
+   * @type {string}
+   */
+  command?: string;
+
+  /**
+   * Redis Section
+   *
+   * @type {string}
+   */
+  section?: string;
 }
 
 /**
@@ -29,27 +49,42 @@ export interface Props extends PanelProps<PanelOptions> {}
  * State
  */
 export interface State {
-  /**
-   * Table Data Frame
-   *
-   * @type {DataFrame | null}
-   */
-  tableDataFrame: DataFrame | null;
-
-  /**
-   * Current Data Frame
-   *
-   * @type {DataFrame | null}
-   */
-  currentDataFrame: DataFrame | null;
+  dataFrame?: DataFrame;
   seriesMap: SeriesMap;
-  lastUpdatedTime: DateTime;
 }
 
+/**
+ * Table Properties
+ */
+export interface TableProps extends PanelProps<PanelOptions> {
+  seriesMap: SeriesMap;
+  dataFrame: DataFrame;
+}
+
+/**
+ * Graph Properties
+ */
+export interface GraphProps extends PanelProps<PanelOptions> {
+  seriesMap: SeriesMap;
+}
+
+/**
+ * Graph State
+ */
+export interface GraphState {
+  timeRange: TimeRange;
+}
+
+/**
+ * Object which keeps SeriesValue[] by command name
+ */
 export interface SeriesMap {
   [key: string]: SeriesValue[];
 }
 
+/**
+ * Series Value
+ */
 export interface SeriesValue {
   time: DateTime;
   value: number;
@@ -104,3 +139,8 @@ export enum ViewMode {
   Table = 'Table',
   Graph = 'Graph',
 }
+
+/**
+ * Max items per series
+ */
+export const MaxItemsPerSeries = 1000;
