@@ -30,7 +30,7 @@ describe('RedisLatencyPanelGraph', () => {
           },
         ],
       };
-      const result: GraphSeriesXY[] = RedisLatencyPanelGraph.getGraphSeries(seriesMap);
+      const result: GraphSeriesXY[] = RedisLatencyPanelGraph.getGraphSeries(seriesMap, true);
       expect(result.length).toEqual(Object.keys(seriesMap).length);
     });
   });

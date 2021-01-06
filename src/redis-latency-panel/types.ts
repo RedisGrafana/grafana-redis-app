@@ -7,6 +7,7 @@ export interface PanelOptions {
   interval: number;
   viewMode: ViewMode;
   maxItemsPerSeries: number;
+  hideZero: boolean;
 }
 
 /**

@@ -13,6 +13,7 @@ describe('RedisLatencyPanel', () => {
     const builder: any = {
       addNumberInput: jest.fn().mockImplementation(() => builder),
       addRadio: jest.fn().mockImplementation(() => builder),
+      addBooleanSwitch: jest.fn().mockImplementation(() => builder),
     };
     plugin['registerOptionEditors'](builder);
     expect(builder.addNumberInput).toHaveBeenCalledWith({

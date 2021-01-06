@@ -380,10 +380,14 @@ describe('RedisLatencyPanel', () => {
         wrapper.instance().componentDidMount();
         expect(testedMethod).toHaveBeenCalled();
         testedMethod.mockClear();
-        wrapper.setProps({ options: { interval: 2000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000 } });
+        wrapper.setProps({
+          options: { interval: 2000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000, hideZero: false },
+        });
         expect(testedMethod).toHaveBeenCalled();
         testedMethod.mockClear();
-        wrapper.setProps({ options: { interval: 2000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000 } });
+        wrapper.setProps({
+          options: { interval: 2000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000, hideZero: false },
+        });
         expect(testedMethod).not.toHaveBeenCalled();
       });
     });
