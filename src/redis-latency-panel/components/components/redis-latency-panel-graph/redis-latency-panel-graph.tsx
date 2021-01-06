@@ -26,6 +26,9 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
         const { times, values, shouldBeHidden } = seriesValues.reduce(
           (acc: { times: DateTime[]; values: number[]; shouldBeHidden: boolean }, { time, value }) => {
             let shouldBeHidden = acc.shouldBeHidden;
+            /**
+             * Find no 0 value
+             */
             if (shouldBeHidden && hideZero) {
               shouldBeHidden = value === 0;
             }
@@ -38,6 +41,9 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
           { times: [], values: [], shouldBeHidden: false }
         );
 
+        /**
+         * Hide series if all values contain only 0
+         */
         if (shouldBeHidden) {
           return acc;
         }
