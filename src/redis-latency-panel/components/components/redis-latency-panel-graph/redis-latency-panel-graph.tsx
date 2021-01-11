@@ -161,7 +161,7 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
         timeRange={timeRange}
         timeZone={this.props.timeZone}
         displayMode={LegendDisplayMode.List}
-        placement="right"
+        placement="under"
         onToggleSort={this.onToggleSort}
         hideZero={options?.hideZero}
         isLegendVisible
