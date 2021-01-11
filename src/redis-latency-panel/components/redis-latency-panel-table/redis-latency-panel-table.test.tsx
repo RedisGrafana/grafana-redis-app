@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import { FieldType, toDataFrame, dateTime } from '@grafana/data';
 import { Table } from '@grafana/ui';
 import { RedisLatencyPanelTable } from './redis-latency-panel-table';
-import { FieldName, DisplayNameByFieldName } from '../../../types';
+import { FieldName, DisplayNameByFieldName } from '../../types';
 
 /**
  * Latency Panel Table

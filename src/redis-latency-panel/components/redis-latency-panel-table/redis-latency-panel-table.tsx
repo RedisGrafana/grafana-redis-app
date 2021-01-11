@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { DataFrame, FieldType, getDisplayProcessor, toDataFrame } from '@grafana/data';
 import { Table } from '@grafana/ui';
-import { DisplayNameByFieldName, FieldName, SeriesMap, TableProps } from '../../../types';
+import { DisplayNameByFieldName, FieldName, SeriesMap, TableProps } from '../../types';
 
 /**
  * Redis Latency Panel

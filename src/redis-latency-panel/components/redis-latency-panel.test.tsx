@@ -3,8 +3,8 @@ import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
 import { toDataFrame, FieldType, dateTime } from '@grafana/data';
 import { RedisLatencyPanel } from './redis-latency-panel';
-import { RedisLatencyPanelTable } from './components/redis-latency-panel-table';
-import { RedisLatencyPanelGraph } from './components/redis-latency-panel-graph';
+import { RedisLatencyPanelTable } from './redis-latency-panel-table';
+import { RedisLatencyPanelGraph } from './redis-latency-panel-graph';
 import { FieldName, ViewMode, SeriesMap } from '../types';
 
 /**

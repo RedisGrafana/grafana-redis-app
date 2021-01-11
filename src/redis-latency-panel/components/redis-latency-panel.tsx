@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react';
 import { Observable } from 'rxjs';
 import { DataFrame, DataQueryRequest, DataQueryResponse, DateTime, dateTime } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { RedisLatencyPanelTable } from './components/redis-latency-panel-table';
-import { RedisLatencyPanelGraph } from './components/redis-latency-panel-graph';
+import { RedisLatencyPanelTable } from './redis-latency-panel-table';
+import { RedisLatencyPanelGraph } from './redis-latency-panel-graph';
 import {
   DefaultInterval,
   FieldName,

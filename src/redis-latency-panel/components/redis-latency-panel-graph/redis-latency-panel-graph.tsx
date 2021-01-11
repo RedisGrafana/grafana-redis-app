@@ -13,7 +13,7 @@ import {
   FieldColorModeId,
 } from '@grafana/data';
 import { GraphWithLegend, LegendDisplayMode, colors, Chart } from '@grafana/ui';
-import { GraphProps, GraphState, SeriesMap, SeriesValue } from '../../../types';
+import { GraphProps, GraphState, SeriesMap, SeriesValue } from '../../types';
 
 /**
  * Redis Latency Panel Graph
