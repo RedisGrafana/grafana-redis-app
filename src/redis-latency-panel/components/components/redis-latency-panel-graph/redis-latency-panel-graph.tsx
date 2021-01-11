@@ -8,8 +8,11 @@ import {
   GraphSeriesXY,
   TimeRange,
   toDataFrame,
+  dateTimeParse,
+  TimeZone,
+  FieldColorModeId,
 } from '@grafana/data';
-import { GraphWithLegend, LegendDisplayMode, colors } from '@grafana/ui';
+import { GraphWithLegend, LegendDisplayMode, colors, Chart } from '@grafana/ui';
 import { GraphProps, GraphState, SeriesMap, SeriesValue } from '../../../types';
 
 /**
@@ -19,6 +22,7 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
   /**
    * Convert seriesMap to GraphSeriesXY
    * @param seriesMap
+   * @param hideZero
    */
   static getGraphSeries(seriesMap: SeriesMap, hideZero: boolean): GraphSeriesXY[] {
     return Object.entries(seriesMap).reduce(
@@ -38,7 +42,7 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
               shouldBeHidden,
             };
           },
-          { times: [], values: [], shouldBeHidden: false }
+          { times: [], values: [], shouldBeHidden: hideZero }
         );
 
         /**
@@ -48,6 +52,7 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
           return acc;
         }
 
+        const color = colors[index % colors.length];
         const seriesDataFrame = toDataFrame({
           name: command,
           fields: [
@@ -58,10 +63,14 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
             },
             {
               type: FieldType.number,
-              name: 'value',
+              name: command,
               values,
               config: {
                 unit: 'µs',
+                color: {
+                  fixedColor: color,
+                  mode: FieldColorModeId.Fixed,
+                },
               },
             },
           ],
@@ -77,14 +86,14 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
         return acc.concat([
           {
             seriesIndex: index,
-            yAxis: { index: 0 },
+            yAxis: { index: 1 },
             label: command,
             isVisible: true,
             data,
             timeField: seriesDataFrame.fields[0],
             valueField: seriesDataFrame.fields[1],
             timeStep: getSeriesTimeStep(seriesDataFrame.fields[0]),
-            color: colors[index % colors.length],
+            color,
           },
         ]);
       },
@@ -93,24 +102,18 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
   }
 
   /**
-   * Find start time and finish time for graph
-   * @param seriesMap
+   * Get timeRange from timeRange.raw
+   * @param timeRange
    */
-  static getTimeRange(seriesMap: SeriesMap): TimeRange {
-    let longestSeries = Object.values(seriesMap)[0];
-    Object.values(seriesMap).forEach((values) => {
-      if (values.length > longestSeries.length) {
-        longestSeries = values;
-      }
-    });
-    const fromTime = longestSeries[0].time;
-    const toTime = longestSeries[longestSeries.length - 1].time;
+  static getTimeRange(timeRange: TimeRange, timeZone: TimeZone): TimeRange {
+    let fromTime = dateTimeParse(timeRange.raw.from, { timeZone });
+    const toTime = dateTimeParse(timeRange.raw.to, { timeZone });
 
     return {
       from: fromTime,
       to: toTime,
       raw: {
-        from: fromTime,
+        from: timeRange.raw.from,
         to: toTime,
       },
     };
@@ -120,7 +123,7 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
    * State
    */
   state = {
-    timeRange: RedisLatencyPanelGraph.getTimeRange(this.props.seriesMap),
+    timeRange: RedisLatencyPanelGraph.getTimeRange(this.props.timeRange, this.props.timeZone),
   };
 
   /**
@@ -128,9 +131,9 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
    * @param prevProps
    */
   componentDidUpdate(prevProps: Readonly<GraphProps>): void {
-    if (this.props.seriesMap !== prevProps.seriesMap) {
+    if (this.props !== prevProps) {
       this.setState({
-        timeRange: RedisLatencyPanelGraph.getTimeRange(this.props.seriesMap),
+        timeRange: RedisLatencyPanelGraph.getTimeRange(this.props.timeRange, this.props.timeZone),
       });
     }
   }
@@ -156,13 +159,16 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
         height={height}
         series={RedisLatencyPanelGraph.getGraphSeries(seriesMap, options?.hideZero)}
         timeRange={timeRange}
+        timeZone={this.props.timeZone}
         displayMode={LegendDisplayMode.List}
-        placement="under"
+        placement="right"
         onToggleSort={this.onToggleSort}
         hideZero={options?.hideZero}
         isLegendVisible
         showLines
-      />
+      >
+        <Chart.Tooltip mode="multi"></Chart.Tooltip>
+      </GraphWithLegend>
     );
   }
 }
