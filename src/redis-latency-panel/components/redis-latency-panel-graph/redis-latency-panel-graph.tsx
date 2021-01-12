@@ -131,7 +131,6 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
    * @param props
    */
   static getDerivedStateFromProps(props: Readonly<GraphProps>) {
-    console.log(props.seriesMap);
     return {
       timeRange: RedisLatencyPanelGraph.getTimeRange(props.timeRange, props.timeZone),
     };
