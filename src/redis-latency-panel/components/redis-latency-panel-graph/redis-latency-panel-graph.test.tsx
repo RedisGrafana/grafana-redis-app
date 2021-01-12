@@ -35,7 +35,8 @@ describe('RedisLatencyPanelGraph', () => {
         ],
       };
       const result: GraphSeriesXY[] = RedisLatencyPanelGraph.getGraphSeries(seriesMap, false);
-      expect(result.length).toEqual(2);
+      expect(result[0].seriesIndex).toEqual(0);
+      expect(result[1].seriesIndex).toEqual(1);
     });
 
     it('Should remove zero series if hideZero=true', () => {
@@ -63,6 +64,10 @@ describe('RedisLatencyPanelGraph', () => {
       };
       const result: GraphSeriesXY[] = RedisLatencyPanelGraph.getGraphSeries(seriesMap, true);
       expect(result.length).toEqual(1);
+      /**
+       * SeriesIndex should be numerated by visible items not by all items
+       */
+      expect(result[0].seriesIndex).toEqual(0);
     });
   });
 

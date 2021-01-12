@@ -234,11 +234,18 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
    */
   async updateData() {
     const response = await this.makeQuery();
+
     if (response === null) {
       return Promise.resolve();
     }
+
     const { dataFrame, seriesMap } = this.state;
     const newDataFrame = response.data[0] as DataFrame;
+
+    if (!newDataFrame) {
+      return Promise.resolve();
+    }
+
     const latencyValues = RedisLatencyPanel.getLatencyValues(
       RedisLatencyPanel.getValuesForCalculation(dataFrame ? dataFrame : newDataFrame),
       RedisLatencyPanel.getValuesForCalculation(newDataFrame),

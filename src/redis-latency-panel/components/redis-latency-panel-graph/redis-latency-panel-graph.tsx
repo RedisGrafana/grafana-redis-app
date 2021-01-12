@@ -85,7 +85,7 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
         }
         return acc.concat([
           {
-            seriesIndex: index,
+            seriesIndex: acc.length,
             yAxis: { index: 1 },
             label: command,
             isVisible: true,
@@ -127,15 +127,14 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
   };
 
   /**
-   * ComponentDidUpdate
-   * @param prevProps
+   * getDerivedStateFromProps
+   * @param props
    */
-  componentDidUpdate(prevProps: Readonly<GraphProps>): void {
-    if (this.props !== prevProps) {
-      this.setState({
-        timeRange: RedisLatencyPanelGraph.getTimeRange(this.props.timeRange, this.props.timeZone),
-      });
-    }
+  static getDerivedStateFromProps(props: Readonly<GraphProps>) {
+    console.log(props.seriesMap);
+    return {
+      timeRange: RedisLatencyPanelGraph.getTimeRange(props.timeRange, props.timeZone),
+    };
   }
 
   /**
