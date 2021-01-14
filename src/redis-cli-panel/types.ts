@@ -22,6 +22,13 @@ export interface PanelOptions {
   query: string;
 
   /**
+   * CLI or Raw mode
+   *
+   * @type {boolean}
+   */
+  cli?: boolean;
+
+  /**
    * Command's output
    *
    * @type {string}
@@ -46,6 +53,13 @@ export interface RedisQuery extends DataQuery {
    * @type {string}
    */
   query?: string;
+
+  /**
+   * CLI or Raw mode
+   *
+   * @type {boolean}
+   */
+  cli?: boolean;
 }
 
 /**

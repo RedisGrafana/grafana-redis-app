@@ -4,10 +4,15 @@ import { Observable } from 'rxjs';
 import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
 import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { Button } from '@grafana/ui';
+import { Button, LegacyForms } from '@grafana/ui';
 import { Styles } from '../styles';
 import { Help, HelpCommand, PanelOptions, RedisQuery } from '../types';
 import AutoScrollingTextarea from './auto-scrolling-text-area';
+
+/**
+ * Legacy Forms
+ */
+const { Switch } = LegacyForms;
 
 /**
  * Redis CLI Panel
@@ -20,7 +25,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
   onOptionsChange,
   replaceVariables,
 }) => {
-  const { query, output, help } = options;
+  const { query, cli, output, help } = options;
   const styles = Styles();
 
   /**
@@ -52,14 +57,26 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
      */
     const ds = await getDataSourceSrv().get(datasource);
 
+    // Response Error
+    let error = '';
+
     /**
      * Run Query
      */
     const res = await ((ds.query({
-      targets: [{ query: replaceVariables(query) }],
+      targets: [{ query: replaceVariables(query), cli: !options.cli }],
     } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>)
       .pipe(
-        switchMap$((response) => response.data),
+        switchMap$((response) => {
+          /**
+           * Check for error in response
+           */
+          if (response.error && response.error.message) {
+            error = response.error.message;
+          }
+
+          return response.data;
+        }),
         switchMap$((data: DataFrame) => data.fields),
         map$((field) =>
           field.values.toArray().map((value) => {
@@ -75,6 +92,8 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
     let result = `${ds.name}> ${query}\n`;
     if (res && res.length) {
       result += res.join('\n');
+    } else if (error) {
+      result += `(error) ${error}\n`;
     } else {
       result += 'ERROR';
     }
@@ -173,6 +192,17 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
           onKeyPress={runQuery}
           value={query}
         />
+
+        <Switch
+          label="Raw"
+          labelClass="width-4"
+          tooltip="If checked, use raw formatting for replies."
+          checked={cli || false}
+          onChange={(event: any) => {
+            onOptionsChange({ ...options, cli: event.currentTarget.checked });
+          }}
+        />
+
         <Button
           variant="secondary"
           onClick={() => {
