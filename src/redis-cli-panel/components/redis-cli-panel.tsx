@@ -25,7 +25,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
   onOptionsChange,
   replaceVariables,
 }) => {
-  const { query, cli, output, help } = options;
+  const { query, raw, output, help } = options;
   const styles = Styles();
 
   /**
@@ -64,7 +64,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
      * Run Query
      */
     const res = await ((ds.query({
-      targets: [{ query: replaceVariables(query), cli: !options.cli }],
+      targets: [{ query: replaceVariables(query), cli: !options.raw }],
     } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>)
       .pipe(
         switchMap$((response) => {
@@ -197,9 +197,9 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
           label="Raw"
           labelClass="width-4"
           tooltip="If checked, use raw formatting for replies."
-          checked={cli || false}
+          checked={raw || false}
           onChange={(event: any) => {
-            onOptionsChange({ ...options, cli: event.currentTarget.checked });
+            onOptionsChange({ ...options, raw: event.currentTarget.checked });
           }}
         />
 

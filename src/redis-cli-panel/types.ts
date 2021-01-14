@@ -22,11 +22,11 @@ export interface PanelOptions {
   query: string;
 
   /**
-   * CLI or Raw mode
+   * Raw or CLI mode
    *
    * @type {boolean}
    */
-  cli?: boolean;
+  raw?: boolean;
 
   /**
    * Command's output
