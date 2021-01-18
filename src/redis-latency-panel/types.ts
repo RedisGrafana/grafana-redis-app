@@ -1,12 +1,35 @@
-import { DataFrame, DataQuery, PanelProps, DateTime, TimeRange } from '@grafana/data';
+import { DataQuery, DateTime } from '@grafana/data';
 
 /**
  * Panel Options
  */
 export interface PanelOptions {
+  /**
+   * Interval
+   *
+   * @type {number}
+   */
   interval: number;
+
+  /**
+   * View Mode
+   *
+   * @type {ViewMode}
+   */
   viewMode: ViewMode;
+
+  /**
+   * Max Items
+   *
+   * @type {number}
+   */
   maxItemsPerSeries: number;
+
+  /**
+   * Hide Zero series
+   *
+   * @type {boolean}
+   */
   hideZero: boolean;
 }
 
@@ -20,12 +43,14 @@ export interface RedisQuery extends DataQuery {
    * @type {string}
    */
   query?: string;
+
   /**
    * Redis Command type
    *
    * @type {string}
    */
   type?: string;
+
   /**
    * Redis Command
    *
@@ -39,41 +64,6 @@ export interface RedisQuery extends DataQuery {
    * @type {string}
    */
   section?: string;
-}
-
-/**
- * Properties
- */
-export interface Props extends PanelProps<PanelOptions> {}
-
-/**
- * State
- */
-export interface State {
-  dataFrame?: DataFrame;
-  seriesMap: SeriesMap;
-}
-
-/**
- * Table Properties
- */
-export interface TableProps extends PanelProps<PanelOptions> {
-  seriesMap: SeriesMap;
-  dataFrame: DataFrame;
-}
-
-/**
- * Graph Properties
- */
-export interface GraphProps extends PanelProps<PanelOptions> {
-  seriesMap: SeriesMap;
-}
-
-/**
- * Graph State
- */
-export interface GraphState {
-  timeRange: TimeRange;
 }
 
 /**

@@ -1,24 +1,49 @@
 import React, { PureComponent } from 'react';
 import {
   DateTime,
+  dateTimeParse,
+  FieldColorModeId,
   FieldType,
   getDisplayProcessor,
   getSeriesTimeStep,
   GraphSeriesValue,
   GraphSeriesXY,
+  PanelProps,
   TimeRange,
-  toDataFrame,
-  dateTimeParse,
   TimeZone,
-  FieldColorModeId,
+  toDataFrame,
 } from '@grafana/data';
-import { GraphWithLegend, LegendDisplayMode, colors, Chart } from '@grafana/ui';
-import { GraphProps, GraphState, SeriesMap, SeriesValue } from '../../types';
+import { Chart, colors, GraphWithLegend, LegendDisplayMode } from '@grafana/ui';
+import { PanelOptions, SeriesMap, SeriesValue } from '../../types';
+
+/**
+ * Graph Properties
+ */
+interface Props extends PanelProps<PanelOptions> {
+  /**
+   * Series
+   *
+   * @type {SeriesMap}
+   */
+  seriesMap: SeriesMap;
+}
+
+/**
+ * State
+ */
+interface State {
+  /**
+   * Time Range
+   *
+   * @type {TimeRange}
+   */
+  timeRange: TimeRange;
+}
 
 /**
  * Redis Latency Panel Graph
  */
-export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState> {
+export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
   /**
    * Convert seriesMap to GraphSeriesXY
    * @param seriesMap
@@ -30,12 +55,14 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
         const { times, values, shouldBeHidden } = seriesValues.reduce(
           (acc: { times: DateTime[]; values: number[]; shouldBeHidden: boolean }, { time, value }) => {
             let shouldBeHidden = acc.shouldBeHidden;
+
             /**
              * Find no 0 value
              */
             if (shouldBeHidden && hideZero) {
               shouldBeHidden = value === 0;
             }
+
             return {
               times: acc.times.concat([time]),
               values: acc.values.concat([value]),
@@ -52,7 +79,14 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
           return acc;
         }
 
+        /**
+         * Color
+         */
         const color = colors[index % colors.length];
+
+        /**
+         * Data Frame
+         */
         const seriesDataFrame = toDataFrame({
           name: command,
           fields: [
@@ -75,14 +109,23 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
             },
           ],
         });
+
+        /**
+         * Fields
+         */
         seriesDataFrame.fields = seriesDataFrame.fields.map((field) => ({
           ...field,
           display: getDisplayProcessor({ field }),
         }));
+
+        /**
+         * Push values
+         */
         const data: GraphSeriesValue[][] = [];
         for (let i = 0; i < times.length; i++) {
           data.push([times[i].valueOf(), values[i]]);
         }
+
         return acc.concat([
           {
             seriesIndex: acc.length,
@@ -103,6 +146,7 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
 
   /**
    * Get timeRange from timeRange.raw
+   *
    * @param timeRange
    */
   static getTimeRange(timeRange: TimeRange, timeZone: TimeZone): TimeRange {
@@ -128,9 +172,10 @@ export class RedisLatencyPanelGraph extends PureComponent<GraphProps, GraphState
 
   /**
    * getDerivedStateFromProps
+   *
    * @param props
    */
-  static getDerivedStateFromProps(props: Readonly<GraphProps>) {
+  static getDerivedStateFromProps(props: Readonly<Props>) {
     return {
       timeRange: RedisLatencyPanelGraph.getTimeRange(props.timeRange, props.timeZone),
     };

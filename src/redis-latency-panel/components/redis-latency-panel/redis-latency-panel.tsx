@@ -1,23 +1,46 @@
 import React, { PureComponent } from 'react';
 import { Observable } from 'rxjs';
-import { DataFrame, DataQueryRequest, DataQueryResponse, DateTime, dateTime } from '@grafana/data';
+import { DataFrame, DataQueryRequest, DataQueryResponse, DateTime, dateTime, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { RedisLatencyPanelTable } from './redis-latency-panel-table';
-import { RedisLatencyPanelGraph } from './redis-latency-panel-graph';
 import {
   DefaultInterval,
   FieldName,
-  Props,
+  MaxItemsPerSeries,
+  PanelOptions,
   RedisQuery,
   SeriesMap,
   ValuesForCalculation,
   ViewMode,
-  MaxItemsPerSeries,
-  State,
-} from '../types';
+} from '../../types';
+import { RedisLatencyPanelGraph } from '../redis-latency-panel-graph';
+import { RedisLatencyPanelTable } from '../redis-latency-panel-table';
 
 /**
- * RedisLatencyPanel
+ * Properties
+ */
+interface Props extends PanelProps<PanelOptions> {}
+
+/**
+ * State
+ */
+interface State {
+  /**
+   * Data Frame
+   *
+   * @type {DataFrame}
+   */
+  dataFrame?: DataFrame;
+
+  /**
+   * Series
+   *
+   * @type {SeriesMap}
+   */
+  seriesMap: SeriesMap;
+}
+
+/**
+ * Redis Latency Panel
  */
 export class RedisLatencyPanel extends PureComponent<Props, State> {
   /**
@@ -137,6 +160,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
     const result = {
       ...seriesMap,
     };
+
     commands.forEach((command: string, index: number) => {
       const value = {
         time,
@@ -153,6 +177,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
         result[command] = result[command].concat(value);
       }
     });
+
     return result;
   }
 
@@ -164,7 +189,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
   };
 
   /**
-   * requestDataTimer
+   * Request Data Timer
    */
   requestDataTimer?: NodeJS.Timeout | undefined;
 
@@ -251,8 +276,10 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
       RedisLatencyPanel.getValuesForCalculation(newDataFrame),
       newDataFrame.length
     );
+
     const lastUpdatedTime = dateTime();
     const itemsLimit = this.props.options?.maxItemsPerSeries || MaxItemsPerSeries;
+
     const newSeriesMap = RedisLatencyPanel.getSeriesMap(
       seriesMap,
       newDataFrame,

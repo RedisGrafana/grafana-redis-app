@@ -1,12 +1,31 @@
 import React, { PureComponent } from 'react';
-import { DataFrame, FieldType, getDisplayProcessor, toDataFrame } from '@grafana/data';
+import { DataFrame, FieldType, getDisplayProcessor, PanelProps, toDataFrame } from '@grafana/data';
 import { Table } from '@grafana/ui';
-import { DisplayNameByFieldName, FieldName, SeriesMap, TableProps } from '../../types';
+import { DisplayNameByFieldName, FieldName, PanelOptions, SeriesMap } from '../../types';
+
+/**
+ * Table Properties
+ */
+export interface Props extends PanelProps<PanelOptions> {
+  /**
+   * Data Frame
+   *
+   * @type {DataFrame}
+   */
+  dataFrame: DataFrame;
+
+  /**
+   * Series
+   *
+   * @type {SeriesMap}
+   */
+  seriesMap: SeriesMap;
+}
 
 /**
  * Redis Latency Panel
  */
-export class RedisLatencyPanelTable extends PureComponent<TableProps, {}> {
+export class RedisLatencyPanelTable extends PureComponent<Props, {}> {
   /**
    * Get table data frame
    * @param dataFrame
@@ -15,6 +34,7 @@ export class RedisLatencyPanelTable extends PureComponent<TableProps, {}> {
   static getTableDataFrame(dataFrame: DataFrame, seriesMap: SeriesMap): DataFrame {
     const commandField = dataFrame.fields.find((field) => field.name === FieldName.Command);
     const commands = commandField?.values.toArray() || [];
+
     const latencyValues = commands.map((command: string) => {
       const seriesValues = seriesMap[command];
       if (seriesValues) {
@@ -22,6 +42,7 @@ export class RedisLatencyPanelTable extends PureComponent<TableProps, {}> {
       }
       return 0;
     });
+
     /**
      * Fields
      */
