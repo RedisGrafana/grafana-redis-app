@@ -1,9 +1,11 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
-import { FieldType, toDataFrame } from '@grafana/data';
+import { toDataFrame, FieldType, dateTime } from '@grafana/data';
 import { RedisLatencyPanel } from './redis-latency-panel';
-import { FieldName, DisplayNameByFieldName } from '../types';
+import { RedisLatencyPanelTable } from '../redis-latency-panel-table';
+import { RedisLatencyPanelGraph } from '../redis-latency-panel-graph';
+import { FieldName, ViewMode, SeriesMap } from '../../types';
 
 /**
  * Query Result
@@ -46,6 +48,9 @@ const dataSourceMock = {
 
 const dataSourceSrvGetMock = jest.fn().mockImplementation(() => Promise.resolve(dataSourceMock));
 
+/**
+ * Mock getDataSourceSrv function
+ */
 jest.mock('@grafana/runtime', () => ({
   getDataSourceSrv: () => ({
     get: dataSourceSrvGetMock,
@@ -53,10 +58,92 @@ jest.mock('@grafana/runtime', () => ({
 }));
 
 /**
- * Latency Panel
+ * RedisLatencyPanel
  */
 describe('RedisLatencyPanel', () => {
-  const getComponent = (props: any) => <RedisLatencyPanel {...props} />;
+  const getComponent = ({ options = { interval: 1000, viewMode: ViewMode.Table }, ...restProps }: any) => {
+    const data = {
+      request: {
+        targets: [
+          {
+            datasource: 'Redis',
+          },
+        ],
+      },
+    };
+    return <RedisLatencyPanel data={data} {...restProps} options={options} />;
+  };
+
+  beforeEach(() => {
+    dataSourceSrvGetMock.mockClear();
+    dataSourceMock.query.mockClear();
+  });
+
+  /**
+   * makeQuery
+   */
+  describe('makeQuery', () => {
+    it('If no targets nothing should be loaded and shown', async (done) => {
+      const wrapper = shallow<RedisLatencyPanel>(getComponent({ data: { request: { targets: [] } } }));
+      const data = await wrapper.instance().makeQuery();
+      expect(data).toBeNull();
+      done();
+    });
+
+    it('Should use default command if command empty in targets', async (done) => {
+      const wrapper = shallow<RedisLatencyPanel>(
+        getComponent({
+          data: {
+            request: {
+              targets: [{ datasource: 'Redis111' }],
+            },
+          },
+        })
+      );
+      await wrapper.instance().makeQuery();
+      expect(dataSourceSrvGetMock).toHaveBeenCalledWith('Redis111');
+      expect(dataSourceMock.query).toHaveBeenCalledWith({
+        targets: [
+          {
+            datasource: 'Redis111',
+            command: 'info',
+            section: 'commandstats',
+            type: 'command',
+          },
+        ],
+      });
+      done();
+    });
+
+    it('Should use query params from props if there are', async (done) => {
+      const wrapper = shallow<RedisLatencyPanel>(
+        getComponent({
+          data: {
+            request: {
+              targets: [{ datasource: 'Redis111', command: 'command', section: 'section', type: 'type' }],
+            },
+          },
+        })
+      );
+      await wrapper.instance().makeQuery();
+      expect(dataSourceSrvGetMock).toHaveBeenCalledWith('Redis111');
+      expect(dataSourceMock.query).toHaveBeenCalledWith({
+        targets: [
+          {
+            datasource: 'Redis111',
+            command: 'command',
+            section: 'section',
+            type: 'type',
+          },
+        ],
+      });
+      done();
+    });
+  });
+
+  /**
+   * getLatencyValue
+   */
   describe('getLatencyValue', () => {
     it('Should calc correctly', () => {
       const duration = 100;
@@ -83,6 +170,9 @@ describe('RedisLatencyPanel', () => {
     });
   });
 
+  /**
+   * getValuesForCalculation
+   */
   describe('getValuesForCalculation', () => {
     it('Should return calls and duration field values', () => {
       const dataFrame = toDataFrame({
@@ -112,6 +202,9 @@ describe('RedisLatencyPanel', () => {
     });
   });
 
+  /**
+   * getLatencyValues
+   */
   describe('getLatencyValues', () => {
     it('Should calc values array', () => {
       const prevValues = {
@@ -138,59 +231,98 @@ describe('RedisLatencyPanel', () => {
     });
   });
 
-  describe('getTableDataFrame', () => {
-    it('Should add new column with latency values', () => {
-      const fields = [
-        {
-          type: FieldType.number,
-          name: FieldName.Duration,
-          values: [200, 300],
-        },
-        {
-          type: FieldType.number,
-          name: FieldName.Calls,
-          values: [1, 2],
-        },
-      ];
-      const prevDataFrame = toDataFrame({
-        name: 'prev',
-        fields,
-      });
-      const currentDataFrame = toDataFrame({
-        name: 'current',
-        fields: fields.map((field) => ({
-          ...field,
-          values: field.values.map((value) => value * value),
-        })),
-      });
-      const tableDataFrame = RedisLatencyPanel.getTableDataFrame(prevDataFrame, currentDataFrame);
-      const expectedDataFrame = toDataFrame({
-        name: 'tableDataFrame',
-        fields: [
-          ...fields.map((field) => ({
-            ...field,
-            values: field.values.map((value) => value * value),
-          })),
+  /**
+   * getSeriesMap
+   */
+  describe('getSeriesMap', () => {
+    it('Should add value to seriesMap', () => {
+      const seriesMap = {
+        info: [
           {
-            type: FieldType.number,
-            name: FieldName.Latency,
-            values: RedisLatencyPanel.getLatencyValues(
-              RedisLatencyPanel.getValuesForCalculation(prevDataFrame),
-              RedisLatencyPanel.getValuesForCalculation(currentDataFrame),
-              2
-            ),
+            time: dateTime(),
+            value: 20,
           },
-        ].map((field) => ({
-          ...field,
-          config: {
-            displayName: DisplayNameByFieldName[field.name as FieldName],
+        ],
+      };
+      const dataFrame = toDataFrame({
+        name: 'data',
+        fields: [
+          {
+            type: FieldType.string,
+            name: FieldName.Command,
+            values: ['get', 'info'],
           },
-        })),
+        ],
       });
-      expect(tableDataFrame).toEqual(expectedDataFrame);
+      const time = dateTime();
+      const values = [10, 20];
+      const result = RedisLatencyPanel.getSeriesMap(seriesMap, dataFrame, values, time);
+      const expectedResult: SeriesMap = {
+        get: [
+          {
+            time,
+            value: values[0],
+          },
+        ],
+        info: [
+          ...seriesMap.info,
+          {
+            time,
+            value: values[1],
+          },
+        ],
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it('If items more than itemsLimit should remove first item', () => {
+      const seriesMap = {
+        info: [
+          {
+            time: dateTime(),
+            value: 20,
+          },
+          {
+            time: dateTime(),
+            value: 30,
+          },
+        ],
+      };
+      const dataFrame = toDataFrame({
+        name: 'data',
+        fields: [
+          {
+            type: FieldType.string,
+            name: FieldName.Command,
+            values: ['get', 'info'],
+          },
+        ],
+      });
+      const time = dateTime();
+      const values = [10, 20];
+      const result = RedisLatencyPanel.getSeriesMap(seriesMap, dataFrame, values, time, 2);
+      const expectedResult: SeriesMap = {
+        get: [
+          {
+            time,
+            value: values[0],
+          },
+        ],
+        info: [
+          ...seriesMap.info.slice(1, seriesMap.info.length),
+          {
+            time,
+            value: values[1],
+          },
+        ],
+      };
+      expect(result).toEqual(expectedResult);
     });
   });
 
+  /**
+   * RequestData
+   */
   describe('RequestData', () => {
     const data = {
       series: [
@@ -212,12 +344,12 @@ describe('RedisLatencyPanel', () => {
       ],
     };
 
+    /**
+     * Mount
+     */
     describe('Mount', () => {
       it('If options.interval is filled should set interval', () => {
-        const options = {
-          interval: 1000,
-        };
-        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data }));
         const testedMethod = jest
           .spyOn(wrapper.instance(), 'setRequestDataInterval')
           .mockImplementation(() => Promise.resolve());
@@ -236,65 +368,66 @@ describe('RedisLatencyPanel', () => {
       });
     });
 
+    /**
+     * Update
+     */
     describe('Update', () => {
       it('If options.interval was changed should set interval', () => {
-        const options = {
-          interval: 1000,
-        };
-        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data }));
         const testedMethod = jest
           .spyOn(wrapper.instance(), 'setRequestDataInterval')
           .mockImplementation(() => Promise.resolve());
         wrapper.instance().componentDidMount();
         expect(testedMethod).toHaveBeenCalled();
         testedMethod.mockClear();
-        wrapper.setProps({ options: { interval: 2000 } });
+        wrapper.setProps({
+          options: { interval: 2000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000, hideZero: false },
+        });
         expect(testedMethod).toHaveBeenCalled();
         testedMethod.mockClear();
-        wrapper.setProps({ options: { interval: 2000 } });
+        wrapper.setProps({
+          options: { interval: 2000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000, hideZero: false },
+        });
         expect(testedMethod).not.toHaveBeenCalled();
       });
     });
 
+    /**
+     * Unmount
+     */
     describe('Unmount', () => {
       it('Should clear interval', () => {
-        const options = {
-          interval: 1000,
-        };
-        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval').mockImplementation(() => {});
         wrapper.instance().componentWillUnmount();
         expect(testedMethod).toHaveBeenCalled();
       });
     });
 
-    describe('Update tableDataFrame', () => {
+    /**
+     * Update seriesMap
+     */
+    describe('Update seriesMap', () => {
       it('Should set timer and request data with interval', (done) => {
         const options = {
           interval: 1000,
+          viewMode: ViewMode.Table,
+          maxItemsPerSeries: 1000,
         };
-        const getTableDataFrameMock = jest.spyOn(RedisLatencyPanel, 'getTableDataFrame');
         const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
-        const setStateMock = jest.spyOn(wrapper.instance(), 'setState');
+        const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
 
         setImmediate(() => {
-          setStateMock.mockClear();
-          dataSourceMock.query.mockClear();
-          getTableDataFrameMock.mockClear();
+          testedMethod.mockClear();
           let checksCount = 2;
           const check = () => {
-            expect(dataSourceMock.query).toHaveBeenCalled();
-            expect(getTableDataFrameMock).toHaveBeenCalled();
-            expect(setStateMock).toHaveBeenCalled();
+            expect(testedMethod).toHaveBeenCalled();
 
             checksCount--;
             if (checksCount > 0) {
-              getTableDataFrameMock.mockClear();
-              setStateMock.mockClear();
-              dataSourceMock.query.mockClear();
+              testedMethod.mockClear();
               setTimeout(check, options.interval);
             } else {
-              getTableDataFrameMock.mockReset();
               done();
             }
           };
@@ -305,6 +438,8 @@ describe('RedisLatencyPanel', () => {
       it('Should clear interval before setting new one', (done) => {
         const options = {
           interval: 1000,
+          viewMode: ViewMode.Table,
+          maxItemsPerSeries: 1000,
         };
         const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
@@ -318,6 +453,8 @@ describe('RedisLatencyPanel', () => {
       it('Should use passed datasource', (done) => {
         const options = {
           interval: 1000,
+          viewMode: ViewMode.Table,
+          maxItemsPerSeries: 1000,
         };
         const overrideData = {
           ...data,
@@ -337,10 +474,15 @@ describe('RedisLatencyPanel', () => {
       });
     });
 
+    /**
+     * clearRequestDataInterval
+     */
     describe('clearRequestDataInterval', () => {
       it('Should clear interval', (done) => {
         const options = {
           interval: 1000,
+          viewMode: ViewMode.Table,
+          maxItemsPerSeries: 1000,
         };
         const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
         setImmediate(() => {
@@ -349,6 +491,39 @@ describe('RedisLatencyPanel', () => {
           expect(wrapper.instance().requestDataTimer).not.toBeDefined();
           done();
         });
+      });
+    });
+  });
+
+  /**
+   * Rendering
+   */
+  describe('Rendering', () => {
+    it('If no dataFrame nothing should be rendered', (done) => {
+      const wrapper = shallow(getComponent({ data: { request: {} } }));
+      setImmediate(() => {
+        expect(wrapper.get(0)).not.toBeTruthy();
+        done();
+      });
+    });
+
+    it('Should render table if viewMode=table', (done) => {
+      const wrapper = shallow(
+        getComponent({ options: { interval: 1000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000 } })
+      );
+      setImmediate(() => {
+        expect(wrapper.find(RedisLatencyPanelTable).exists()).toBeTruthy();
+        done();
+      });
+    });
+
+    it('Should render graph if viewMode=graph', (done) => {
+      const wrapper = shallow(
+        getComponent({ options: { interval: 1000, viewMode: ViewMode.Graph, maxItemsPerSeries: 1000 } })
+      );
+      setImmediate(() => {
+        expect(wrapper.find(RedisLatencyPanelGraph).exists()).toBeTruthy();
+        done();
       });
     });
   });
