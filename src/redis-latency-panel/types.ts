@@ -1,10 +1,36 @@
-import { DataFrame, DataQuery, PanelProps } from '@grafana/data';
+import { DataQuery, DateTime } from '@grafana/data';
 
 /**
  * Panel Options
  */
 export interface PanelOptions {
+  /**
+   * Interval
+   *
+   * @type {number}
+   */
   interval: number;
+
+  /**
+   * View Mode
+   *
+   * @type {ViewMode}
+   */
+  viewMode: ViewMode;
+
+  /**
+   * Max Items
+   *
+   * @type {number}
+   */
+  maxItemsPerSeries: number;
+
+  /**
+   * Hide Zero series
+   *
+   * @type {boolean}
+   */
+  hideZero: boolean;
 }
 
 /**
@@ -17,30 +43,42 @@ export interface RedisQuery extends DataQuery {
    * @type {string}
    */
   query?: string;
+
+  /**
+   * Redis Command type
+   *
+   * @type {string}
+   */
+  type?: string;
+
+  /**
+   * Redis Command
+   *
+   * @type {string}
+   */
+  command?: string;
+
+  /**
+   * Redis Section
+   *
+   * @type {string}
+   */
+  section?: string;
 }
 
 /**
- * Properties
+ * Object which keeps SeriesValue[] by command name
  */
-export interface Props extends PanelProps<PanelOptions> {}
+export interface SeriesMap {
+  [key: string]: SeriesValue[];
+}
 
 /**
- * State
+ * Series Value
  */
-export interface State {
-  /**
-   * Table Data Frame
-   *
-   * @type {DataFrame | null}
-   */
-  tableDataFrame: DataFrame | null;
-
-  /**
-   * Current Data Frame
-   *
-   * @type {DataFrame | null}
-   */
-  currentDataFrame: DataFrame | null;
+export interface SeriesValue {
+  time: DateTime;
+  value: number;
 }
 
 /**
@@ -84,3 +122,16 @@ export const DisplayNameByFieldName = {
  * Default refresh interval
  */
 export const DefaultInterval = 1000;
+
+/**
+ * View Modes
+ */
+export enum ViewMode {
+  Table = 'Table',
+  Graph = 'Graph',
+}
+
+/**
+ * Max items per series
+ */
+export const MaxItemsPerSeries = 1000;
