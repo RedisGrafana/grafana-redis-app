@@ -1,0 +1,19 @@
+{
+  "id": "redis-biggest-keys-panel",
+  "info": {
+    "author": {
+      "name": "Redis Labs",
+      "url": "https://oss.redislabs.com"
+    },
+    "description": "Redis Biggest Keys panel",
+    "logos": {
+      "large": "img/logo.svg",
+      "small": "img/logo.svg"
+    },
+    "screenshots": [],
+    "updated": "%TODAY%",
+    "version": "%VERSION%"
+  },
+  "name": "Redis Biggest Keys",
+  "type": "panel"
+}
