@@ -1,4 +1,5 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, ChangeEvent, createRef, RefObject } from 'react';
+import { css } from 'emotion';
 import { Observable } from 'rxjs';
 import {
   DataFrame,
@@ -10,8 +11,16 @@ import {
   FieldType,
 } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { Table, TableSortByFieldState, Button } from '@grafana/ui';
+import { Table, TableSortByFieldState, Button, Input, InlineFormLabel } from '@grafana/ui';
 import { DefaultInterval, PanelOptions, RedisQuery, DisplayNameByFieldName, FieldName } from '../types';
+
+/**
+ * Query Type
+ */
+enum QueryType {
+  Data = 'Data',
+  TotalKeys = 'TotalKeys',
+}
 
 /**
  * Properties
@@ -25,6 +34,23 @@ interface RedisKey {
   key: string;
   type: string;
   memory: number;
+}
+
+/**
+ * Query Config
+ */
+interface QueryConfig {
+  size: number;
+  count: number;
+  matchPattern: string;
+}
+
+/**
+ * Progress
+ */
+interface Progress {
+  total: number;
+  processed: number;
 }
 
 /**
@@ -53,6 +79,18 @@ interface State {
    * Showing redis keys array
    */
   redisKeys: RedisKey[];
+  /**
+   * Config for datasource
+   */
+  queryConfig: QueryConfig;
+  /**
+   * Form height
+   */
+  formHeight: number;
+  /**
+   * Progress
+   */
+  progress: Progress;
 }
 
 /**
@@ -180,7 +218,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     if (!dataFrame) {
       return '0';
     }
-    const field = dataFrame.fields.find((field) => field.name === 'Cursor');
+    const field = dataFrame.fields.find((field) => field.name === 'cursor');
     if (!field) {
       return '0';
     }
@@ -201,6 +239,18 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     if (dataFrame) {
       redisKeys = RedisBiggestKeysPanel.getRedisKeys(dataFrame);
     }
+    const targets: RedisQuery[] = this.props.data?.request?.targets as RedisQuery[];
+    const queryConfig = {
+      size: 10,
+      count: 10,
+      matchPattern: '*',
+    };
+    if (targets && targets[0]) {
+      const { size = queryConfig.size, count = queryConfig.count, match = queryConfig.matchPattern } = targets[0];
+      queryConfig.size = size;
+      queryConfig.count = count;
+      queryConfig.matchPattern = match;
+    }
 
     this.state = {
       sortedFields: [{ displayName: DisplayNameByFieldName[FieldName.Memory], desc: true }],
@@ -208,8 +258,19 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
       isUpdating: false,
       cursor,
       dataFrame: RedisBiggestKeysPanel.getTableDataFrame(redisKeys),
+      queryConfig,
+      formHeight: 0,
+      progress: {
+        total: 0,
+        processed: queryConfig.count,
+      },
     };
   }
+
+  /**
+   * Form html element
+   */
+  formRef: RefObject<HTMLDivElement> = createRef();
 
   /**
    * Request Data Timer
@@ -217,11 +278,30 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
   requestDataTimer?: NodeJS.Timeout | undefined;
 
   /**
+   * Mount
+   */
+  componentDidMount(): void {
+    if (this.formRef.current) {
+      this.setState({
+        formHeight: this.formRef.current.getBoundingClientRect().height,
+      });
+    }
+    this.updateTotalKeys();
+  }
+
+  /**
    * Update
    */
   componentDidUpdate(prevProps: Readonly<Props>): void {
     if (prevProps.options.interval !== this.props.options.interval) {
       this.clearRequestDataInterval();
+    }
+    if (prevProps.width !== this.props.width || prevProps.height !== this.props.height) {
+      if (this.formRef.current) {
+        this.setState({
+          formHeight: this.formRef.current.getBoundingClientRect().height,
+        });
+      }
     }
   }
 
@@ -235,7 +315,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
   /**
    * makeQuery using request.targets with default commands
    */
-  async makeQuery(): Promise<DataQueryResponse | null> {
+  async makeQuery(queryType: QueryType = QueryType.Data): Promise<DataQueryResponse | null> {
     const targets = this.props.data.request?.targets;
     let datasource = '';
     if (targets && targets.length && targets[0].datasource) {
@@ -254,13 +334,25 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     /**
      * Override default values if was set query params
      */
-    const targetsWithCommands = targets.map((target: RedisQuery) => ({
-      command: 'tmscan',
-      type: 'command',
-      count: 10,
-      ...target,
-      cursor: this.state.cursor,
-    }));
+    let targetsWithCommands = targets;
+    if (queryType === QueryType.Data) {
+      targetsWithCommands = targets.map((target: RedisQuery) => ({
+        command: 'tmscan',
+        type: 'command',
+        ...target,
+        count: this.state.queryConfig.count,
+        size: this.state.queryConfig.size,
+        match: this.state.queryConfig.matchPattern,
+        cursor: this.state.cursor,
+      }));
+    }
+    if (queryType === QueryType.TotalKeys) {
+      targetsWithCommands = targets.map((target: RedisQuery) => ({
+        ...target,
+        type: 'cli',
+        query: 'dbsize',
+      }));
+    }
 
     return ((ds.query({
       ...this.props.data.request,
@@ -284,20 +376,41 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
       return Promise.resolve();
     }
 
-    const target: any = this.props.data.request?.targets[0] || {};
     const biggestKeys = RedisBiggestKeysPanel.getBiggestRedisKeys(
       this.state.redisKeys,
       RedisBiggestKeysPanel.getRedisKeys(newDataFrame),
-      target.count || 10
+      this.state.queryConfig.size
     );
+
+    const progress = {
+      ...this.state.progress,
+    };
+    const newProcessed = this.state.queryConfig.count + progress.processed;
+    progress.processed = Math.min(newProcessed, progress.total);
 
     this.setState({
       dataFrame: RedisBiggestKeysPanel.getTableDataFrame(biggestKeys),
       redisKeys: biggestKeys,
       cursor: RedisBiggestKeysPanel.getCursorValue(response.data[1]),
+      progress,
     });
 
     return Promise.resolve(newDataFrame);
+  }
+
+  async updateTotalKeys() {
+    const response = await this.makeQuery(QueryType.TotalKeys);
+    if (!response || !response.data) {
+      return Promise.resolve();
+    }
+
+    const [total] = response.data[0].fields[0].values.toArray();
+    this.setState({
+      progress: {
+        ...this.state.progress,
+        total,
+      },
+    });
   }
 
   /**
@@ -351,33 +464,97 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
   };
 
   /**
+   * Change Size
+   */
+  onChangeSize = (event: ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      queryConfig: {
+        ...this.state.queryConfig,
+        size: parseInt(event.target.value, 10),
+      },
+    });
+  };
+
+  /**
+   * Change Count
+   */
+  onChangeCount = (event: ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      queryConfig: {
+        ...this.state.queryConfig,
+        count: parseInt(event.target.value, 10),
+      },
+    });
+  };
+
+  /**
+   * Change Match Pattern
+   */
+  onChangeMatchPattern = (event: ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      queryConfig: {
+        ...this.state.queryConfig,
+        matchPattern: event.target.value,
+      },
+    });
+  };
+  /**
    * Render
    */
   render() {
-    const { dataFrame, sortedFields, isUpdating, redisKeys } = this.state;
-
-    /**
-     * If no dataFrame return null
-     */
-    if (!dataFrame || redisKeys.length === 0) {
-      return <div>No keys found.</div>;
-    }
+    const { dataFrame, sortedFields, isUpdating, redisKeys, queryConfig, formHeight, progress } = this.state;
 
     return (
       <>
-        <div className="gf-form">
-          <Button onClick={isUpdating ? this.clearRequestDataInterval : this.setRequestDataInterval}>
-            {isUpdating ? 'Stop scanning' : 'Start scanning'}
-          </Button>
+        <div className="gf-form gf-form-inline" ref={this.formRef}>
+          <div className="gf-form gf-form-spacing">
+            <InlineFormLabel width={4}>Size</InlineFormLabel>
+            <Input name="size" value={queryConfig.size} css="" type="number" onChange={this.onChangeSize} width={8} />
+          </div>
+          <div className="gf-form gf-form-spacing">
+            <InlineFormLabel width={4}>Count</InlineFormLabel>
+            <Input
+              name="count"
+              value={queryConfig.count}
+              css=""
+              type="number"
+              onChange={this.onChangeCount}
+              width={10}
+            />
+          </div>
+          <div className="gf-form gf-form-spacing">
+            <InlineFormLabel width={6}>Match pattern</InlineFormLabel>
+            <Input
+              name="matchPattern"
+              value={queryConfig.matchPattern}
+              css=""
+              onChange={this.onChangeMatchPattern}
+              width={12}
+            />
+          </div>
+          <div className="gf-form gf-form-spacing">
+            <Button onClick={isUpdating ? this.clearRequestDataInterval : this.setRequestDataInterval}>
+              {isUpdating ? 'Stop scanning' : 'Start scanning'}
+            </Button>
+          </div>
+          {progress.total > 0 && (
+            <div className={css(`display: flex; align-items: center; height: 32px;`)}>
+              Processed {progress.processed} of {progress.total}
+            </div>
+          )}
         </div>
 
-        <Table
-          data={dataFrame}
-          width={this.props.width}
-          height={this.props.height - 36}
-          initialSortBy={sortedFields}
-          onSortByChange={this.onChangeSort}
-        />
+        {!dataFrame || redisKeys.length === 0 ? (
+          <div>No keys found.</div>
+        ) : (
+          <Table
+            data={dataFrame}
+            width={this.props.width}
+            height={this.props.height - formHeight}
+            initialSortBy={sortedFields}
+            onSortByChange={this.onChangeSort}
+          />
+        )}
       </>
     );
   }

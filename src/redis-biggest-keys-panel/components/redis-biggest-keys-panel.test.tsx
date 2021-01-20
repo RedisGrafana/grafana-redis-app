@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
 import { toDataFrame, FieldType } from '@grafana/data';
-import { Table } from '@grafana/ui';
+import { Table, Button } from '@grafana/ui';
 import { RedisBiggestKeysPanel } from './redis-biggest-keys-panel';
 import { FieldName, DisplayNameByFieldName } from '../types';
 
@@ -252,7 +252,7 @@ describe('RedisBiggestKeysPanel', () => {
           toDataFrame({
             fields: [
               {
-                name: 'Cursor',
+                name: 'cursor',
                 type: FieldType.string,
                 values: ['123'],
               },
@@ -295,7 +295,10 @@ describe('RedisBiggestKeysPanel', () => {
               targets: [{ datasource: 'Redis111' }],
             },
           },
-        })
+        }),
+        {
+          disableLifecycleMethods: true,
+        }
       );
       await wrapper.instance().makeQuery();
       expect(dataSourceSrvGetMock).toHaveBeenCalledWith('Redis111');
@@ -307,6 +310,8 @@ describe('RedisBiggestKeysPanel', () => {
             type: 'command',
             count: 10,
             cursor: '0',
+            match: '*',
+            size: 10,
           },
         ],
       });
@@ -318,10 +323,15 @@ describe('RedisBiggestKeysPanel', () => {
         getComponent({
           data: {
             request: {
-              targets: [{ datasource: 'Redis111', command: 'command', type: 'type', count: 100 }],
+              targets: [
+                { datasource: 'Redis111', command: 'command', type: 'type', count: 100, size: 11, match: 'abc' },
+              ],
             },
           },
-        })
+        }),
+        {
+          disableLifecycleMethods: true,
+        }
       );
       await wrapper.instance().makeQuery();
       expect(dataSourceSrvGetMock).toHaveBeenCalledWith('Redis111');
@@ -333,6 +343,8 @@ describe('RedisBiggestKeysPanel', () => {
             type: 'type',
             cursor: '0',
             count: 100,
+            match: 'abc',
+            size: 11,
           },
         ],
       });
@@ -372,32 +384,35 @@ describe('RedisBiggestKeysPanel', () => {
         const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data: null }), { disableLifecycleMethods: true });
         expect(wrapper.state().redisKeys.length).toEqual(0);
       });
-      it('If options.interval is filled should set interval', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }));
-        const testedMethod = jest
-          .spyOn(wrapper.instance(), 'setRequestDataInterval')
-          .mockImplementation(() => Promise.resolve());
-        wrapper.instance().componentDidMount();
-        expect(testedMethod).toHaveBeenCalled();
-      });
 
-      it('If options.interval is filled should set interval', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }));
-        const testedMethod = jest
-          .spyOn(wrapper.instance(), 'setRequestDataInterval')
-          .mockImplementation(() => Promise.resolve());
-        wrapper.instance().componentDidMount();
-        expect(testedMethod).toHaveBeenCalled();
-      });
-
-      it('If options.interval is empty should not set interval', () => {
+      it('Should not set interval by default', () => {
         const options = {};
         const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }));
         const testedMethod = jest
           .spyOn(wrapper.instance(), 'setRequestDataInterval')
           .mockImplementation(() => Promise.resolve());
-        wrapper.instance().componentDidMount();
         expect(testedMethod).not.toHaveBeenCalled();
+      });
+
+      it('Should set formHeight', () => {
+        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }), { disableLifecycleMethods: true });
+        wrapper.instance().formRef = {
+          current: {
+            getBoundingClientRect: () => ({
+              height: 100,
+            }),
+          },
+        } as any;
+        expect(wrapper.state().formHeight).toEqual(0);
+        wrapper.instance().componentDidMount();
+        expect(wrapper.state().formHeight).toEqual(100);
+      });
+
+      it('Should request all keys', () => {
+        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }), { disableLifecycleMethods: true });
+        const updateTotalKeysMock = jest.spyOn(wrapper.instance(), 'updateTotalKeys');
+        wrapper.instance().componentDidMount();
+        expect(updateTotalKeysMock).toHaveBeenCalled();
       });
     });
 
@@ -405,23 +420,16 @@ describe('RedisBiggestKeysPanel', () => {
      * Update
      */
     describe('Update', () => {
-      it('If options.interval was changed should set interval', () => {
+      it('If options.interval was changed should clear interval', () => {
         const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }));
         const testedMethod = jest
-          .spyOn(wrapper.instance(), 'setRequestDataInterval')
+          .spyOn(wrapper.instance(), 'clearRequestDataInterval')
           .mockImplementation(() => Promise.resolve());
-        wrapper.instance().componentDidMount();
-        expect(testedMethod).toHaveBeenCalled();
         testedMethod.mockClear();
         wrapper.setProps({
           options: { interval: 2000 },
         });
         expect(testedMethod).toHaveBeenCalled();
-        testedMethod.mockClear();
-        wrapper.setProps({
-          options: { interval: 2000 },
-        });
-        expect(testedMethod).not.toHaveBeenCalled();
       });
     });
 
@@ -447,6 +455,8 @@ describe('RedisBiggestKeysPanel', () => {
         };
         const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
+        const button = wrapper.find(Button);
+        button.simulate('click');
 
         setImmediate(() => {
           testedMethod.mockClear();
@@ -472,6 +482,7 @@ describe('RedisBiggestKeysPanel', () => {
         };
         const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
+        wrapper.instance().setRequestDataInterval();
         setImmediate(() => {
           wrapper.instance().setRequestDataInterval();
           expect(testedMethod).toHaveBeenCalled();
@@ -527,6 +538,7 @@ describe('RedisBiggestKeysPanel', () => {
           interval: 1000,
         };
         const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }));
+        wrapper.instance().setRequestDataInterval();
         setImmediate(() => {
           expect(wrapper.instance().requestDataTimer).toBeDefined();
           wrapper.instance().clearRequestDataInterval();
@@ -541,10 +553,10 @@ describe('RedisBiggestKeysPanel', () => {
    * Rendering
    */
   describe('Rendering', () => {
-    it('If no dataFrame nothing should be rendered', (done) => {
+    it('If no dataFrame table should be rendered', (done) => {
       const wrapper = shallow(getComponent({ data: { request: {} } }));
       setImmediate(() => {
-        expect(wrapper.get(0)).not.toBeTruthy();
+        expect(wrapper.find(Table).exists()).not.toBeTruthy();
         done();
       });
     });

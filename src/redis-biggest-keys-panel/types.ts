@@ -36,6 +36,10 @@ export interface RedisQuery extends DataQuery {
    * @type {string}
    */
   command?: string;
+
+  count?: number;
+  size?: number;
+  match?: string;
 }
 
 /**
