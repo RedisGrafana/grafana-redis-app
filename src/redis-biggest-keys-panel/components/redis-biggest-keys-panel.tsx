@@ -18,6 +18,9 @@ import { DefaultInterval, PanelOptions, RedisQuery, DisplayNameByFieldName, Fiel
  */
 interface Props extends PanelProps<PanelOptions> {}
 
+/**
+ * Redis Keys
+ */
 interface RedisKey {
   key: string;
   type: string;
@@ -214,20 +217,11 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
   requestDataTimer?: NodeJS.Timeout | undefined;
 
   /**
-   * Mount
-   */
-  componentDidMount(): void {
-    if (this.props.options.interval !== undefined) {
-      this.setRequestDataInterval();
-    }
-  }
-
-  /**
    * Update
    */
   componentDidUpdate(prevProps: Readonly<Props>): void {
     if (prevProps.options.interval !== this.props.options.interval) {
-      this.setRequestDataInterval();
+      this.clearRequestDataInterval();
     }
   }
 
@@ -325,6 +319,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
         }
       });
     };
+
     /**
      * Interval
      */
@@ -339,6 +334,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
       this.setState({
         isUpdating: false,
       });
+
       clearTimeout(this.requestDataTimer);
       delete this.requestDataTimer;
     }
@@ -354,23 +350,27 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     });
   };
 
+  /**
+   * Render
+   */
   render() {
+    const { dataFrame, sortedFields, isUpdating, redisKeys } = this.state;
+
     /**
      * If no dataFrame return null
      */
-    if (!this.state.dataFrame || this.state.redisKeys.length === 0) {
-      return null;
+    if (!dataFrame || redisKeys.length === 0) {
+      return <div>No keys found.</div>;
     }
-
-    const { dataFrame, sortedFields, isUpdating } = this.state;
 
     return (
       <>
         <div className="gf-form">
           <Button onClick={isUpdating ? this.clearRequestDataInterval : this.setRequestDataInterval}>
-            {isUpdating ? 'Stop updating data' : 'Start updating data'}
+            {isUpdating ? 'Stop scanning' : 'Start scanning'}
           </Button>
         </div>
+
         <Table
           data={dataFrame}
           width={this.props.width}

@@ -4,6 +4,11 @@ import { DataQuery } from '@grafana/data';
  * Panel Options
  */
 export interface PanelOptions {
+  /**
+   * Interval
+   *
+   * @type {number}
+   */
   interval: number;
 }
 
