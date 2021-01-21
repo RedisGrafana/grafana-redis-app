@@ -226,19 +226,27 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
   }
 
   /**
+   * Get count from dataFrame
+   * @param dataFrame
+   */
+  static getCount(dataFrame?: DataFrame): number {
+    if (!dataFrame) {
+      return 0;
+    }
+    const field = dataFrame.fields.find((field) => field.name === 'count');
+    if (!field) {
+      return 0;
+    }
+    return field.values.toArray()[0];
+  }
+
+  /**
    * Initialization
    * @param props
    */
   constructor(props: Props) {
     super(props);
 
-    const series = this.props.data?.series || [];
-    const dataFrame = series[0];
-    const cursor = RedisBiggestKeysPanel.getCursorValue(series[1]);
-    let redisKeys: RedisKey[] = [];
-    if (dataFrame) {
-      redisKeys = RedisBiggestKeysPanel.getRedisKeys(dataFrame);
-    }
     const targets: RedisQuery[] = this.props.data?.request?.targets as RedisQuery[];
     const queryConfig = {
       size: 10,
@@ -254,15 +262,15 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
 
     this.state = {
       sortedFields: [{ displayName: DisplayNameByFieldName[FieldName.Memory], desc: true }],
-      redisKeys,
+      redisKeys: [],
       isUpdating: false,
-      cursor,
-      dataFrame: RedisBiggestKeysPanel.getTableDataFrame(redisKeys),
+      cursor: '0',
+      dataFrame: null,
       queryConfig,
       formHeight: 0,
       progress: {
         total: 0,
-        processed: queryConfig.count,
+        processed: 0,
       },
     };
   }
@@ -292,16 +300,36 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
   /**
    * Update
    */
-  componentDidUpdate(prevProps: Readonly<Props>): void {
+  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>): void {
     if (prevProps.options.interval !== this.props.options.interval) {
       this.clearRequestDataInterval();
     }
-    if (prevProps.width !== this.props.width || prevProps.height !== this.props.height) {
+    if (prevProps.width !== this.props.width) {
       if (this.formRef.current) {
         this.setState({
           formHeight: this.formRef.current.getBoundingClientRect().height,
         });
       }
+    }
+    if (prevState.cursor !== this.state.cursor && this.state.cursor === '0') {
+      this.clearRequestDataInterval();
+    }
+
+    if (prevProps.data !== this.props.data) {
+      this.clearRequestDataInterval();
+      const targets: RedisQuery[] = this.props.data?.request?.targets as RedisQuery[];
+      const queryConfig = {
+        ...this.state.queryConfig,
+      };
+      if (targets && targets[0]) {
+        const { size = queryConfig.size, count = queryConfig.count, match = queryConfig.matchPattern } = targets[0];
+        queryConfig.size = size;
+        queryConfig.count = count;
+        queryConfig.matchPattern = match;
+      }
+      this.setState({
+        queryConfig,
+      });
     }
   }
 
@@ -385,7 +413,8 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     const progress = {
       ...this.state.progress,
     };
-    const newProcessed = this.state.queryConfig.count + progress.processed;
+    const count = RedisBiggestKeysPanel.getCount(response.data[1]);
+    const newProcessed = progress.processed + count;
     progress.processed = Math.min(newProcessed, progress.total);
 
     this.setState({
@@ -423,6 +452,12 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
 
     this.setState({
       isUpdating: true,
+      dataFrame: null,
+      redisKeys: [],
+      progress: {
+        total: this.state.progress.total,
+        processed: 0,
+      },
     });
 
     const startUpdatingData = () => {
@@ -470,7 +505,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     this.setState({
       queryConfig: {
         ...this.state.queryConfig,
-        size: parseInt(event.target.value, 10),
+        size: parseInt(event.target.value || '0', 10),
       },
     });
   };
@@ -482,7 +517,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     this.setState({
       queryConfig: {
         ...this.state.queryConfig,
-        count: parseInt(event.target.value, 10),
+        count: parseInt(event.target.value || '0', 10),
       },
     });
   };
@@ -509,7 +544,15 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
         <div className="gf-form gf-form-inline" ref={this.formRef}>
           <div className="gf-form gf-form-spacing">
             <InlineFormLabel width={4}>Size</InlineFormLabel>
-            <Input name="size" value={queryConfig.size} css="" type="number" onChange={this.onChangeSize} width={8} />
+            <Input
+              name="size"
+              value={queryConfig.size}
+              css=""
+              type="number"
+              onChange={this.onChangeSize}
+              width={8}
+              disabled={isUpdating}
+            />
           </div>
           <div className="gf-form gf-form-spacing">
             <InlineFormLabel width={4}>Count</InlineFormLabel>
@@ -520,6 +563,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
               type="number"
               onChange={this.onChangeCount}
               width={10}
+              disabled={isUpdating}
             />
           </div>
           <div className="gf-form gf-form-spacing">
@@ -530,6 +574,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
               css=""
               onChange={this.onChangeMatchPattern}
               width={12}
+              disabled={isUpdating}
             />
           </div>
           <div className="gf-form gf-form-spacing">
@@ -545,7 +590,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
         </div>
 
         {!dataFrame || redisKeys.length === 0 ? (
-          <div>No keys found.</div>
+          <div>{this.state.isUpdating ? 'No keys found.' : 'No keys. Please start scanning'}</div>
         ) : (
           <Table
             data={dataFrame}
