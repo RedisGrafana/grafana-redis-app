@@ -135,3 +135,18 @@ export enum ViewMode {
  * Max items per series
  */
 export const MaxItemsPerSeries = 1000;
+
+/**
+ * View Mode options
+ */
+
+export const ViewModeOptions = [
+  {
+    label: 'Table',
+    value: ViewMode.Table,
+  },
+  {
+    label: 'Graph',
+    value: ViewMode.Graph,
+  },
+];

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { DataFrame, FieldType, getDisplayProcessor, PanelProps, toDataFrame } from '@grafana/data';
-import { Table } from '@grafana/ui';
+import { Table, TableSortByFieldState } from '@grafana/ui';
 import { DisplayNameByFieldName, FieldName, PanelOptions, SeriesMap } from '../../types';
 
 /**
@@ -23,9 +23,19 @@ export interface Props extends PanelProps<PanelOptions> {
 }
 
 /**
+ * State
+ */
+interface State {
+  /**
+   * Sorted fields
+   */
+  sortedFields: TableSortByFieldState[];
+}
+
+/**
  * Redis Latency Panel
  */
-export class RedisLatencyPanelTable extends PureComponent<Props, {}> {
+export class RedisLatencyPanelTable extends PureComponent<Props, State> {
   /**
    * Get table data frame
    * @param dataFrame
@@ -90,13 +100,26 @@ export class RedisLatencyPanelTable extends PureComponent<Props, {}> {
   /**
    * State
    */
-  state = {};
+  state = {
+    sortedFields: [{ displayName: DisplayNameByFieldName[FieldName.Latency], desc: true }],
+  };
+
+  /**
+   * Change sort
+   * @param sortedFields
+   */
+  onChangeSort = (sortedFields: TableSortByFieldState[]) => {
+    this.setState({
+      sortedFields,
+    });
+  };
 
   /**
    * Render
    */
   render() {
     const { width, height, dataFrame, seriesMap } = this.props;
+    const { sortedFields } = this.state;
 
     /**
      * Return Table
@@ -104,9 +127,10 @@ export class RedisLatencyPanelTable extends PureComponent<Props, {}> {
     return (
       <Table
         data={RedisLatencyPanelTable.getTableDataFrame(dataFrame, seriesMap)}
-        initialSortBy={[{ displayName: DisplayNameByFieldName[FieldName.Latency], desc: true }]}
+        initialSortBy={sortedFields}
         width={width}
         height={height}
+        onSortByChange={this.onChangeSort}
       />
     );
   }

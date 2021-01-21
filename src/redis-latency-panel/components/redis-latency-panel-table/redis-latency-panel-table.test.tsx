@@ -9,6 +9,8 @@ import { FieldName, DisplayNameByFieldName } from '../../types';
  * Latency Panel Table
  */
 describe('RedisLatencyPanel', () => {
+  const getComponent = (props: any = {}) => <RedisLatencyPanelTable {...props} />;
+
   /**
    * getTableDataFrame
    */
@@ -91,8 +93,6 @@ describe('RedisLatencyPanel', () => {
    * Rendering
    */
   describe('Rendering', () => {
-    const getComponent = (props: any = {}) => <RedisLatencyPanelTable {...props} />;
-
     it('Should render table', () => {
       const fields = [
         {
@@ -116,6 +116,46 @@ describe('RedisLatencyPanel', () => {
       const wrapper = shallow(getComponent({ dataFrame, seriesMap }));
       const tableComponent = wrapper.find(Table);
       expect(tableComponent.exists()).toBeTruthy();
+    });
+  });
+
+  /**
+   * Sorting
+   */
+  describe('Sorting', () => {
+    it('Should set default sort and update sorting', async () => {
+      const fields = [
+        {
+          type: FieldType.string,
+          name: FieldName.Command,
+          values: ['get', 'info'],
+        },
+      ];
+      const seriesMap = {
+        get: [
+          {
+            time: dateTime(),
+            value: 1,
+          },
+        ],
+      };
+      const dataFrame = toDataFrame({
+        name: 'prev',
+        fields,
+      });
+      const wrapper = shallow<RedisLatencyPanelTable>(getComponent({ dataFrame, seriesMap }), {
+        disableLifecycleMethods: true,
+      });
+      const sortedFields = [{ displayName: DisplayNameByFieldName[FieldName.Latency], desc: true }];
+      expect(wrapper.state().sortedFields).toEqual(sortedFields);
+      const tableComponent = wrapper.find(Table);
+      expect(tableComponent.prop('initialSortBy')).toEqual(sortedFields);
+      tableComponent.simulate('sortByChange', [
+        { displayName: DisplayNameByFieldName[FieldName.Duration], desc: true },
+      ]);
+      expect(wrapper.state().sortedFields).toEqual([
+        { displayName: DisplayNameByFieldName[FieldName.Duration], desc: true },
+      ]);
     });
   });
 });
