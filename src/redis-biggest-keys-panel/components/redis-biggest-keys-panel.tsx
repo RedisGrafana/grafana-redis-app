@@ -40,8 +40,17 @@ interface RedisKey {
  * Query Config
  */
 interface QueryConfig {
+  /**
+   * How many fields are showed in table
+   */
   size: number;
+  /**
+   * Hom many keys are used for finding the biggest keys
+   */
   count: number;
+  /**
+   * Pattern for filtering keys
+   */
   matchPattern: string;
 }
 
@@ -49,7 +58,13 @@ interface QueryConfig {
  * Progress
  */
 interface Progress {
+  /**
+   * Total amount of keys
+   */
   total: number;
+  /**
+   * Amount already processed keys
+   */
   processed: number;
 }
 
@@ -88,7 +103,7 @@ interface State {
    */
   formHeight: number;
   /**
-   * Progress
+   * Progress in scanning keys
    */
   progress: Progress;
 }
@@ -127,6 +142,10 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
    */
   static getBiggestRedisKeys(currentKeys: RedisKey[], newKeys: RedisKey[], count: number): RedisKey[] {
     const allRedisKeys: RedisKey[] = [...currentKeys, ...newKeys];
+
+    /**
+     * Create object with unique keys. If there are the same keys, should be used biggest memory value.
+     */
     const redisKeysMap = allRedisKeys.reduce((acc: { [key: string]: RedisKey }, item) => {
       const alreadyExistItem = acc[item.key];
       let memory = item.memory;
@@ -141,8 +160,13 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
         },
       };
     }, {});
+
+    /**
+     * Sort keys
+     */
     const uniqueKeys: RedisKey[] = Object.values(redisKeysMap);
     uniqueKeys.sort((a, b) => b.memory - a.memory);
+
     return uniqueKeys.slice(0, count);
   }
 
@@ -253,6 +277,9 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
       count: 10,
       matchPattern: '*',
     };
+    /**
+     * Override queryConfig if was defined
+     */
     if (targets && targets[0]) {
       const { size = queryConfig.size, count = queryConfig.count, match = queryConfig.matchPattern } = targets[0];
       queryConfig.size = size;
@@ -301,9 +328,16 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
    * Update
    */
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>): void {
+    /**
+     * Stop scanning data when interval is changed
+     */
     if (prevProps.options.interval !== this.props.options.interval) {
       this.clearRequestDataInterval();
     }
+
+    /**
+     * Calc formHeight when panel width is changed
+     */
     if (prevProps.width !== this.props.width) {
       if (this.formRef.current) {
         this.setState({
@@ -311,10 +345,17 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
         });
       }
     }
+
+    /**
+     * Stop scanning data when cursor becomes 0
+     */
     if (prevState.cursor !== this.state.cursor && this.state.cursor === '0') {
       this.clearRequestDataInterval();
     }
 
+    /**
+     * Update query config fields when data is changed
+     */
     if (prevProps.data !== this.props.data) {
       this.clearRequestDataInterval();
       const targets: RedisQuery[] = this.props.data?.request?.targets as RedisQuery[];
@@ -404,12 +445,18 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
       return Promise.resolve();
     }
 
+    /**
+     * Calc actual keys
+     */
     const biggestKeys = RedisBiggestKeysPanel.getBiggestRedisKeys(
       this.state.redisKeys,
       RedisBiggestKeysPanel.getRedisKeys(newDataFrame),
       this.state.queryConfig.size
     );
 
+    /**
+     * Update progress
+     */
     const progress = {
       ...this.state.progress,
     };
@@ -434,6 +481,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     }
 
     const [total] = response.data[0].fields[0].values.toArray();
+
     this.setState({
       progress: {
         ...this.state.progress,
@@ -463,6 +511,9 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     const startUpdatingData = () => {
       this.updateData().then(() => {
         if (this.state.isUpdating) {
+          /**
+           * Add new timeout for scanning data, If isUpdating=true
+           */
           this.requestDataTimer = setTimeout(startUpdatingData, this.props.options.interval || DefaultInterval);
         }
       });
