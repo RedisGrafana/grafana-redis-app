@@ -36,9 +36,17 @@ export interface RedisQuery extends DataQuery {
    * @type {string}
    */
   command?: string;
-
-  count?: number;
+  /**
+   * How many fields are showed in table
+   */
   size?: number;
+  /**
+   * Hom many keys are used for finding the biggest keys
+   */
+  count?: number;
+  /**
+   * Pattern for filtering keys
+   */
   match?: string;
 }
 
