@@ -1188,8 +1188,8 @@
       "pluginVersion": "7.3.7",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Keys consuming a lot of memory (CAUSE LATENCY - USE IN LOW PEAK)",
-      "type": "redis-biggest-keys-panel"
+      "title": "Keys consuming a lot of memory (CAUSE LATENCY - USE OFF-PEAK)",
+      "type": "redis-keys-panel"
     }
   ],
   "refresh": "",
