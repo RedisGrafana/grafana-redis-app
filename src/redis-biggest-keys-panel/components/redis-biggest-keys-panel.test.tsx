@@ -382,7 +382,7 @@ describe('RedisBiggestKeysPanel', () => {
             datasource: 'Redis111',
             command: 'tmscan',
             type: 'command',
-            count: 10,
+            count: 100,
             cursor: '0',
             match: '*',
             size: 10,

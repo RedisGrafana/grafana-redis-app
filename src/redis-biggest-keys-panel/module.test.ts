@@ -13,7 +13,12 @@ describe('RedisBiggestKeysPanel', () => {
     const builder: any = {
       addNumberInput: jest.fn().mockImplementation(() => builder),
     };
+
     plugin['registerOptionEditors'](builder);
+
+    /**
+     * Interval
+     */
     expect(builder.addNumberInput).toHaveBeenCalledWith({
       path: 'interval',
       name: 'How ofter to get a new batch of keys',

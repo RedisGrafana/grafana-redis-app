@@ -9,10 +9,7 @@
     "logos": {
       "large": "img/logo.svg",
       "small": "img/logo.svg"
-    },
-    "screenshots": [],
-    "updated": "%TODAY%",
-    "version": "%VERSION%"
+    }
   },
   "name": "Redis Biggest Keys",
   "type": "panel"

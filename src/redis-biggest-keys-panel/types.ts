@@ -36,14 +36,17 @@ export interface RedisQuery extends DataQuery {
    * @type {string}
    */
   command?: string;
+
   /**
    * How many fields are showed in table
    */
   size?: number;
+
   /**
    * Hom many keys are used for finding the biggest keys
    */
   count?: number;
+
   /**
    * Pattern for filtering keys
    */
@@ -54,6 +57,24 @@ export interface RedisQuery extends DataQuery {
  * Default refresh interval
  */
 export const DefaultInterval = 1000;
+
+/**
+ * Default result's size
+ */
+export const DefaultSize = 10;
+
+/**
+ * Default SCAN count
+ */
+export const DefaultCount = 100;
+
+/**
+ * Query Type
+ */
+export enum QueryType {
+  Data = 'Data',
+  TotalKeys = 'TotalKeys',
+}
 
 /**
  * Fields
@@ -72,3 +93,64 @@ export const DisplayNameByFieldName = {
   [FieldName.Type]: 'Type',
   [FieldName.Memory]: 'Memory',
 };
+
+/**
+ * Redis Keys
+ */
+export interface RedisKey {
+  /**
+   * Key
+   *
+   * @type {string}
+   */
+  key: string;
+
+  /**
+   * Type
+   *
+   * @type {string}
+   */
+  type: string;
+
+  /**
+   * Memory Usage
+   *
+   * @type {number}
+   */
+  memory: number;
+}
+
+/**
+ * Query Config
+ */
+export interface QueryConfig {
+  /**
+   * How many fields are showed in table
+   */
+  size: number;
+
+  /**
+   * How many keys are used for finding the biggest keys
+   */
+  count: number;
+
+  /**
+   * Pattern for filtering keys
+   */
+  matchPattern: string;
+}
+
+/**
+ * Scanning Progress
+ */
+export interface Progress {
+  /**
+   * Total amount of keys
+   */
+  total: number;
+
+  /**
+   * Amount already processed keys
+   */
+  processed: number;
+}
