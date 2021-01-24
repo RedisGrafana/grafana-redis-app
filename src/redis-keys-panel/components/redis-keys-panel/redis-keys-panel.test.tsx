@@ -1,10 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
-import { toDataFrame, FieldType } from '@grafana/data';
-import { Table, Button } from '@grafana/ui';
-import { RedisBiggestKeysPanel } from './redis-biggest-keys-panel';
-import { FieldName, DisplayNameByFieldName, DefaultInterval } from '../types';
+import { FieldType, toDataFrame } from '@grafana/data';
+import { Button, Table } from '@grafana/ui';
+import { DefaultInterval, DisplayNameByFieldName, FieldName } from '../../constants';
+import { RedisKeysPanel } from './redis-keys-panel';
 
 /**
  * Query Result
@@ -74,9 +74,9 @@ jest.mock('@grafana/runtime', () => ({
 }));
 
 /**
- * RedisBiggestKeysPanel
+ * Redis Keys Panel
  */
-describe('RedisBiggestKeysPanel', () => {
+describe('RedisKeysPanel', () => {
   const getComponent = ({ options = { interval: 1000 }, ...restProps }: any) => {
     const data = {
       request: {
@@ -87,7 +87,7 @@ describe('RedisBiggestKeysPanel', () => {
         ],
       },
     };
-    return <RedisBiggestKeysPanel data={data} {...restProps} options={options} />;
+    return <RedisKeysPanel data={data} {...restProps} options={options} />;
   };
 
   beforeEach(() => {
@@ -120,7 +120,7 @@ describe('RedisBiggestKeysPanel', () => {
           },
         ],
       });
-      const result = RedisBiggestKeysPanel.getRedisKeys(dataFrame);
+      const result = RedisKeysPanel.getRedisKeys(dataFrame);
       expect(result).toEqual([
         {
           key: 'key1',
@@ -137,7 +137,7 @@ describe('RedisBiggestKeysPanel', () => {
 
     it('Should return correct result if dataFrame does not have needed fields', () => {
       expect(
-        RedisBiggestKeysPanel.getRedisKeys(
+        RedisKeysPanel.getRedisKeys(
           toDataFrame({
             name: 'data',
             fields: [
@@ -158,7 +158,7 @@ describe('RedisBiggestKeysPanel', () => {
         },
       ]);
       expect(
-        RedisBiggestKeysPanel.getRedisKeys(
+        RedisKeysPanel.getRedisKeys(
           toDataFrame({
             name: 'data',
             fields: [
@@ -182,10 +182,10 @@ describe('RedisBiggestKeysPanel', () => {
   });
 
   /**
-   * getBiggestRedisKeys
+   * Sorted Redis Keys
    */
-  describe('getBiggestRedisKeys', () => {
-    it('Should use the biggest value for keys', () => {
+  describe('getSortedRedisKeys', () => {
+    it('Should use the sorted value for keys', () => {
       const currentKeys = [
         {
           key: 'key1',
@@ -199,7 +199,7 @@ describe('RedisBiggestKeysPanel', () => {
         },
       ];
       const newKeys = [{ key: 'key1', type: 'string', memory: 105 }];
-      const result = RedisBiggestKeysPanel.getBiggestRedisKeys(currentKeys, newKeys, 10);
+      const result = RedisKeysPanel.getSortedRedisKeys(currentKeys, newKeys, 10);
       expect(result).toEqual([
         {
           key: 'key2',
@@ -233,7 +233,7 @@ describe('RedisBiggestKeysPanel', () => {
         },
       ];
       const newKeys = [{ key: 'key1', type: 'string', memory: 105 }];
-      const result = RedisBiggestKeysPanel.getBiggestRedisKeys(currentKeys, newKeys, 2);
+      const result = RedisKeysPanel.getSortedRedisKeys(currentKeys, newKeys, 2);
       expect(result).toEqual([
         {
           key: 'key2',
@@ -266,7 +266,7 @@ describe('RedisBiggestKeysPanel', () => {
           memory: 105,
         },
       ];
-      const result = RedisBiggestKeysPanel.getTableDataFrame(keys);
+      const result = RedisKeysPanel.getTableDataFrame(keys);
       expect(result.fields[0].name).toEqual(FieldName.Key);
       expect(result.fields[0].values.toArray()).toEqual(['key2', 'key1']);
       expect(result.fields[0].display).toBeDefined();
@@ -285,9 +285,9 @@ describe('RedisBiggestKeysPanel', () => {
    */
   describe('getCursorValue', () => {
     it('Should return cursor value from dataFrame', () => {
-      expect(RedisBiggestKeysPanel.getCursorValue()).toEqual('0');
+      expect(RedisKeysPanel.getCursorValue()).toEqual('0');
       expect(
-        RedisBiggestKeysPanel.getCursorValue(
+        RedisKeysPanel.getCursorValue(
           toDataFrame({
             fields: [
               {
@@ -300,7 +300,7 @@ describe('RedisBiggestKeysPanel', () => {
         )
       ).toEqual('123');
       expect(
-        RedisBiggestKeysPanel.getCursorValue(
+        RedisKeysPanel.getCursorValue(
           toDataFrame({
             fields: [
               {
@@ -320,9 +320,9 @@ describe('RedisBiggestKeysPanel', () => {
    */
   describe('getCount', () => {
     it('Should return count value from dataFrame', () => {
-      expect(RedisBiggestKeysPanel.getCount()).toEqual(0);
+      expect(RedisKeysPanel.getCount()).toEqual(0);
       expect(
-        RedisBiggestKeysPanel.getCount(
+        RedisKeysPanel.getCount(
           toDataFrame({
             fields: [
               {
@@ -335,7 +335,7 @@ describe('RedisBiggestKeysPanel', () => {
         )
       ).toEqual(100);
       expect(
-        RedisBiggestKeysPanel.getCount(
+        RedisKeysPanel.getCount(
           toDataFrame({
             fields: [
               {
@@ -355,14 +355,14 @@ describe('RedisBiggestKeysPanel', () => {
    */
   describe('makeQuery', () => {
     it('If no targets nothing should be loaded and shown', async (done) => {
-      const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data: { request: { targets: [] } } }));
+      const wrapper = shallow<RedisKeysPanel>(getComponent({ data: { request: { targets: [] } } }));
       const data = await wrapper.instance().makeQuery();
       expect(data).toBeNull();
       done();
     });
 
     it('Should use default command if command empty in targets', async (done) => {
-      const wrapper = shallow<RedisBiggestKeysPanel>(
+      const wrapper = shallow<RedisKeysPanel>(
         getComponent({
           data: {
             request: {
@@ -393,7 +393,7 @@ describe('RedisBiggestKeysPanel', () => {
     });
 
     it('Should use query params from props if there are', async (done) => {
-      const wrapper = shallow<RedisBiggestKeysPanel>(
+      const wrapper = shallow<RedisKeysPanel>(
         getComponent({
           data: {
             request: {
@@ -455,13 +455,13 @@ describe('RedisBiggestKeysPanel', () => {
      */
     describe('Mount', () => {
       it('If passed no data as a prop, should work correctly', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data: null }), { disableLifecycleMethods: true });
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data: null }), { disableLifecycleMethods: true });
         expect(wrapper.state().redisKeys.length).toEqual(0);
       });
 
       it('Should not set interval by default', () => {
         const options = {};
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
         const testedMethod = jest
           .spyOn(wrapper.instance(), 'setRequestDataInterval')
           .mockImplementation(() => Promise.resolve());
@@ -469,7 +469,7 @@ describe('RedisBiggestKeysPanel', () => {
       });
 
       it('Should set formHeight', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }), { disableLifecycleMethods: true });
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }), { disableLifecycleMethods: true });
         wrapper.instance().formRef = {
           current: {
             getBoundingClientRect: () => ({
@@ -483,7 +483,7 @@ describe('RedisBiggestKeysPanel', () => {
       });
 
       it('Should request all keys', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }), { disableLifecycleMethods: true });
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }), { disableLifecycleMethods: true });
         const updateTotalKeysMock = jest.spyOn(wrapper.instance(), 'updateTotalKeys');
         wrapper.instance().componentDidMount();
         expect(updateTotalKeysMock).toHaveBeenCalled();
@@ -495,7 +495,7 @@ describe('RedisBiggestKeysPanel', () => {
      */
     describe('Update', () => {
       it('If options.interval was changed should clear interval', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }));
         const testedMethod = jest
           .spyOn(wrapper.instance(), 'clearRequestDataInterval')
           .mockImplementation(() => Promise.resolve());
@@ -507,7 +507,7 @@ describe('RedisBiggestKeysPanel', () => {
       });
 
       it('If panel width was changed should set formHeight', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }));
         wrapper.instance().formRef = {
           current: {
             getBoundingClientRect: () => ({
@@ -525,7 +525,7 @@ describe('RedisBiggestKeysPanel', () => {
       });
 
       it('If cursor was changed and equal=0, scanning data should be stopped', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }));
         const clearRequestDataIntervalMock = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
         wrapper.setState({
           cursor: '1',
@@ -538,7 +538,7 @@ describe('RedisBiggestKeysPanel', () => {
       });
 
       it('If query was changed, scanning should be stopped and queryConfig fields should be updated', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }));
         const clearRequestDataIntervalMock = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
         wrapper.setProps({
           data: {
@@ -589,7 +589,7 @@ describe('RedisBiggestKeysPanel', () => {
      */
     describe('Unmount', () => {
       it('Should clear interval', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval').mockImplementation(() => {});
         wrapper.instance().componentWillUnmount();
         expect(testedMethod).toHaveBeenCalled();
@@ -604,7 +604,7 @@ describe('RedisBiggestKeysPanel', () => {
         const options = {
           interval: 1000,
         };
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
         const button = wrapper.find(Button);
         button.simulate('click');
@@ -631,7 +631,7 @@ describe('RedisBiggestKeysPanel', () => {
         const options = {
           interval: null,
         };
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
         const button = wrapper.find(Button);
         button.simulate('click');
@@ -658,7 +658,7 @@ describe('RedisBiggestKeysPanel', () => {
         const options = {
           interval: null,
         };
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
         const button = wrapper.find(Button);
         button.simulate('click');
@@ -689,7 +689,7 @@ describe('RedisBiggestKeysPanel', () => {
         const options = {
           interval: 1000,
         };
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
         wrapper.instance().setRequestDataInterval();
         setImmediate(() => {
@@ -713,7 +713,7 @@ describe('RedisBiggestKeysPanel', () => {
             ],
           },
         };
-        shallow<RedisBiggestKeysPanel>(getComponent({ data: overrideData, options }));
+        shallow<RedisKeysPanel>(getComponent({ data: overrideData, options }));
         setImmediate(() => {
           expect(dataSourceSrvGetMock).toHaveBeenCalledWith('redis');
           done();
@@ -724,7 +724,7 @@ describe('RedisBiggestKeysPanel', () => {
         const options = {
           interval: 1000,
         };
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }), {
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }), {
           disableLifecycleMethods: true,
         });
         const setStateMock = jest.spyOn(wrapper.instance(), 'setState');
@@ -751,7 +751,7 @@ describe('RedisBiggestKeysPanel', () => {
             ],
           },
         };
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data: overrideData, options }), {
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data: overrideData, options }), {
           disableLifecycleMethods: true,
         });
         wrapper.setState({
@@ -780,7 +780,7 @@ describe('RedisBiggestKeysPanel', () => {
         const options = {
           interval: 1000,
         };
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({ data, options }));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
         wrapper.instance().setRequestDataInterval();
         setImmediate(() => {
           expect(wrapper.instance().requestDataTimer).toBeDefined();
@@ -805,7 +805,7 @@ describe('RedisBiggestKeysPanel', () => {
     });
 
     it('Should render table', async () => {
-      const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({}));
+      const wrapper = shallow<RedisKeysPanel>(getComponent({}));
       await wrapper.instance().updateData();
       expect(wrapper.find(Table).exists()).toBeTruthy();
     });
@@ -816,7 +816,7 @@ describe('RedisBiggestKeysPanel', () => {
    */
   describe('Sorting', () => {
     it('Should set default sort and update sorting', async () => {
-      const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({}), { disableLifecycleMethods: true });
+      const wrapper = shallow<RedisKeysPanel>(getComponent({}), { disableLifecycleMethods: true });
       const sortedFields = [{ displayName: DisplayNameByFieldName[FieldName.Memory], desc: true }];
       expect(wrapper.state().sortedFields).toEqual(sortedFields);
       await wrapper.instance().updateData();
@@ -838,7 +838,7 @@ describe('RedisBiggestKeysPanel', () => {
      */
     describe('Size', () => {
       it('Should use value from queryConfig.size and update it', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({}));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({}));
         const testedComponent = wrapper.findWhere((node) => node.prop('onChange') === wrapper.instance().onChangeSize);
         expect(testedComponent.prop('value')).toEqual(wrapper.state().queryConfig.size);
         testedComponent.simulate('change', { target: { value: '111' } });
@@ -853,7 +853,7 @@ describe('RedisBiggestKeysPanel', () => {
      */
     describe('Count', () => {
       it('Should use value from queryConfig.count and update it', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({}));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({}));
         const testedComponent = wrapper.findWhere((node) => node.prop('onChange') === wrapper.instance().onChangeCount);
         expect(testedComponent.prop('value')).toEqual(wrapper.state().queryConfig.count);
         testedComponent.simulate('change', { target: { value: '111' } });
@@ -868,7 +868,7 @@ describe('RedisBiggestKeysPanel', () => {
      */
     describe('MatchPattern', () => {
       it('Should use value from queryConfig.matchPattern and update it', () => {
-        const wrapper = shallow<RedisBiggestKeysPanel>(getComponent({}));
+        const wrapper = shallow<RedisKeysPanel>(getComponent({}));
         const testedComponent = wrapper.findWhere(
           (node) => node.prop('onChange') === wrapper.instance().onChangeMatchPattern
         );

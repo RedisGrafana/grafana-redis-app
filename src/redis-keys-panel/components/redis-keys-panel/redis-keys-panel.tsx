@@ -15,16 +15,13 @@ import { Button, InlineFormLabel, Input, Table, TableSortByFieldState } from '@g
 import {
   DefaultCount,
   DefaultInterval,
+  DefaultPattern,
   DefaultSize,
   DisplayNameByFieldName,
   FieldName,
-  PanelOptions,
-  Progress,
-  QueryConfig,
   QueryType,
-  RedisKey,
-  RedisQuery,
-} from '../types';
+} from '../../constants';
+import { PanelOptions, Progress, QueryConfig, RedisKey, RedisQuery } from '../../types';
 
 /**
  * Properties
@@ -79,9 +76,9 @@ interface State {
 }
 
 /**
- * Redis Biggest Keys Panel
+ * Redis Keys Panel
  */
-export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
+export class RedisKeysPanel extends PureComponent<Props, State> {
   /**
    * Convert data frame to redis keys array
    *
@@ -110,17 +107,17 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
   }
 
   /**
-   * Get sorted biggest keys
+   * Get sorted keys
    *
    * @param currentKeys
    * @param newKeys
    * @param count
    */
-  static getBiggestRedisKeys(currentKeys: RedisKey[], newKeys: RedisKey[], count: number): RedisKey[] {
+  static getSortedRedisKeys(currentKeys: RedisKey[], newKeys: RedisKey[], count: number): RedisKey[] {
     const allRedisKeys: RedisKey[] = [...currentKeys, ...newKeys];
 
     /**
-     * Create object with unique keys. If there are the same keys, should be used biggest memory value.
+     * Create object with unique keys. If there are the same keys, should be used max memory value.
      */
     const redisKeysMap = allRedisKeys.reduce((acc: { [key: string]: RedisKey }, item) => {
       const alreadyExistItem = acc[item.key];
@@ -284,7 +281,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     const queryConfig = {
       size: DefaultSize,
       count: DefaultCount,
-      matchPattern: '*',
+      matchPattern: DefaultPattern,
     };
 
     /**
@@ -360,10 +357,12 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
       }
     }
 
+    console.log(this.state);
+
     /**
      * Stop scanning data when cursor becomes 0
      */
-    if (prevState.cursor !== this.state.cursor && this.state.cursor === '0') {
+    if (this.state.cursor === '0') {
       this.clearRequestDataInterval();
     }
 
@@ -481,9 +480,9 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     /**
      * Calc actual keys
      */
-    const biggestKeys = RedisBiggestKeysPanel.getBiggestRedisKeys(
+    const keys = RedisKeysPanel.getSortedRedisKeys(
       this.state.redisKeys,
-      RedisBiggestKeysPanel.getRedisKeys(newDataFrame),
+      RedisKeysPanel.getRedisKeys(newDataFrame),
       this.state.queryConfig.size
     );
 
@@ -497,7 +496,7 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
     /**
      * Calculate processed
      */
-    const count = RedisBiggestKeysPanel.getCount(response.data[1]);
+    const count = RedisKeysPanel.getCount(response.data[1]);
     const newProcessed = progress.processed + count;
     progress.processed = Math.min(newProcessed, progress.total);
 
@@ -505,9 +504,9 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
      * Set State
      */
     this.setState({
-      dataFrame: RedisBiggestKeysPanel.getTableDataFrame(biggestKeys),
-      redisKeys: biggestKeys,
-      cursor: RedisBiggestKeysPanel.getCursorValue(response.data[1]),
+      dataFrame: RedisKeysPanel.getTableDataFrame(keys),
+      redisKeys: keys,
+      cursor: RedisKeysPanel.getCursorValue(response.data[1]),
       progress,
     });
 
@@ -696,19 +695,13 @@ export class RedisBiggestKeysPanel extends PureComponent<Props, State> {
 
           <div className="gf-form gf-form-spacing">
             <Button onClick={isUpdating ? this.clearRequestDataInterval : this.setRequestDataInterval}>
-              {isUpdating ? 'Stop scanning' : 'Start scanning'}
+              {isUpdating ? `Stop scanning (${progress.processed}/${progress.total})` : 'Start scanning'}
             </Button>
           </div>
-
-          {progress.total > 0 && (
-            <div className={css(`display: flex; align-items: center; height: 32px;`)}>
-              Processed: {progress.processed} of {progress.total}
-            </div>
-          )}
         </div>
 
         {!dataFrame || redisKeys.length === 0 ? (
-          <div>{this.state.isUpdating ? 'No keys found.' : 'No keys found. Please start scanning'}</div>
+          <div>{this.state.isUpdating ? 'No keys found.' : 'No keys found. Please start scanning.'}</div>
         ) : (
           <Table
             data={dataFrame}

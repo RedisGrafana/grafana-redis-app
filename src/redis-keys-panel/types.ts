@@ -43,7 +43,7 @@ export interface RedisQuery extends DataQuery {
   size?: number;
 
   /**
-   * Hom many keys are used for finding the biggest keys
+   * Hom many keys are used for finding the keys
    */
   count?: number;
 
@@ -52,47 +52,6 @@ export interface RedisQuery extends DataQuery {
    */
   match?: string;
 }
-
-/**
- * Default refresh interval
- */
-export const DefaultInterval = 1000;
-
-/**
- * Default result's size
- */
-export const DefaultSize = 10;
-
-/**
- * Default SCAN count
- */
-export const DefaultCount = 100;
-
-/**
- * Query Type
- */
-export enum QueryType {
-  Data = 'Data',
-  TotalKeys = 'TotalKeys',
-}
-
-/**
- * Fields
- */
-export enum FieldName {
-  Key = 'key',
-  Type = 'type',
-  Memory = 'memory',
-}
-
-/**
- * Table Field names
- */
-export const DisplayNameByFieldName = {
-  [FieldName.Key]: 'Key',
-  [FieldName.Type]: 'Type',
-  [FieldName.Memory]: 'Memory',
-};
 
 /**
  * Redis Keys
@@ -130,7 +89,7 @@ export interface QueryConfig {
   size: number;
 
   /**
-   * How many keys are used for finding the biggest keys
+   * How many keys are used for finding max memory keys
    */
   count: number;
 

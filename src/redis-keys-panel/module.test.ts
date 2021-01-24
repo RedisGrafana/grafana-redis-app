@@ -2,9 +2,9 @@ import { PanelPlugin } from '@grafana/data';
 import { plugin } from './module';
 
 /**
- * Biggest Keys Panel
+ * Keys Panel
  */
-describe('RedisBiggestKeysPanel', () => {
+describe('RedisKeysPanel', () => {
   it('Should be instance of PanelPlugin', () => {
     expect(plugin).toBeInstanceOf(PanelPlugin);
   });
