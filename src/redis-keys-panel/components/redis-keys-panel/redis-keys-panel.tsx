@@ -1,4 +1,3 @@
-import { css } from 'emotion';
 import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
 import { Observable } from 'rxjs';
 import {
@@ -356,8 +355,6 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
         });
       }
     }
-
-    console.log(this.state);
 
     /**
      * Stop scanning data when cursor becomes 0
