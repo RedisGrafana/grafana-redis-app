@@ -1,12 +1,13 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
-import { toDataFrame, FieldType, dateTime } from '@grafana/data';
+import { dateTime, FieldType, toDataFrame } from '@grafana/data';
 import { RadioButtonGroup, Switch } from '@grafana/ui';
-import { RedisLatencyPanel } from './redis-latency-panel';
-import { RedisLatencyPanelTable } from '../redis-latency-panel-table';
+import { DefaultInterval, FieldName, ViewMode } from '../../constants';
+import { SeriesMap } from '../../types';
 import { RedisLatencyPanelGraph } from '../redis-latency-panel-graph';
-import { FieldName, ViewMode, SeriesMap, DefaultInterval } from '../../types';
+import { RedisLatencyPanelTable } from '../redis-latency-panel-table';
+import { RedisLatencyPanel } from './redis-latency-panel';
 
 /**
  * Query Result

@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { FieldType, toDataFrame, dateTime } from '@grafana/data';
+import { dateTime, FieldType, toDataFrame } from '@grafana/data';
 import { Table } from '@grafana/ui';
+import { DisplayNameByFieldName, FieldName } from '../../constants';
 import { RedisLatencyPanelTable } from './redis-latency-panel-table';
-import { FieldName, DisplayNameByFieldName } from '../../types';
 
 /**
  * Latency Panel Table

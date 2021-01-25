@@ -10,7 +10,6 @@
       "large": "img/logo.svg",
       "small": "img/logo.svg"
     },
-    "screenshots": [],
     "updated": "%TODAY%",
     "version": "%VERSION%"
   },

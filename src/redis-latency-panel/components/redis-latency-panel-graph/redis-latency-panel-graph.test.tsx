@@ -1,6 +1,6 @@
 import React from 'react';
-import { dateTime, GraphSeriesXY, dateTimeParse } from '@grafana/data';
 import { shallow } from 'enzyme';
+import { dateTime, dateTimeParse, GraphSeriesXY } from '@grafana/data';
 import { RedisLatencyPanelGraph } from './redis-latency-panel-graph';
 
 /**

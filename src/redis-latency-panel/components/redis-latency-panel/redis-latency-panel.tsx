@@ -1,20 +1,11 @@
-import React, { PureComponent, ChangeEvent, createRef, RefObject } from 'react';
-import { Observable } from 'rxjs';
 import { css } from 'emotion';
+import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
+import { Observable } from 'rxjs';
 import { DataFrame, DataQueryRequest, DataQueryResponse, DateTime, dateTime, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { RadioButtonGroup, Switch, Label } from '@grafana/ui';
-import {
-  DefaultInterval,
-  FieldName,
-  MaxItemsPerSeries,
-  PanelOptions,
-  RedisQuery,
-  SeriesMap,
-  ValuesForCalculation,
-  ViewMode,
-  ViewModeOptions,
-} from '../../types';
+import { Label, RadioButtonGroup, Switch } from '@grafana/ui';
+import { DefaultInterval, FieldName, MaxItemsPerSeries, ViewMode, ViewModeOptions } from '../../constants';
+import { PanelOptions, RedisQuery, SeriesMap, ValuesForCalculation } from '../../types';
 import { RedisLatencyPanelGraph } from '../redis-latency-panel-graph';
 import { RedisLatencyPanelTable } from '../redis-latency-panel-table';
 
@@ -403,6 +394,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
       <>
         <div className="gf-form-inline" style={{ paddingBottom: 12 }} ref={this.formRef}>
           <RadioButtonGroup value={options.viewMode} options={ViewModeOptions} onChange={this.onChangeViewMode} />
+
           {options.viewMode === ViewMode.Graph && (
             <div
               className={css`

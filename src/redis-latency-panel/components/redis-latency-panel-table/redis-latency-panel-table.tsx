@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { DataFrame, FieldType, getDisplayProcessor, PanelProps, toDataFrame } from '@grafana/data';
 import { Table, TableSortByFieldState } from '@grafana/ui';
-import { DisplayNameByFieldName, FieldName, PanelOptions, SeriesMap } from '../../types';
+import { DisplayNameByFieldName, FieldName } from '../../constants';
+import { PanelOptions, SeriesMap } from '../../types';
 
 /**
  * Table Properties
