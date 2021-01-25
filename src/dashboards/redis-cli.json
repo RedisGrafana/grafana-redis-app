@@ -5,7 +5,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.2.1"
+      "version": "7.3.7"
     },
     {
       "type": "panel",
@@ -15,15 +15,27 @@
     },
     {
       "type": "panel",
+      "id": "redis-keys-panel",
+      "name": "Redis Max Memory Keys",
+      "version": "1.1.0"
+    },
+    {
+      "type": "panel",
       "id": "redis-cli-panel",
       "name": "Redis CLI",
-      "version": "%VERSION%"
+      "version": "1.1.0"
     },
     {
       "type": "datasource",
       "id": "redis-datasource",
       "name": "Redis",
-      "version": "1.2.0"
+      "version": "1.3.1"
+    },
+    {
+      "type": "panel",
+      "id": "redis-latency-panel",
+      "name": "Redis Latency",
+      "version": "%VERSION%"
     },
     {
       "type": "panel",
@@ -49,7 +61,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1602641665666,
+  "iteration": 1611297663738,
   "links": [],
   "panels": [
     {
@@ -107,7 +119,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.3.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -236,7 +248,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.3.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -356,7 +368,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.3.7",
       "targets": [
         {
           "command": "info",
@@ -422,7 +434,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.3.7",
       "targets": [
         {
           "command": "info",
@@ -489,7 +501,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.3.7",
       "targets": [
         {
           "command": "info",
@@ -553,12 +565,13 @@
         "height": 20,
         "help": {
           "since": "1.0.0",
-          "summary": "Ping the server.",
-          "syntax": "PING [message]",
-          "url": "https://redis.io/commands/ping"
+          "summary": "Get information and statistics about the server.",
+          "syntax": "INFO [section]",
+          "url": "https://redis.io/commands/info"
         },
-        "output": "Redis> ping\nPONG",
-        "query": ""
+        "output": "",
+        "query": "",
+        "raw": false
       },
       "pluginVersion": "7.2.1",
       "targets": [
@@ -636,7 +649,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.3.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -788,7 +801,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.3.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -919,7 +932,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.3.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1037,7 +1050,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.3.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1112,6 +1125,71 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 27,
+      "panels": [],
+      "title": "Advanced",
+      "type": "row"
+    },
+    {
+      "datasource": "$redis",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 25
+      },
+      "id": 29,
+      "options": {
+        "hideZero": true,
+        "interval": 1000,
+        "maxItemsPerSeries": 300,
+        "viewMode": "Graph"
+      },
+      "pluginVersion": "7.3.7",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Latency",
+      "type": "redis-latency-panel"
+    },
+    {
+      "datasource": "$redis",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 25
+      },
+      "id": 25,
+      "options": {
+        "interval": 1000
+      },
+      "pluginVersion": "7.3.7",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Keys consuming a lot of memory (CAUSE LATENCY - USE OFF-PEAK)",
+      "type": "redis-keys-panel"
     }
   ],
   "refresh": "",
@@ -1126,6 +1204,7 @@
           "text": "Redis",
           "value": "Redis"
         },
+        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Redis",
@@ -1151,5 +1230,5 @@
   "timezone": "",
   "title": "Redis CLI",
   "uid": "_SGxCBNGk",
-  "version": 4
+  "version": 13
 }
