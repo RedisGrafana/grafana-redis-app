@@ -1,4 +1,5 @@
 import { PanelPlugin } from '@grafana/data';
+import { ViewMode } from './constants';
 import { plugin } from './module';
 
 /**
@@ -10,16 +11,29 @@ describe('RedisLatencyPanel', () => {
   });
 
   it('Should add interval input', () => {
+    /**
+     * Builder
+     */
     const builder: any = {
       addNumberInput: jest.fn().mockImplementation(() => builder),
       addRadio: jest.fn().mockImplementation(() => builder),
-      addBooleanSwitch: jest.fn().mockImplementation(() => builder),
+      addBooleanSwitch: jest.fn().mockImplementation((config) => ({
+        ...builder,
+        switchField: config,
+      })),
     };
-    plugin['registerOptionEditors'](builder);
+
+    const result = plugin['registerOptionEditors'](builder);
+
+    /**
+     * Interval
+     */
     expect(builder.addNumberInput).toHaveBeenCalledWith({
       path: 'interval',
-      name: 'How often to update data in ms',
+      name: 'Interval to run INFO command, ms',
       defaultValue: 1000,
     });
+    expect(result.switchField.showIf({ viewMode: ViewMode.Graph })).toBeTruthy();
+    expect(result.switchField.showIf({ viewMode: ViewMode.Table })).not.toBeTruthy();
   });
 });
