@@ -1,6 +1,7 @@
 import { PanelPlugin } from '@grafana/data';
 import { RedisLatencyPanel } from './components';
-import { DefaultInterval, MaxItemsPerSeries, PanelOptions, ViewMode } from './types';
+import { DefaultInterval, MaxItemsPerSeries, ViewMode, ViewModeOptions } from './constants';
+import { PanelOptions } from './types';
 
 /**
  * Panel Plugin
@@ -9,7 +10,7 @@ export const plugin = new PanelPlugin<PanelOptions>(RedisLatencyPanel).setPanelO
   return builder
     .addNumberInput({
       path: 'interval',
-      name: 'How often to update data in ms',
+      name: 'Interval to run INFO command, ms',
       defaultValue: DefaultInterval,
     })
     .addRadio({
@@ -17,21 +18,12 @@ export const plugin = new PanelPlugin<PanelOptions>(RedisLatencyPanel).setPanelO
       name: 'View mode',
       defaultValue: ViewMode.Table,
       settings: {
-        options: [
-          {
-            label: 'Table',
-            value: ViewMode.Table,
-          },
-          {
-            label: 'Graph',
-            value: ViewMode.Graph,
-          },
-        ],
+        options: ViewModeOptions,
       },
     })
     .addNumberInput({
       path: 'maxItemsPerSeries',
-      name: 'How many items could be kept per command',
+      name: 'Number of Samples per command',
       defaultValue: MaxItemsPerSeries,
     })
     .addBooleanSwitch({

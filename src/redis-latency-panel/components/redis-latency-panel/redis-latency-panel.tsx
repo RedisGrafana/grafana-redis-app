@@ -1,17 +1,11 @@
-import React, { PureComponent } from 'react';
+import { css } from 'emotion';
+import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
 import { Observable } from 'rxjs';
 import { DataFrame, DataQueryRequest, DataQueryResponse, DateTime, dateTime, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import {
-  DefaultInterval,
-  FieldName,
-  MaxItemsPerSeries,
-  PanelOptions,
-  RedisQuery,
-  SeriesMap,
-  ValuesForCalculation,
-  ViewMode,
-} from '../../types';
+import { Label, RadioButtonGroup, Switch } from '@grafana/ui';
+import { DefaultInterval, FieldName, MaxItemsPerSeries, ViewMode, ViewModeOptions } from '../../constants';
+import { PanelOptions, RedisQuery, SeriesMap, ValuesForCalculation } from '../../types';
 import { RedisLatencyPanelGraph } from '../redis-latency-panel-graph';
 import { RedisLatencyPanelTable } from '../redis-latency-panel-table';
 
@@ -37,6 +31,11 @@ interface State {
    * @type {SeriesMap}
    */
   seriesMap: SeriesMap;
+
+  /**
+   * Form height
+   */
+  formHeight: number;
 }
 
 /**
@@ -166,6 +165,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
         time,
         value: values[index],
       };
+
       if (!result[command]) {
         result[command] = [value];
       } else if (result[command].length + 1 > itemsLimit) {
@@ -186,7 +186,13 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
    */
   state: State = {
     seriesMap: {},
+    formHeight: 0,
   };
+
+  /**
+   * Form html element
+   */
+  formRef: RefObject<HTMLDivElement> = createRef();
 
   /**
    * Request Data Timer
@@ -198,17 +204,32 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
    */
   componentDidMount(): void {
     this.updateData();
+
     if (this.props.options.interval !== undefined) {
       this.setRequestDataInterval();
+    }
+
+    if (this.formRef.current) {
+      this.setState({
+        formHeight: this.formRef.current.getBoundingClientRect().height,
+      });
     }
   }
 
   /**
    * Update
    */
-  componentDidUpdate(prevProps: Readonly<Props>): void {
+  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>): void {
     if (prevProps.options.interval !== this.props.options.interval) {
       this.setRequestDataInterval();
+    }
+
+    if (prevProps.options !== this.props.options || prevProps.width !== this.props.width) {
+      if (this.formRef.current) {
+        this.setState({
+          formHeight: this.formRef.current.getBoundingClientRect().height,
+        });
+      }
     }
   }
 
@@ -278,7 +299,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
     );
 
     const lastUpdatedTime = dateTime();
-    const itemsLimit = this.props.options?.maxItemsPerSeries || MaxItemsPerSeries;
+    const itemsLimit = this.props.options.maxItemsPerSeries || MaxItemsPerSeries;
 
     const newSeriesMap = RedisLatencyPanel.getSeriesMap(
       seriesMap,
@@ -323,33 +344,84 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
     }
   }
 
-  render() {
-    /**
-     * If no dataFrame return null
-     */
-    if (!this.state.dataFrame) {
-      return null;
+  /**
+   * Change view mode
+   * @param event
+   */
+  onChangeViewMode = (event?: ViewMode) => {
+    if (event === undefined) {
+      return;
     }
+
+    const { onOptionsChange, options } = this.props;
+
+    onOptionsChange({
+      ...options,
+      viewMode: event,
+    });
+  };
+
+  /**
+   * Change hide zero options
+   * @param event
+   */
+  onChangeHideZero = (event: ChangeEvent<HTMLInputElement>) => {
+    const { onOptionsChange, options } = this.props;
+
+    onOptionsChange({
+      ...options,
+      hideZero: event.target.checked,
+    });
+  };
+
+  render() {
+    const { options, height } = this.props;
+    const { dataFrame, seriesMap, formHeight } = this.state;
+
+    let component = null;
+    const contentHeight = height - formHeight;
 
     /**
      * Return RedisLatencyPanelTable
      */
-    if (this.props.options?.viewMode === ViewMode.Table) {
-      return (
-        <RedisLatencyPanelTable {...this.props} dataFrame={this.state.dataFrame} seriesMap={this.state.seriesMap} />
-      );
+    if (dataFrame) {
+      if (options.viewMode === ViewMode.Table) {
+        component = (
+          <RedisLatencyPanelTable {...this.props} height={contentHeight} dataFrame={dataFrame} seriesMap={seriesMap} />
+        );
+      }
+      if (options.viewMode === ViewMode.Graph) {
+        component = <RedisLatencyPanelGraph {...this.props} height={contentHeight} seriesMap={seriesMap} />;
+      }
     }
 
-    /**
-     * Return RedisLatencyPanelGraph
-     */
-    if (this.props.options?.viewMode === ViewMode.Graph) {
-      return <RedisLatencyPanelGraph {...this.props} seriesMap={this.state.seriesMap} />;
-    }
+    return (
+      <>
+        <div className="gf-form-inline" style={{ paddingBottom: 12 }} ref={this.formRef}>
+          <RadioButtonGroup value={options.viewMode} options={ViewModeOptions} onChange={this.onChangeViewMode} />
 
-    /**
-     * Return null by default
-     */
-    return null;
+          {options.viewMode === ViewMode.Graph && (
+            <div
+              className={css`
+                display: flex;
+                align-items: center;
+                margin: 4px 0 4px 8px;
+              `}
+            >
+              <Switch css="" value={options.hideZero} onChange={this.onChangeHideZero} />
+              <Label
+                className={css`
+                  margin: 0 0 0 4px;
+                `}
+              >
+                Hide commands which have only zero values
+              </Label>
+            </div>
+          )}
+        </div>
+
+        <div style={{ height: contentHeight }}>{component}</div>
+      </>
+    );
   }
 }

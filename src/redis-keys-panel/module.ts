@@ -9,7 +9,7 @@ import { PanelOptions } from './types';
 export const plugin = new PanelPlugin<PanelOptions>(RedisKeysPanel).setPanelOptions((builder) => {
   return builder.addNumberInput({
     path: 'interval',
-    name: 'Interval to run SCAN command',
+    name: 'Interval to run SCAN command, ms',
     defaultValue: DefaultInterval,
   });
 });
