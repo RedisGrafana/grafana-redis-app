@@ -15,8 +15,8 @@
     },
     {
       "type": "panel",
-      "id": "redis-biggest-keys-panel",
-      "name": "Redis Biggest Keys",
+      "id": "redis-keys-panel",
+      "name": "Redis Max Memory Keys",
       "version": "1.1.0"
     },
     {
