@@ -653,7 +653,7 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
       <>
         <div className="gf-form gf-form-inline" ref={this.formRef}>
           <div className="gf-form gf-form-spacing">
-            <InlineFormLabel width={4}>Size</InlineFormLabel>
+            <InlineFormLabel width={5}>Top keys</InlineFormLabel>
             <Input
               name="size"
               value={queryConfig.size}
@@ -666,7 +666,12 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
           </div>
 
           <div className="gf-form gf-form-spacing">
-            <InlineFormLabel width={4}>Count</InlineFormLabel>
+            <InlineFormLabel
+              tooltip="The amount of work that should be done at every call in order to retrieve elements from the collection."
+              width={5}
+            >
+              Count
+            </InlineFormLabel>
             <Input
               name="count"
               value={queryConfig.count}

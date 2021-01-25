@@ -21,7 +21,7 @@ describe('RedisKeysPanel', () => {
      */
     expect(builder.addNumberInput).toHaveBeenCalledWith({
       path: 'interval',
-      name: 'How ofter to get a new batch of keys',
+      name: 'Interval to run SCAN command',
       defaultValue: 1000,
     });
   });
