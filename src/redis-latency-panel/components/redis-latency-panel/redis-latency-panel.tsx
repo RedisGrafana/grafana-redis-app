@@ -165,6 +165,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
         time,
         value: values[index],
       };
+
       if (!result[command]) {
         result[command] = [value];
       } else if (result[command].length + 1 > itemsLimit) {
@@ -203,9 +204,11 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
    */
   componentDidMount(): void {
     this.updateData();
+
     if (this.props.options.interval !== undefined) {
       this.setRequestDataInterval();
     }
+
     if (this.formRef.current) {
       this.setState({
         formHeight: this.formRef.current.getBoundingClientRect().height,
@@ -220,6 +223,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
     if (prevProps.options.interval !== this.props.options.interval) {
       this.setRequestDataInterval();
     }
+
     if (prevProps.options !== this.props.options || prevProps.width !== this.props.width) {
       if (this.formRef.current) {
         this.setState({
@@ -376,6 +380,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
 
     let component = null;
     const contentHeight = height - formHeight;
+
     /**
      * Return RedisLatencyPanelTable
      */
@@ -414,6 +419,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
             </div>
           )}
         </div>
+
         <div style={{ height: contentHeight }}>{component}</div>
       </>
     );

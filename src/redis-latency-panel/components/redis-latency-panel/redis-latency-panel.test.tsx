@@ -102,6 +102,10 @@ describe('RedisLatencyPanel', () => {
           },
         })
       );
+
+      /**
+       * Query
+       */
       await wrapper.instance().makeQuery();
       expect(dataSourceSrvGetMock).toHaveBeenCalledWith('Redis111');
       expect(dataSourceMock.query).toHaveBeenCalledWith({
@@ -127,6 +131,10 @@ describe('RedisLatencyPanel', () => {
           },
         })
       );
+
+      /**
+       * Query
+       */
       await wrapper.instance().makeQuery();
       expect(dataSourceSrvGetMock).toHaveBeenCalledWith('Redis111');
       expect(dataSourceMock.query).toHaveBeenCalledWith({
@@ -263,6 +271,10 @@ describe('RedisLatencyPanel', () => {
           },
         ],
       };
+
+      /**
+       * Data frame
+       */
       const dataFrame = toDataFrame({
         name: 'data',
         fields: [
@@ -273,8 +285,13 @@ describe('RedisLatencyPanel', () => {
           },
         ],
       });
+
       const time = dateTime();
       const values = [10, 20];
+
+      /**
+       * Result
+       */
       const result = RedisLatencyPanel.getSeriesMap(seriesMap, dataFrame, values, time);
       const expectedResult: SeriesMap = {
         get: [
@@ -307,6 +324,10 @@ describe('RedisLatencyPanel', () => {
           },
         ],
       };
+
+      /**
+       * Data frame
+       */
       const dataFrame = toDataFrame({
         name: 'data',
         fields: [
@@ -317,8 +338,13 @@ describe('RedisLatencyPanel', () => {
           },
         ],
       });
+
       const time = dateTime();
       const values = [10, 20];
+
+      /**
+       * Result
+       */
       const result = RedisLatencyPanel.getSeriesMap(seriesMap, dataFrame, values, time, 2);
       const expectedResult: SeriesMap = {
         get: [
@@ -411,11 +437,13 @@ describe('RedisLatencyPanel', () => {
           .mockImplementation(() => Promise.resolve());
         wrapper.instance().componentDidMount();
         expect(testedMethod).toHaveBeenCalled();
+
         testedMethod.mockClear();
         wrapper.setProps({
           options: { interval: 2000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000, hideZero: false },
         });
         expect(testedMethod).toHaveBeenCalled();
+
         testedMethod.mockClear();
         wrapper.setProps({
           options: { interval: 2000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000, hideZero: false },
@@ -426,6 +454,7 @@ describe('RedisLatencyPanel', () => {
       it('If panel width was changed should recalc formHeight', async () => {
         const wrapper = shallow<RedisLatencyPanel>(getComponent({ data }));
         expect(wrapper.state().formHeight).toEqual(0);
+
         const getBoundingClientRectMock = jest.fn().mockImplementation(() => ({
           height: 105,
         }));
@@ -438,6 +467,7 @@ describe('RedisLatencyPanel', () => {
           height: 300,
         });
         expect(wrapper.state().formHeight).toEqual(0);
+
         getBoundingClientRectMock.mockImplementationOnce(() => ({
           height: 200,
         }));
@@ -445,6 +475,7 @@ describe('RedisLatencyPanel', () => {
           width: 300,
         });
         expect(wrapper.state().formHeight).toEqual(200);
+
         wrapper.instance().formRef = {
           current: null,
         };
@@ -483,6 +514,7 @@ describe('RedisLatencyPanel', () => {
         setImmediate(() => {
           testedMethod.mockClear();
           let checksCount = 2;
+
           const check = () => {
             expect(testedMethod).toHaveBeenCalled();
 
@@ -529,8 +561,10 @@ describe('RedisLatencyPanel', () => {
           viewMode: ViewMode.Table,
           maxItemsPerSeries: 1000,
         };
+
         const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
+
         setImmediate(() => {
           wrapper.instance().setRequestDataInterval();
           expect(testedMethod).toHaveBeenCalled();
@@ -544,6 +578,7 @@ describe('RedisLatencyPanel', () => {
           viewMode: ViewMode.Table,
           maxItemsPerSeries: 1000,
         };
+
         const overrideData = {
           ...data,
           request: {
@@ -565,12 +600,14 @@ describe('RedisLatencyPanel', () => {
         const options = {
           interval: 1000,
         };
+
         const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }), { disableLifecycleMethods: true });
         jest.spyOn(wrapper.instance(), 'makeQuery').mockImplementation(() =>
           Promise.resolve({
             data: [],
           })
         );
+
         const setStateMock = jest.spyOn(wrapper.instance(), 'setState');
         await wrapper.instance().updateData();
         expect(setStateMock).not.toHaveBeenCalled();
@@ -587,6 +624,7 @@ describe('RedisLatencyPanel', () => {
           viewMode: ViewMode.Table,
           maxItemsPerSeries: 1000,
         };
+
         const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
         setImmediate(() => {
           expect(wrapper.instance().requestDataTimer).toBeDefined();
@@ -617,6 +655,7 @@ describe('RedisLatencyPanel', () => {
       const wrapper = shallow(
         getComponent({ options: { interval: 1000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000 } })
       );
+
       setImmediate(() => {
         expect(wrapper.find(RedisLatencyPanelTable).exists()).toBeTruthy();
         done();
@@ -627,6 +666,7 @@ describe('RedisLatencyPanel', () => {
       const wrapper = shallow(
         getComponent({ options: { interval: 1000, viewMode: ViewMode.Graph, maxItemsPerSeries: 1000 } })
       );
+
       setImmediate(() => {
         expect(wrapper.find(RedisLatencyPanelGraph).exists()).toBeTruthy();
         done();
@@ -648,8 +688,10 @@ describe('RedisLatencyPanel', () => {
         const wrapper = shallow(getComponent({ options, onOptionsChange }));
         const testedComponent = wrapper.find(RadioButtonGroup);
         expect(testedComponent.prop('value')).toEqual(ViewMode.Graph);
+
         testedComponent.simulate('change');
         expect(onOptionsChange).not.toHaveBeenCalled();
+
         testedComponent.simulate('change', ViewMode.Table);
         expect(onOptionsChange).toHaveBeenCalledWith({
           ...options,
@@ -666,6 +708,7 @@ describe('RedisLatencyPanel', () => {
         const options = { interval: 1000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000 };
         const wrapper = shallow(getComponent({ options }));
         expect(wrapper.find(Switch).exists()).not.toBeTruthy();
+
         wrapper.setProps({
           options: {
             ...options,
@@ -678,9 +721,11 @@ describe('RedisLatencyPanel', () => {
       it('Should apply options value and change', () => {
         const onOptionsChange = jest.fn();
         const options = { interval: 1000, viewMode: ViewMode.Graph, maxItemsPerSeries: 1000, hideZero: false };
+
         const wrapper = shallow(getComponent({ options, onOptionsChange }));
         const testedComponent = wrapper.find(Switch);
         expect(testedComponent.prop('value')).toEqual(false);
+
         testedComponent.simulate('change', { target: { checked: true } });
         expect(onOptionsChange).toHaveBeenCalledWith({
           ...options,

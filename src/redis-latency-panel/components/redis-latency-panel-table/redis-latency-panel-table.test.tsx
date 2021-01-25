@@ -16,6 +16,9 @@ describe('RedisLatencyPanel', () => {
    */
   describe('getTableDataFrame', () => {
     it('Should add new column with latency values', () => {
+      /**
+       * Fields
+       */
       const fields = [
         {
           type: FieldType.string,
@@ -23,6 +26,10 @@ describe('RedisLatencyPanel', () => {
           values: ['get', 'info'],
         },
       ];
+
+      /**
+       * Series
+       */
       const seriesMap = {
         get: [
           {
@@ -31,10 +38,15 @@ describe('RedisLatencyPanel', () => {
           },
         ],
       };
+
+      /**
+       * Data frame
+       */
       const dataFrame = toDataFrame({
         name: 'prev',
         fields,
       });
+
       const tableDataFrame = RedisLatencyPanelTable.getTableDataFrame(dataFrame, seriesMap);
       const expectedDataFrame = toDataFrame({
         name: 'tableDataFrame',
@@ -56,6 +68,9 @@ describe('RedisLatencyPanel', () => {
     });
 
     it('Should work without fails if no command field', () => {
+      /**
+       * Fields
+       */
       const fields = [
         {
           type: FieldType.number,
@@ -63,11 +78,17 @@ describe('RedisLatencyPanel', () => {
           values: [1, 2],
         },
       ];
+
       const seriesMap = {};
+
+      /**
+       * Data frame
+       */
       const dataFrame = toDataFrame({
         name: 'prev',
         fields,
       });
+
       const tableDataFrame = RedisLatencyPanelTable.getTableDataFrame(dataFrame, seriesMap);
       const expectedDataFrame = toDataFrame({
         name: 'tableDataFrame',
@@ -94,6 +115,9 @@ describe('RedisLatencyPanel', () => {
    */
   describe('Rendering', () => {
     it('Should render table', () => {
+      /**
+       * Fields
+       */
       const fields = [
         {
           type: FieldType.string,
@@ -101,6 +125,10 @@ describe('RedisLatencyPanel', () => {
           values: ['get', 'info'],
         },
       ];
+
+      /**
+       * Series
+       */
       const seriesMap = {
         get: [
           {
@@ -109,10 +137,15 @@ describe('RedisLatencyPanel', () => {
           },
         ],
       };
+
+      /**
+       * Data frame
+       */
       const dataFrame = toDataFrame({
         name: 'prev',
         fields,
       });
+
       const wrapper = shallow(getComponent({ dataFrame, seriesMap }));
       const tableComponent = wrapper.find(Table);
       expect(tableComponent.exists()).toBeTruthy();
@@ -124,6 +157,9 @@ describe('RedisLatencyPanel', () => {
    */
   describe('Sorting', () => {
     it('Should set default sort and update sorting', async () => {
+      /**
+       * Fields
+       */
       const fields = [
         {
           type: FieldType.string,
@@ -131,6 +167,10 @@ describe('RedisLatencyPanel', () => {
           values: ['get', 'info'],
         },
       ];
+
+      /**
+       * Series
+       */
       const seriesMap = {
         get: [
           {
@@ -139,17 +179,25 @@ describe('RedisLatencyPanel', () => {
           },
         ],
       };
+
+      /**
+       * Data frame
+       */
       const dataFrame = toDataFrame({
         name: 'prev',
         fields,
       });
+
       const wrapper = shallow<RedisLatencyPanelTable>(getComponent({ dataFrame, seriesMap }), {
         disableLifecycleMethods: true,
       });
+
       const sortedFields = [{ displayName: DisplayNameByFieldName[FieldName.Latency], desc: true }];
       expect(wrapper.state().sortedFields).toEqual(sortedFields);
+
       const tableComponent = wrapper.find(Table);
       expect(tableComponent.prop('initialSortBy')).toEqual(sortedFields);
+
       tableComponent.simulate('sortByChange', [
         { displayName: DisplayNameByFieldName[FieldName.Duration], desc: true },
       ]);
