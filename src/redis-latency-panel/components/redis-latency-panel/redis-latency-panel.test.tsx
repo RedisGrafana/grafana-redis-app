@@ -2,10 +2,11 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
 import { toDataFrame, FieldType, dateTime } from '@grafana/data';
+import { RadioButtonGroup, Switch } from '@grafana/ui';
 import { RedisLatencyPanel } from './redis-latency-panel';
 import { RedisLatencyPanelTable } from '../redis-latency-panel-table';
 import { RedisLatencyPanelGraph } from '../redis-latency-panel-graph';
-import { FieldName, ViewMode, SeriesMap } from '../../types';
+import { FieldName, ViewMode, SeriesMap, DefaultInterval } from '../../types';
 
 /**
  * Query Result
@@ -200,6 +201,23 @@ describe('RedisLatencyPanel', () => {
         duration: [100, 200],
       });
     });
+
+    it('Should work if no needed fields', () => {
+      const dataFrame = toDataFrame({
+        name: 'dataFrame',
+        fields: [
+          {
+            name: 'abc',
+            type: FieldType.number,
+            values: [1, 2],
+          },
+        ],
+      });
+      expect(RedisLatencyPanel.getValuesForCalculation(dataFrame)).toEqual({
+        calls: [],
+        duration: [],
+      });
+    });
   });
 
   /**
@@ -366,6 +384,19 @@ describe('RedisLatencyPanel', () => {
         wrapper.instance().componentDidMount();
         expect(testedMethod).not.toHaveBeenCalled();
       });
+
+      it('Should calc formHeight', () => {
+        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data }), { disableLifecycleMethods: true });
+        wrapper.instance().formRef = {
+          current: {
+            getBoundingClientRect: () => ({
+              height: 105,
+            }),
+          },
+        } as any;
+        wrapper.instance().componentDidMount();
+        expect(wrapper.state().formHeight).toEqual(105);
+      });
     });
 
     /**
@@ -389,6 +420,37 @@ describe('RedisLatencyPanel', () => {
           options: { interval: 2000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000, hideZero: false },
         });
         expect(testedMethod).not.toHaveBeenCalled();
+      });
+
+      it('If panel width was changed should recalc formHeight', async () => {
+        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data }));
+        expect(wrapper.state().formHeight).toEqual(0);
+        const getBoundingClientRectMock = jest.fn().mockImplementation(() => ({
+          height: 105,
+        }));
+        wrapper.instance().formRef = {
+          current: {
+            getBoundingClientRect: getBoundingClientRectMock,
+          },
+        } as any;
+        wrapper.setProps({
+          height: 300,
+        });
+        expect(wrapper.state().formHeight).toEqual(0);
+        getBoundingClientRectMock.mockImplementationOnce(() => ({
+          height: 200,
+        }));
+        wrapper.setProps({
+          width: 300,
+        });
+        expect(wrapper.state().formHeight).toEqual(200);
+        wrapper.instance().formRef = {
+          current: null,
+        };
+        wrapper.setProps({
+          width: 400,
+        });
+        expect(wrapper.state().formHeight).toEqual(200);
       });
     });
 
@@ -435,6 +497,31 @@ describe('RedisLatencyPanel', () => {
         });
       });
 
+      it('Should set timer with default interval if no interval option and request data with interval', (done) => {
+        const options = {
+          interval: null,
+        };
+        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }));
+        const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
+
+        setImmediate(() => {
+          testedMethod.mockClear();
+          let checksCount = 2;
+          const check = () => {
+            expect(testedMethod).toHaveBeenCalled();
+
+            checksCount--;
+            if (checksCount > 0) {
+              testedMethod.mockClear();
+              setTimeout(check, DefaultInterval);
+            } else {
+              done();
+            }
+          };
+          setTimeout(check, DefaultInterval);
+        });
+      });
+
       it('Should clear interval before setting new one', (done) => {
         const options = {
           interval: 1000,
@@ -472,6 +559,21 @@ describe('RedisLatencyPanel', () => {
           done();
         });
       });
+
+      it('Should not update values if no dataFrame', async () => {
+        const options = {
+          interval: 1000,
+        };
+        const wrapper = shallow<RedisLatencyPanel>(getComponent({ data, options }), { disableLifecycleMethods: true });
+        jest.spyOn(wrapper.instance(), 'makeQuery').mockImplementation(() =>
+          Promise.resolve({
+            data: [],
+          })
+        );
+        const setStateMock = jest.spyOn(wrapper.instance(), 'setState');
+        await wrapper.instance().updateData();
+        expect(setStateMock).not.toHaveBeenCalled();
+      });
     });
 
     /**
@@ -489,6 +591,8 @@ describe('RedisLatencyPanel', () => {
           expect(wrapper.instance().requestDataTimer).toBeDefined();
           wrapper.instance().clearRequestDataInterval();
           expect(wrapper.instance().requestDataTimer).not.toBeDefined();
+          wrapper.instance().clearRequestDataInterval();
+          expect(wrapper.instance().requestDataTimer).not.toBeDefined();
           done();
         });
       });
@@ -502,7 +606,8 @@ describe('RedisLatencyPanel', () => {
     it('If no dataFrame nothing should be rendered', (done) => {
       const wrapper = shallow(getComponent({ data: { request: {} } }));
       setImmediate(() => {
-        expect(wrapper.get(0)).not.toBeTruthy();
+        expect(wrapper.find(RedisLatencyPanelTable).exists()).not.toBeTruthy();
+        expect(wrapper.find(RedisLatencyPanelGraph).exists()).not.toBeTruthy();
         done();
       });
     });
@@ -524,6 +629,62 @@ describe('RedisLatencyPanel', () => {
       setImmediate(() => {
         expect(wrapper.find(RedisLatencyPanelGraph).exists()).toBeTruthy();
         done();
+      });
+    });
+  });
+
+  /**
+   * Options
+   */
+  describe('Options', () => {
+    /**
+     * ViewMode
+     */
+    describe('ViewMode', () => {
+      it('Should apply options value and change', () => {
+        const onOptionsChange = jest.fn();
+        const options = { interval: 1000, viewMode: ViewMode.Graph, maxItemsPerSeries: 1000 };
+        const wrapper = shallow(getComponent({ options, onOptionsChange }));
+        const testedComponent = wrapper.find(RadioButtonGroup);
+        expect(testedComponent.prop('value')).toEqual(ViewMode.Graph);
+        testedComponent.simulate('change');
+        expect(onOptionsChange).not.toHaveBeenCalled();
+        testedComponent.simulate('change', ViewMode.Table);
+        expect(onOptionsChange).toHaveBeenCalledWith({
+          ...options,
+          viewMode: ViewMode.Table,
+        });
+      });
+    });
+
+    /**
+     * HideZero
+     */
+    describe('HideZero', () => {
+      it('Should be shown when viewMode=Graph', () => {
+        const options = { interval: 1000, viewMode: ViewMode.Table, maxItemsPerSeries: 1000 };
+        const wrapper = shallow(getComponent({ options }));
+        expect(wrapper.find(Switch).exists()).not.toBeTruthy();
+        wrapper.setProps({
+          options: {
+            ...options,
+            viewMode: ViewMode.Graph,
+          },
+        });
+        expect(wrapper.find(Switch).exists()).toBeTruthy();
+      });
+
+      it('Should apply options value and change', () => {
+        const onOptionsChange = jest.fn();
+        const options = { interval: 1000, viewMode: ViewMode.Graph, maxItemsPerSeries: 1000, hideZero: false };
+        const wrapper = shallow(getComponent({ options, onOptionsChange }));
+        const testedComponent = wrapper.find(Switch);
+        expect(testedComponent.prop('value')).toEqual(false);
+        testedComponent.simulate('change', { target: { checked: true } });
+        expect(onOptionsChange).toHaveBeenCalledWith({
+          ...options,
+          hideZero: true,
+        });
       });
     });
   });

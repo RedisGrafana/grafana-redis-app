@@ -1,6 +1,6 @@
 import { PanelPlugin } from '@grafana/data';
 import { RedisLatencyPanel } from './components';
-import { DefaultInterval, MaxItemsPerSeries, PanelOptions, ViewMode } from './types';
+import { DefaultInterval, MaxItemsPerSeries, PanelOptions, ViewMode, ViewModeOptions } from './types';
 
 /**
  * Panel Plugin
@@ -17,16 +17,7 @@ export const plugin = new PanelPlugin<PanelOptions>(RedisLatencyPanel).setPanelO
       name: 'View mode',
       defaultValue: ViewMode.Table,
       settings: {
-        options: [
-          {
-            label: 'Table',
-            value: ViewMode.Table,
-          },
-          {
-            label: 'Graph',
-            value: ViewMode.Graph,
-          },
-        ],
+        options: ViewModeOptions,
       },
     })
     .addNumberInput({
