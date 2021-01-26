@@ -1,8 +1,8 @@
 import { PanelPlugin } from '@grafana/data';
 import { plugin } from './module';
 
-/*
- Gears Panel
+/**
+ * RedisGears Panel
  */
 describe('RedisGearsPanel', () => {
   it('Should be instance of PanelPlugin', () => {

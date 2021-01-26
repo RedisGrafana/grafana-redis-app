@@ -1,18 +1,19 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { CodeEditor, Input, Switch, Button, Table, Alert } from '@grafana/ui';
-import { toDataFrame, LoadingState, FieldType } from '@grafana/data';
 import { Observable } from 'rxjs';
+import { FieldType, LoadingState, toDataFrame } from '@grafana/data';
+import { Alert, Button, CodeEditor, Input, Switch, Table } from '@grafana/ui';
 import { RedisGearsPanel } from './redis-gears-panel';
 
 /**
- * getComponent
+ * Get Component
+ *
  * @param props
  */
 const getComponent = ({ ...props } = {}) => <RedisGearsPanel {...(props as any)} />;
 
-/*
- DataSource
+/**
+ * Data Source
  */
 const dataSourceMock = {
   query: jest.fn().mockImplementation(
@@ -40,7 +41,7 @@ jest.mock('@grafana/runtime', () => ({
 }));
 
 /**
- * RedisGearsPanel
+ * RedisGears Panel
  */
 describe('RedisGearsPanel', () => {
   beforeEach(() => {
@@ -201,12 +202,14 @@ describe('RedisGearsPanel', () => {
           ],
         },
       };
+
       const wrapper = shallow<RedisGearsPanel>(getComponent({ data }));
       wrapper.setState({
         script: 'my-script',
         unblocking: true,
         requirements: 'requierements',
       });
+
       const result = await wrapper.instance().makeQuery();
       expect(dataSourceMock.query).toHaveBeenCalledWith({
         ...data.request,
@@ -223,6 +226,7 @@ describe('RedisGearsPanel', () => {
       expect(result).toEqual({
         data: 123,
       });
+
       wrapper.setProps({
         data: {
           request: null,
@@ -249,6 +253,7 @@ describe('RedisGearsPanel', () => {
       expect(wrapper.state().result).not.toBeDefined();
       expect(wrapper.state().isRunning).toBeFalsy();
       expect(wrapper.state().error).toEqual({ message: 'Common error' });
+
       makeQueryMock.mockImplementationOnce(
         () =>
           ({
@@ -282,6 +287,7 @@ describe('RedisGearsPanel', () => {
           ],
         })
       );
+
       await wrapper.instance().onRunScript();
       expect(makeQueryMock).toHaveBeenCalled();
       expect(wrapper.state().result).not.toBeDefined();
@@ -299,6 +305,7 @@ describe('RedisGearsPanel', () => {
           },
         ],
       });
+
       makeQueryMock.mockImplementationOnce(() =>
         Promise.resolve({
           data: [
@@ -315,6 +322,7 @@ describe('RedisGearsPanel', () => {
           ],
         })
       );
+
       await wrapper.instance().onRunScript();
       expect(makeQueryMock).toHaveBeenCalled();
       expect(wrapper.state().result).toBeDefined();
