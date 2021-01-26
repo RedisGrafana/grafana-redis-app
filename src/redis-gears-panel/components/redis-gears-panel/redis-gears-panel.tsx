@@ -9,6 +9,8 @@ import {
   Field,
   getDisplayProcessor,
   LoadingState,
+  toDataFrame,
+  FieldType,
   PanelProps,
 } from '@grafana/data';
 import { getDataSourceSrv, toDataQueryError } from '@grafana/runtime';
@@ -96,7 +98,11 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
    * @param prevState
    */
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>): void {
-    if (prevProps.width !== this.props.width) {
+    if (
+      prevProps.width !== this.props.width ||
+      prevState.result !== this.state.result ||
+      prevState.error !== this.state.error
+    ) {
       if (this.footerRef.current) {
         this.setState({
           footerHeight: this.footerRef.current.getBoundingClientRect().height,
@@ -145,9 +151,9 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
     /**
      * Error Message
      */
-    if (response.data[1].length > 0) {
-      const messages = response.data[1].fields[0].values.toArray();
-
+    const errorDataFrame: DataFrame | undefined = response.data[1];
+    if (errorDataFrame && errorDataFrame.length > 0) {
+      const messages = errorDataFrame.fields[0].values.toArray();
       this.setState({
         result: undefined,
         isRunning: false,
@@ -157,15 +163,29 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
       return;
     }
 
+    let resultDataFrame: DataFrame = response.data[0];
+
+    if (resultDataFrame.length === 0) {
+      resultDataFrame = toDataFrame({
+        fields: [
+          {
+            name: 'results',
+            type: FieldType.string,
+            values: ['OK'],
+          },
+        ],
+      });
+    }
+
     /**
      * Fields
      */
-    response.data[0].fields.forEach((field: Field) => {
+    resultDataFrame.fields.forEach((field: Field) => {
       field.display = getDisplayProcessor({ field });
     });
 
     this.setState({
-      result: response.data[0],
+      result: resultDataFrame,
       isRunning: false,
     });
   };
@@ -271,7 +291,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
             value={script}
             language="python"
             width={width}
-            height={height - footerHeight - (result ? 100 : 0)}
+            height={height - footerHeight}
             onBlur={this.onChangeScript}
             onSave={this.onChangeScript}
             showMiniMap={false}
@@ -293,21 +313,10 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
               {isRunning ? 'Running...' : 'Run script'}
             </Button>
           </div>
+          {error && error.message && <Alert title={error.message} onRemove={this.onClearError} />}
+
+          {resultComponent}
         </div>
-
-        {error && error.message && (
-          <div
-            className={css`
-              position: absolute;
-              top: 0;
-              padding: 4px;
-            `}
-          >
-            <Alert title={error.message} onRemove={this.onClearError} />
-          </div>
-        )}
-
-        {resultComponent}
       </div>
     );
   }

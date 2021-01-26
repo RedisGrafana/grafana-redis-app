@@ -328,6 +328,39 @@ describe('RedisGearsPanel', () => {
       expect(wrapper.state().result).toBeDefined();
       expect(wrapper.state().isRunning).toBeFalsy();
       expect(wrapper.state().error).toEqual(null);
+      makeQueryMock.mockImplementationOnce(() =>
+        Promise.resolve({
+          data: [result],
+        })
+      );
+      await wrapper.instance().onRunScript();
+      expect(makeQueryMock).toHaveBeenCalled();
+      expect(wrapper.state().result).toBeDefined();
+      expect(wrapper.state().isRunning).toBeFalsy();
+      expect(wrapper.state().error).toEqual(null);
+    });
+
+    it('Should transform result if result.length=0', async () => {
+      const result = toDataFrame({
+        fields: [
+          {
+            name: 'results',
+            type: FieldType.string,
+            values: [],
+          },
+        ],
+      });
+      makeQueryMock.mockImplementationOnce(() =>
+        Promise.resolve({
+          data: [result],
+        })
+      );
+      await wrapper.instance().onRunScript();
+      expect(makeQueryMock).toHaveBeenCalled();
+      expect(wrapper.state().result?.length).toEqual(1);
+      expect(wrapper.state().result?.fields[0].values.toArray()).toEqual(['OK']);
+      expect(wrapper.state().isRunning).toBeFalsy();
+      expect(wrapper.state().error).toEqual(null);
     });
   });
 
