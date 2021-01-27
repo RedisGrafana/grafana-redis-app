@@ -1,0 +1,18 @@
+{
+  "id": "redis-gears-panel",
+  "info": {
+    "author": {
+      "name": "Redis Labs",
+      "url": "https://oss.redislabs.com"
+    },
+    "description": "RedisGears panel",
+    "logos": {
+      "large": "img/logo.svg",
+      "small": "img/logo.svg"
+    },
+    "updated": "%TODAY%",
+    "version": "%VERSION%"
+  },
+  "name": "RedisGears",
+  "type": "panel"
+}
