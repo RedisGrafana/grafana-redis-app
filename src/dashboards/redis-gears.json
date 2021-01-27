@@ -49,7 +49,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1611703364301,
+  "iteration": 1611706223976,
   "links": [],
   "panels": [
     {
@@ -424,7 +424,7 @@
       "pluginVersion": "7.3.7",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Redis Gears",
+      "title": "Python function",
       "type": "redis-gears-panel"
     }
   ],

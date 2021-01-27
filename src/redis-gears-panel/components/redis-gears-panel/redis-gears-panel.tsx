@@ -1,5 +1,6 @@
 import { css } from 'emotion';
 import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
+import { DefaultScript } from 'redis-gears-panel/constants';
 import { Observable } from 'rxjs';
 import {
   DataFrame,
@@ -7,11 +8,11 @@ import {
   DataQueryRequest,
   DataQueryResponse,
   Field,
+  FieldType,
   getDisplayProcessor,
   LoadingState,
-  toDataFrame,
-  FieldType,
   PanelProps,
+  toDataFrame,
 } from '@grafana/data';
 import { getDataSourceSrv, toDataQueryError } from '@grafana/runtime';
 import { Alert, Button, CodeEditor, InlineField, InlineFormLabel, Input, Switch, Table } from '@grafana/ui';
@@ -67,7 +68,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
    * State
    */
   state: State = {
-    script: '',
+    script: DefaultScript,
     unblocking: false,
     requirements: '',
     isRunning: false,
@@ -273,7 +274,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
      * Show result table If there is a result
      */
     if (result) {
-      resultComponent = <Table data={result} width={width} height={100} />;
+      resultComponent = <Table noHeader={true} data={result} width={width} height={100} />;
     }
 
     return (
@@ -299,23 +300,26 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
           />
         </div>
 
-        <div className="gf-form-inline" ref={this.footerRef}>
-          <InlineField label={<InlineFormLabel width={6}>Requirements</InlineFormLabel>}>
-            <Input css="" value={requirements} onChange={this.onChangeRequirements} width={40} />
-          </InlineField>
-
-          <InlineField label={<InlineFormLabel width={6}>Unblocking</InlineFormLabel>}>
-            <Switch css="" value={unblocking} onChange={this.onChangeUnblocking} />
-          </InlineField>
-
-          <div className="gf-form">
-            <Button onClick={this.onRunScript} disabled={isRunning}>
-              {isRunning ? 'Running...' : 'Run script'}
-            </Button>
-          </div>
+        <div ref={this.footerRef}>
           {error && error.message && <Alert title={error.message} onRemove={this.onClearError} />}
 
-          {resultComponent}
+          <div className="gf-form-inline">
+            <InlineField label={<InlineFormLabel width={6}>Requirements</InlineFormLabel>}>
+              <Input css="" value={requirements} onChange={this.onChangeRequirements} width={40} />
+            </InlineField>
+
+            <InlineField label={<InlineFormLabel width={6}>Unblocking</InlineFormLabel>}>
+              <Switch css="" value={unblocking} onChange={this.onChangeUnblocking} />
+            </InlineField>
+
+            <div className="gf-form">
+              <Button onClick={this.onRunScript} disabled={isRunning}>
+                {isRunning ? 'Running...' : 'Run script'}
+              </Button>
+            </div>
+
+            {resultComponent}
+          </div>
         </div>
       </div>
     );
