@@ -49,7 +49,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1611637791597,
+  "iteration": 1611703364301,
   "links": [],
   "panels": [
     {
@@ -142,7 +142,9 @@
         {
           "id": "organize",
           "options": {
-            "excludeByName": {},
+            "excludeByName": {
+              "TotalAllocated": true
+            },
             "indexByName": {},
             "renameByName": {
               "CurrAllocated": "Current",
@@ -460,5 +462,5 @@
   "timezone": "",
   "title": "RedisGears",
   "uid": "xFPiNzLMz",
-  "version": 15
+  "version": 2
 }
