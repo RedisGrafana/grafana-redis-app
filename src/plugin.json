@@ -51,7 +51,7 @@
       "type": "panel"
     },
     {
-      "name": "Redis Gears Panel",
+      "name": "RedisGears Panel",
       "type": "panel"
     }
   ],

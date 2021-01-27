@@ -22,7 +22,7 @@
     {
       "type": "panel",
       "id": "redis-gears-panel",
-      "name": "Redis Gears",
+      "name": "RedisGears",
       "version": "1.3.1"
     },
     {
