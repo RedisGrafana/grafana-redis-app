@@ -12,7 +12,7 @@ import {
 } from 'icons';
 import React, { FC, useCallback } from 'react';
 import { RedisCommand, DataSourceType, RedisDataSourceInstanceSettings } from 'types';
-import { Container, HorizontalGroup, InfoBox, VerticalGroup, Button } from '@grafana/ui';
+import { Container, HorizontalGroup, InfoBox, VerticalGroup, Button, LinkButton } from '@grafana/ui';
 import { getBackendSrv, getLocationSrv } from '@grafana/runtime';
 
 /**
@@ -97,7 +97,7 @@ export const DataSourceList: FC<Props> = ({ dataSources }) => {
 
             return (
               <li className="card-item-wrapper" key={index} aria-label="check-card">
-                <a className="card-item" href={`datasources/edit/${redis.id}`}>
+                <a className="card-item" href={`d/RpSjVqWMz/redis-overview?var-redis=${redis.name}`}>
                   <HorizontalGroup justify="space-between">
                     <HorizontalGroup justify="flex-start">
                       <Container margin="xs">
@@ -109,58 +109,94 @@ export const DataSourceList: FC<Props> = ({ dataSources }) => {
                       </VerticalGroup>
                     </HorizontalGroup>
 
-                    <HorizontalGroup justify="flex-end">
-                      {!redis.commands?.length && (
-                        <div className="card-item-header">
-                          <div className="card-item-type">{title}</div>
-                        </div>
-                      )}
-                      {(redis.jsonData['tlsAuth'] || redis.jsonData['acl']) && (
+                    <VerticalGroup justify="flex-end">
+                      <HorizontalGroup justify="flex-end">
+                        {!redis.commands?.length && (
+                          <div className="card-item-header">
+                            <div className="card-item-type">{title}</div>
+                          </div>
+                        )}
+                        {(redis.jsonData['tlsAuth'] || redis.jsonData['acl']) && (
+                          <Container margin="xs">
+                            <MultiLayerSecurity size={24} fill={fill} />
+                          </Container>
+                        )}
+                        {redis.jsonData['client']?.match(/cluster|sentinel/) && (
+                          <Container margin="xs">
+                            <HighAvailability size={24} fill={fill} />
+                          </Container>
+                        )}
+                        {redis.commands?.indexOf(RedisCommand.REDISGEARS) !== -1 && (
+                          <Container margin="xs">
+                            <RedisGears size={24} fill={fill} />
+                          </Container>
+                        )}
+                        {redis.commands?.indexOf(RedisCommand.REDISTIMESERIES) !== -1 && (
+                          <Container margin="xs">
+                            <RedisTimeSeries size={24} fill={fill} />
+                          </Container>
+                        )}
+                        {redis.commands?.indexOf(RedisCommand.REDISAI) !== -1 && (
+                          <Container margin="xs">
+                            <RedisAI size={24} fill={fill} />
+                          </Container>
+                        )}
+                        {redis.commands?.indexOf(RedisCommand.REDISEARCH) !== -1 && (
+                          <Container margin="xs">
+                            <RediSearch size={24} fill={fill} />
+                          </Container>
+                        )}
+                        {redis.commands?.indexOf(RedisCommand.REDISJSON) !== -1 && (
+                          <Container margin="xs">
+                            <RedisJSON size={24} fill={fill} />
+                          </Container>
+                        )}
+                        {redis.commands?.indexOf(RedisCommand.REDISGRAPH) !== -1 && (
+                          <Container margin="xs">
+                            <RedisGraph size={24} fill={fill} />
+                          </Container>
+                        )}
+                        {redis.commands?.indexOf(RedisCommand.REDISBLOOM) !== -1 && (
+                          <Container margin="xs">
+                            <RedisBloom size={24} fill={fill} />
+                          </Container>
+                        )}
+                      </HorizontalGroup>
+                      <HorizontalGroup justify="flex-end">
+                        {redis.commands?.length && (
+                          <Container margin="xs">
+                            <LinkButton
+                              href={`d/_SGxCBNGk/redis-cli?var-redis=${redis.name}`}
+                              title="Data Source Settings"
+                              icon="monitor"
+                            >
+                              CLI
+                            </LinkButton>
+                          </Container>
+                        )}
+                        {redis.commands?.indexOf(RedisCommand.REDISGEARS) !== -1 && (
+                          <Container margin="xs">
+                            <LinkButton
+                              href={`d/xFPiNzLMz/redis-gears?var-redis=${redis.name}`}
+                              title="Redis gears dashboard"
+                              icon="cog"
+                            >
+                              Gears
+                            </LinkButton>
+                          </Container>
+                        )}
                         <Container margin="xs">
-                          <MultiLayerSecurity size={32} fill={fill} />
+                          <LinkButton
+                            variant="secondary"
+                            href={`datasources/edit/${redis.id}`}
+                            title="Data Source Settings"
+                            icon="sliders-v-alt"
+                          >
+                            Settings
+                          </LinkButton>
                         </Container>
-                      )}
-                      {redis.jsonData['client']?.match(/cluster|sentinel/) && (
-                        <Container margin="xs">
-                          <HighAvailability size={32} fill={fill} />
-                        </Container>
-                      )}
-                      {redis.commands?.indexOf(RedisCommand.REDISGEARS) !== -1 && (
-                        <Container margin="xs">
-                          <RedisGears size={32} fill={fill} />
-                        </Container>
-                      )}
-                      {redis.commands?.indexOf(RedisCommand.REDISTIMESERIES) !== -1 && (
-                        <Container margin="xs">
-                          <RedisTimeSeries size={32} fill={fill} />
-                        </Container>
-                      )}
-                      {redis.commands?.indexOf(RedisCommand.REDISAI) !== -1 && (
-                        <Container margin="xs">
-                          <RedisAI size={32} fill={fill} />
-                        </Container>
-                      )}
-                      {redis.commands?.indexOf(RedisCommand.REDISEARCH) !== -1 && (
-                        <Container margin="xs">
-                          <RediSearch size={32} fill={fill} />
-                        </Container>
-                      )}
-                      {redis.commands?.indexOf(RedisCommand.REDISJSON) !== -1 && (
-                        <Container margin="xs">
-                          <RedisJSON size={32} fill={fill} />
-                        </Container>
-                      )}
-                      {redis.commands?.indexOf(RedisCommand.REDISGRAPH) !== -1 && (
-                        <Container margin="xs">
-                          <RedisGraph size={32} fill={fill} />
-                        </Container>
-                      )}
-                      {redis.commands?.indexOf(RedisCommand.REDISBLOOM) !== -1 && (
-                        <Container margin="xs">
-                          <RedisBloom size={32} fill={fill} />
-                        </Container>
-                      )}
-                    </HorizontalGroup>
+                      </HorizontalGroup>
+                    </VerticalGroup>
                   </HorizontalGroup>
                 </a>
               </li>
