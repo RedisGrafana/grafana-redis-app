@@ -324,7 +324,7 @@ describe('DataSourceList', () => {
               jsonData: {},
             },
           ];
-          const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources} />);
+          const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
           const item = getItem(wrapper);
           const testedComponent = item.findWhere((node) => node.is(component));
           expect(testedComponent.exists()).toBeTruthy();
@@ -338,7 +338,7 @@ describe('DataSourceList', () => {
               jsonData: {},
             },
           ];
-          const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources} />);
+          const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
           const item = getItem(wrapper);
           const testedComponent = item.findWhere((node) => node.is(component));
           expect(testedComponent.exists()).not.toBeTruthy();
