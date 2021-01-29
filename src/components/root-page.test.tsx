@@ -87,6 +87,12 @@ describe('RootPage', () => {
   const path = '/app';
   const onNavChangedMock = jest.fn();
 
+  beforeAll(() => {
+    Object.defineProperty(window, 'location', {
+      value: { reload: jest.fn() },
+    });
+  });
+
   beforeEach(() => {
     onNavChangedMock.mockClear();
     getDataSourceMock.mockClear();
@@ -132,7 +138,7 @@ describe('RootPage', () => {
         expect(getRedisMock).toHaveBeenCalledWith('redis');
         expect(redisMock.query).toHaveBeenCalledWith({ targets: [{ query: RedisCommand.COMMAND }] });
         expect(wrapper.state().loading).toBeFalsy();
-        expect(wrapper.state().datasources).toEqual([
+        expect(wrapper.state().dataSources).toEqual([
           {
             type: DataSourceType.REDIS,
             name: 'redis',
@@ -195,9 +201,40 @@ describe('RootPage', () => {
         );
         expect(loadingMessageComponent.exists()).not.toBeTruthy();
         expect(dataSourceListComponent.exists()).toBeTruthy();
-        expect(dataSourceListComponent.prop('datasources')).toEqual(wrapper.state().datasources);
+        expect(dataSourceListComponent.prop('dataSources')).toEqual(wrapper.state().dataSources);
         done();
       });
+    });
+
+    it('If dataSourceSrv is unable to get a data source, should reload the page', async () => {
+      const wrapper = shallow<RootPage>(
+        <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />,
+        { disableLifecycleMethods: true }
+      );
+      getDataSourceMock.mockImplementationOnce(() =>
+        Promise.resolve([{ name: 'my-redis', type: DataSourceType.REDIS }])
+      );
+      getRedisMock.mockImplementationOnce(() => Promise.reject());
+      await wrapper.instance().componentDidMount();
+      expect(window.location.reload).toHaveBeenCalled();
+    });
+
+    it('If dataSource is unable to make query, should work correctly', async () => {
+      const wrapper = shallow<RootPage>(
+        <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />,
+        { disableLifecycleMethods: true }
+      );
+      getDataSourceMock.mockImplementationOnce(() =>
+        Promise.resolve([{ name: 'my-redis', type: DataSourceType.REDIS }])
+      );
+      redisMock.query.mockImplementationOnce(() => Promise.reject());
+      await wrapper.instance().componentDidMount();
+      const dataSourceListComponent = wrapper.findWhere((node) => node.is(DataSourceList));
+      const loadingMessageComponent = wrapper.findWhere(
+        (node) => node.is(InfoBox) && node.prop('title') === 'Loading...'
+      );
+      expect(loadingMessageComponent.exists()).not.toBeTruthy();
+      expect(dataSourceListComponent.exists()).toBeTruthy();
     });
   });
 

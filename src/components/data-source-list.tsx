@@ -10,9 +10,10 @@ import {
   RedisJSON,
   RedisTimeSeries,
 } from 'icons';
-import React, { FC } from 'react';
-import { RedisCommand } from 'types';
-import { Container, HorizontalGroup, InfoBox, LinkButton, VerticalGroup } from '@grafana/ui';
+import React, { FC, useCallback } from 'react';
+import { RedisCommand, DataSourceType, RedisDataSourceInstanceSettings } from 'types';
+import { Container, HorizontalGroup, InfoBox, VerticalGroup, Button } from '@grafana/ui';
+import { getBackendSrv, getLocationSrv } from '@grafana/runtime';
 
 /**
  * Properties
@@ -21,23 +22,53 @@ interface Props {
   /**
    * Data sources
    *
-   * @type {any[]}
+   * @type {RedisDataSourceInstanceSettings[]}
    */
-  datasources?: any[];
+  dataSources: RedisDataSourceInstanceSettings[];
 }
 
-export const DataSourceList: FC<Props> = ({ datasources }) => {
+/**
+ * Get unique name for a new data source
+ * @param dataSources
+ */
+const getNewDataSourceName = (dataSources: RedisDataSourceInstanceSettings[]) => {
+  let postfix = 1;
+  const name = 'Redis';
+  if (!dataSources.some((dataSource) => dataSource.name === name)) {
+    return name;
+  }
+  while (dataSources.some((dataSource) => dataSource.name === `${name}-${postfix}`)) {
+    postfix++;
+  }
+  return `${name}-${postfix}`;
+};
+
+export const DataSourceList: FC<Props> = ({ dataSources }) => {
+  const addNewDataSource = useCallback(() => {
+    getBackendSrv()
+      .post('/api/datasources', {
+        name: getNewDataSourceName(dataSources),
+        type: DataSourceType.REDIS,
+        access: 'proxy',
+      })
+      .then(({ id }) => {
+        getLocationSrv().update({
+          path: `datasources/edit/${id}`,
+        });
+      });
+  }, [dataSources]);
+
   /**
    * Check if any data sources was added
    */
-  if (datasources?.length === 0) {
+  if (dataSources.length === 0) {
     return (
       <div>
         <div className="page-action-bar">
           <div className="page-action-bar__spacer" />
-          <LinkButton href="datasources/new" icon="database">
+          <Button onClick={addNewDataSource} icon="database">
             Add Redis Data Source
-          </LinkButton>
+          </Button>
         </div>
         <InfoBox title="Please add Redis Data Sources." url={'https://grafana.com/plugins/redis-datasource'}>
           <p>You can add as many data sources as you want to support multiple Redis databases.</p>
@@ -53,14 +84,14 @@ export const DataSourceList: FC<Props> = ({ datasources }) => {
     <div>
       <div className="page-action-bar">
         <div className="page-action-bar__spacer" />
-        <LinkButton href="datasources/new" icon="database">
+        <Button onClick={addNewDataSource} icon="database">
           Add Redis Data Source
-        </LinkButton>
+        </Button>
       </div>
 
       <section className="card-section card-list-layout-list">
         <ol className="card-list">
-          {datasources?.map((redis, index) => {
+          {dataSources.map((redis, index) => {
             const title = redis.commands?.length ? 'Working as expected' : "Can't retrieve a list of commands";
             const fill = redis.commands?.length ? '#DC382D' : '#A7A7A7';
 

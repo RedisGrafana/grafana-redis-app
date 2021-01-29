@@ -11,7 +11,7 @@ import {
 import { getBackendSrv, getDataSourceSrv } from '@grafana/runtime';
 import { InfoBox } from '@grafana/ui';
 import { RedisQuery } from '../redis-cli-panel/types';
-import { DataSourceType, GlobalSettings, RedisCommand } from '../types';
+import { DataSourceType, GlobalSettings, RedisCommand, RedisDataSourceInstanceSettings } from '../types';
 import { DataSourceList } from './data-source-list';
 
 /**
@@ -26,9 +26,9 @@ interface State {
   /**
    * Data sources
    *
-   * @type {any[]}
+   * @type {RedisDataSourceInstanceSettings[]}
    */
-  datasources?: any[];
+  dataSources: RedisDataSourceInstanceSettings[];
 
   /**
    * Loading
@@ -47,6 +47,7 @@ export class RootPage extends PureComponent<Props, State> {
    */
   state: State = {
     loading: true,
+    dataSources: [],
   };
 
   /**
@@ -58,7 +59,7 @@ export class RootPage extends PureComponent<Props, State> {
     /**
      * Get data sources
      */
-    const datasources = await getBackendSrv()
+    const dataSources = await getBackendSrv()
       .get('/api/datasources')
       .then((result: any) => {
         return result.filter((ds: any) => {
@@ -70,38 +71,49 @@ export class RootPage extends PureComponent<Props, State> {
      * Check supported commands for Redis Data Sources
      */
     await Promise.all(
-      datasources.map(async (ds: any) => {
+      dataSources.map(async (ds: any) => {
         ds.commands = [];
 
-        /**
-         * Get Data Source
-         */
-        const redis = await getDataSourceSrv().get(ds.name);
+        try {
+          /**
+           * Get Data Source
+           */
+          const redis = await getDataSourceSrv().get(ds.name);
 
-        /**
-         * Execute query
-         */
-        const query = ((redis.query({
-          targets: [{ query: RedisCommand.COMMAND }],
-        } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>).toPromise();
+          /**
+           * Execute query
+           */
+          const query = ((redis.query({
+            targets: [{ query: RedisCommand.COMMAND }],
+          } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>).toPromise();
 
-        /**
-         * Get available commands
-         */
-        await query
-          .then((response: DataQueryResponse) => response.data)
-          .then((data: DataQueryResponseData[]) =>
-            data.forEach((item: DataQueryResponseData) => {
-              item.fields.forEach((field: Field) => {
-                ds.commands.push(
-                  ...field.values
-                    .toArray()
-                    .filter((value: string) => value.match(/\S+\.\S+|INFO/i))
-                    .map((value) => value.toUpperCase())
-                );
-              });
-            })
-          );
+          /**
+           * Get available commands
+           */
+          await query
+            .then((response: DataQueryResponse) => response.data)
+            .then((data: DataQueryResponseData[]) =>
+              data.forEach((item: DataQueryResponseData) => {
+                item.fields.forEach((field: Field) => {
+                  ds.commands.push(
+                    ...field.values
+                      .toArray()
+                      .filter((value: string) => value.match(/\S+\.\S+|INFO/i))
+                      .map((value) => value.toUpperCase())
+                  );
+                });
+              })
+            )
+            .catch(() => {});
+        } catch (e) {
+          /**
+           * Workaround
+           * Could be a case when dataSourceSrv does not contain a data source that was added via http api
+           * We are unable to call updateFrontendSettings into plugins
+           * https://github.com/grafana/grafana/blob/1d689888b0fc2de2dbed6e606eee19561a3ef006/public/app/features/datasources/state/actions.ts#L211
+           */
+          window.location.reload();
+        }
       })
     );
 
@@ -109,7 +121,7 @@ export class RootPage extends PureComponent<Props, State> {
      * Set state
      */
     this.setState({
-      datasources,
+      dataSources,
       loading: false,
     });
   }
@@ -156,7 +168,7 @@ export class RootPage extends PureComponent<Props, State> {
    * Render
    */
   render() {
-    const { loading, datasources } = this.state;
+    const { loading, dataSources } = this.state;
 
     /**
      * Loading
@@ -169,6 +181,6 @@ export class RootPage extends PureComponent<Props, State> {
       );
     }
 
-    return <DataSourceList datasources={datasources} />;
+    return <DataSourceList dataSources={dataSources} />;
   }
 }
