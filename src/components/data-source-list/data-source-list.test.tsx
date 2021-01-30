@@ -1,7 +1,5 @@
 import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
-import { InfoBox } from '@grafana/ui';
-import { RedisCommand, DataSourceType } from 'types';
 import {
   HighAvailability,
   MultiLayerSecurity,
@@ -14,6 +12,8 @@ import {
   RedisJSON,
   RedisTimeSeries,
 } from 'icons';
+import { InfoBox } from '@grafana/ui';
+import { DataSourceType, RedisCommand } from '../../types';
 import { DataSourceList } from './data-source-list';
 
 type ShallowComponent = ShallowWrapper<typeof DataSourceList>;
@@ -21,6 +21,7 @@ type ShallowComponent = ShallowWrapper<typeof DataSourceList>;
 const backendSrvMock = {
   post: jest.fn(),
 };
+
 const locationSrvMock = {
   update: jest.fn(),
 };

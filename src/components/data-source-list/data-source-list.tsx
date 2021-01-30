@@ -11,9 +11,10 @@ import {
   RedisTimeSeries,
 } from 'icons';
 import React, { FC, useCallback } from 'react';
-import { RedisCommand, DataSourceType, RedisDataSourceInstanceSettings } from 'types';
-import { Container, HorizontalGroup, InfoBox, VerticalGroup, Button, LinkButton } from '@grafana/ui';
+import { DataSourceType, RedisCommand, RedisDataSourceInstanceSettings } from 'types';
 import { getBackendSrv, getLocationSrv } from '@grafana/runtime';
+import { Button, Container, HorizontalGroup, InfoBox, LinkButton, VerticalGroup } from '@grafana/ui';
+import { DataSourceName } from '../../constants';
 
 /**
  * Properties
@@ -33,13 +34,19 @@ interface Props {
  */
 const getNewDataSourceName = (dataSources: RedisDataSourceInstanceSettings[]) => {
   let postfix = 1;
-  const name = 'Redis';
+  const name = DataSourceName.REDIS;
+
+  /**
+   * Check if exists
+   */
   if (!dataSources.some((dataSource) => dataSource.name === name)) {
     return name;
   }
+
   while (dataSources.some((dataSource) => dataSource.name === `${name}-${postfix}`)) {
     postfix++;
   }
+
   return `${name}-${postfix}`;
 };
 
@@ -66,7 +73,7 @@ export const DataSourceList: FC<Props> = ({ dataSources }) => {
       <div>
         <div className="page-action-bar">
           <div className="page-action-bar__spacer" />
-          <Button onClick={addNewDataSource} icon="database">
+          <Button onClick={addNewDataSource} icon="plus" variant="secondary">
             Add Redis Data Source
           </Button>
         </div>
@@ -84,7 +91,7 @@ export const DataSourceList: FC<Props> = ({ dataSources }) => {
     <div>
       <div className="page-action-bar">
         <div className="page-action-bar__spacer" />
-        <Button onClick={addNewDataSource} icon="database">
+        <Button onClick={addNewDataSource} icon="plus" variant="secondary">
           Add Redis Data Source
         </Button>
       </div>
@@ -94,6 +101,7 @@ export const DataSourceList: FC<Props> = ({ dataSources }) => {
           {dataSources.map((redis, index) => {
             const title = redis.commands?.length ? 'Working as expected' : "Can't retrieve a list of commands";
             const fill = redis.commands?.length ? '#DC382D' : '#A7A7A7';
+            const url = redis.url ? redis.url : 'Not specified';
 
             return (
               <li className="card-item-wrapper" key={index} aria-label="check-card">
@@ -105,7 +113,7 @@ export const DataSourceList: FC<Props> = ({ dataSources }) => {
                       </Container>
                       <VerticalGroup>
                         <div className="card-item-name">{redis.name}</div>
-                        <div className="card-item-sub-name">{redis.url}</div>
+                        <div className="card-item-sub-name">{url}</div>
                       </VerticalGroup>
                     </HorizontalGroup>
 
