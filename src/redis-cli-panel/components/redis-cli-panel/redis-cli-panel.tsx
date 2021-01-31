@@ -5,9 +5,10 @@ import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
 import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { Button, LegacyForms } from '@grafana/ui';
-import { Styles } from '../styles';
-import { Help, HelpCommand, PanelOptions, RedisQuery } from '../types';
-import AutoScrollingTextarea from './auto-scrolling-text-area';
+import { Help } from '../../constants';
+import { Styles } from '../../styles';
+import { HelpCommand, PanelOptions, RedisQuery } from '../../types';
+import { CLITextArea } from '../auto-scrolling-text-area';
 
 /**
  * Legacy Forms
@@ -143,7 +144,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
       )}
     >
       <div className={cx('gf-form', styles.form)}>
-        <AutoScrollingTextarea className={cx(styles.textarea)} value={output} />
+        <CLITextArea className={cx(styles.textarea)} value={output} />
       </div>
 
       {query && help && (
