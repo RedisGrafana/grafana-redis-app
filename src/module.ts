@@ -1,5 +1,5 @@
-import { Config, RootPage } from 'components';
 import { AppPlugin } from '@grafana/data';
+import { Config, RootPage } from './components';
 import { GlobalSettings } from './types';
 
 /**

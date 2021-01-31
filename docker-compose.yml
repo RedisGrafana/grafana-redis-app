@@ -20,6 +20,6 @@ services:
       - GF_USERS_DEFAULT_THEME=light
       - GF_INSTALL_PLUGINS=redis-app
     volumes:
-      - ./dist:/var/lib/grafana/plugins/redis-app
+      - ./provisioning/plugins:/etc/grafana/provisioning/plugins
       # Uncomment to preserve Grafana configuration
       # - ./data:/var/lib/grafana

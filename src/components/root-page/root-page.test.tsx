@@ -3,9 +3,9 @@ import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
 import { AppPluginMeta, PluginType } from '@grafana/data';
 import { InfoBox } from '@grafana/ui';
-import { DataSourceType, RedisCommand } from '../types';
+import { DataSourceType, RedisCommand } from '../../constants';
+import { DataSourceList } from '../data-source-list';
 import { RootPage } from './root-page';
-import { DataSourceList } from './data-source-list';
 
 /**
  * Meta
@@ -87,6 +87,12 @@ describe('RootPage', () => {
   const path = '/app';
   const onNavChangedMock = jest.fn();
 
+  beforeAll(() => {
+    Object.defineProperty(window, 'location', {
+      value: { reload: jest.fn() },
+    });
+  });
+
   beforeEach(() => {
     onNavChangedMock.mockClear();
     getDataSourceMock.mockClear();
@@ -128,11 +134,12 @@ describe('RootPage', () => {
         <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
       );
       wrapper.instance().componentDidMount();
+
       setImmediate(() => {
         expect(getRedisMock).toHaveBeenCalledWith('redis');
         expect(redisMock.query).toHaveBeenCalledWith({ targets: [{ query: RedisCommand.COMMAND }] });
         expect(wrapper.state().loading).toBeFalsy();
-        expect(wrapper.state().datasources).toEqual([
+        expect(wrapper.state().dataSources).toEqual([
           {
             type: DataSourceType.REDIS,
             name: 'redis',
@@ -176,7 +183,7 @@ describe('RootPage', () => {
   });
 
   /**
-   * rendering
+   * Rendering
    */
   describe('rendering', () => {
     it('Should show message if loading=true', (done) => {
@@ -195,9 +202,25 @@ describe('RootPage', () => {
         );
         expect(loadingMessageComponent.exists()).not.toBeTruthy();
         expect(dataSourceListComponent.exists()).toBeTruthy();
-        expect(dataSourceListComponent.prop('datasources')).toEqual(wrapper.state().datasources);
+        expect(dataSourceListComponent.prop('dataSources')).toEqual(wrapper.state().dataSources);
         done();
       });
+    });
+
+    it('If dataSource is unable to make query, should work correctly', async () => {
+      const wrapper = shallow<RootPage>(
+        <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />,
+        { disableLifecycleMethods: true }
+      );
+
+      await wrapper.instance().componentDidMount();
+
+      const dataSourceListComponent = wrapper.findWhere((node) => node.is(DataSourceList));
+      const loadingMessageComponent = wrapper.findWhere(
+        (node) => node.is(InfoBox) && node.prop('title') === 'Loading...'
+      );
+      expect(loadingMessageComponent.exists()).not.toBeTruthy();
+      expect(dataSourceListComponent.exists()).toBeTruthy();
     });
   });
 

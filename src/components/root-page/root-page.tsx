@@ -8,11 +8,12 @@ import {
   Field,
   NavModelItem,
 } from '@grafana/data';
-import { getBackendSrv, getDataSourceSrv } from '@grafana/runtime';
+import { config, getBackendSrv, getDataSourceSrv } from '@grafana/runtime';
 import { InfoBox } from '@grafana/ui';
-import { RedisQuery } from '../redis-cli-panel/types';
-import { DataSourceType, GlobalSettings, RedisCommand } from '../types';
-import { DataSourceList } from './data-source-list';
+import { DataSourceType, RedisCommand } from '../../constants';
+import { RedisQuery } from '../../redis-cli-panel/types';
+import { GlobalSettings, RedisDataSourceInstanceSettings } from '../../types';
+import { DataSourceList } from '../data-source-list';
 
 /**
  * Properties
@@ -26,9 +27,9 @@ interface State {
   /**
    * Data sources
    *
-   * @type {any[]}
+   * @type {RedisDataSourceInstanceSettings[]}
    */
-  datasources?: any[];
+  dataSources: RedisDataSourceInstanceSettings[];
 
   /**
    * Loading
@@ -47,6 +48,7 @@ export class RootPage extends PureComponent<Props, State> {
    */
   state: State = {
     loading: true,
+    dataSources: [],
   };
 
   /**
@@ -58,19 +60,39 @@ export class RootPage extends PureComponent<Props, State> {
     /**
      * Get data sources
      */
-    const datasources = await getBackendSrv()
+    const dataSources = await getBackendSrv()
       .get('/api/datasources')
-      .then((result: any) => {
-        return result.filter((ds: any) => {
+      .then((result: RedisDataSourceInstanceSettings[]) => {
+        return result.filter((ds: RedisDataSourceInstanceSettings) => {
           return ds.type === DataSourceType.REDIS;
         });
+      });
+
+    /**
+     * Workaround, until reload function will be added to DataSourceSrv
+     *
+     * @see https://github.com/grafana/grafana/issues/30728
+     * @see https://github.com/grafana/grafana/issues/29809
+     */
+    await getBackendSrv()
+      .get('/api/frontend/settings')
+      .then((settings: any) => {
+        if (!settings.datasources) {
+          return;
+        }
+
+        /**
+         * Set data sources
+         */
+        config.datasources = settings.datasources;
+        config.defaultDatasource = settings.defaultDatasource;
       });
 
     /**
      * Check supported commands for Redis Data Sources
      */
     await Promise.all(
-      datasources.map(async (ds: any) => {
+      dataSources.map(async (ds: RedisDataSourceInstanceSettings) => {
         ds.commands = [];
 
         /**
@@ -81,14 +103,19 @@ export class RootPage extends PureComponent<Props, State> {
         /**
          * Execute query
          */
-        const query = ((redis.query({
+        const query = (redis.query({
           targets: [{ query: RedisCommand.COMMAND }],
-        } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>).toPromise();
+        } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>;
+
+        if (!query.toPromise) {
+          return;
+        }
 
         /**
          * Get available commands
          */
         await query
+          .toPromise()
           .then((response: DataQueryResponse) => response.data)
           .then((data: DataQueryResponseData[]) =>
             data.forEach((item: DataQueryResponseData) => {
@@ -101,7 +128,8 @@ export class RootPage extends PureComponent<Props, State> {
                 );
               });
             })
-          );
+          )
+          .catch(() => {});
       })
     );
 
@@ -109,7 +137,7 @@ export class RootPage extends PureComponent<Props, State> {
      * Set state
      */
     this.setState({
-      datasources,
+      dataSources,
       loading: false,
     });
   }
@@ -156,7 +184,7 @@ export class RootPage extends PureComponent<Props, State> {
    * Render
    */
   render() {
-    const { loading, datasources } = this.state;
+    const { loading, dataSources } = this.state;
 
     /**
      * Loading
@@ -169,6 +197,6 @@ export class RootPage extends PureComponent<Props, State> {
       );
     }
 
-    return <DataSourceList datasources={datasources} />;
+    return <DataSourceList dataSources={dataSources} />;
   }
 }
