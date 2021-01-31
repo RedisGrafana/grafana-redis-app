@@ -46,7 +46,7 @@ interface Props {
    *
    * @type {string}
    */
-  language?: 'python';
+  language?: string;
 
   /**
    * Read-only
