@@ -13,7 +13,7 @@ import {
   RedisTimeSeries,
 } from 'icons';
 import { InfoBox } from '@grafana/ui';
-import { DataSourceType, RedisCommand } from '../../types';
+import { DataSourceType, RedisCommand } from '../../constants';
 import { DataSourceList } from './data-source-list';
 
 type ShallowComponent = ShallowWrapper<typeof DataSourceList>;

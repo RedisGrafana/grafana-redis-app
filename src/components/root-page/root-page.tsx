@@ -10,9 +10,10 @@ import {
 } from '@grafana/data';
 import { config, getBackendSrv, getDataSourceSrv } from '@grafana/runtime';
 import { InfoBox } from '@grafana/ui';
-import { RedisQuery } from '../redis-cli-panel/types';
-import { DataSourceType, GlobalSettings, RedisCommand, RedisDataSourceInstanceSettings } from '../types';
-import { DataSourceList } from './data-source-list';
+import { DataSourceType, RedisCommand } from '../../constants';
+import { RedisQuery } from '../../redis-cli-panel/types';
+import { GlobalSettings, RedisDataSourceInstanceSettings } from '../../types';
+import { DataSourceList } from '../data-source-list';
 
 /**
  * Properties

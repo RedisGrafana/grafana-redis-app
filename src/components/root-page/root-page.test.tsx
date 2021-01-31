@@ -3,9 +3,9 @@ import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
 import { AppPluginMeta, PluginType } from '@grafana/data';
 import { InfoBox } from '@grafana/ui';
-import { DataSourceType, RedisCommand } from '../types';
+import { DataSourceType, RedisCommand } from '../../constants';
+import { DataSourceList } from '../data-source-list';
 import { RootPage } from './root-page';
-import { DataSourceList } from './data-source-list';
 
 /**
  * Meta
@@ -134,6 +134,7 @@ describe('RootPage', () => {
         <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
       );
       wrapper.instance().componentDidMount();
+
       setImmediate(() => {
         expect(getRedisMock).toHaveBeenCalledWith('redis');
         expect(redisMock.query).toHaveBeenCalledWith({ targets: [{ query: RedisCommand.COMMAND }] });
@@ -182,7 +183,7 @@ describe('RootPage', () => {
   });
 
   /**
-   * rendering
+   * Rendering
    */
   describe('rendering', () => {
     it('Should show message if loading=true', (done) => {
@@ -211,10 +212,7 @@ describe('RootPage', () => {
         <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />,
         { disableLifecycleMethods: true }
       );
-      getDataSourceMock.mockImplementationOnce(() =>
-        Promise.resolve([{ name: 'my-redis', type: DataSourceType.REDIS }])
-      );
-      redisMock.query.mockImplementationOnce(() => Promise.reject());
+
       await wrapper.instance().componentDidMount();
 
       const dataSourceListComponent = wrapper.findWhere((node) => node.is(DataSourceList));
