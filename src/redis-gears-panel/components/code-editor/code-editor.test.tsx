@@ -1,10 +1,10 @@
-import { shallow } from 'enzyme';
 import React from 'react';
+import { shallow } from 'enzyme';
 import Editor from '@monaco-editor/react';
 import { UnthemedCodeEditor } from './code-editor';
 
 /**
- * UnthemedCodeEditor
+ * Unthemed Code Editor
  */
 describe('UnthemedCodeEditor', () => {
   it('Should pass correct props', () => {
@@ -22,7 +22,7 @@ describe('UnthemedCodeEditor', () => {
       wordWrap: 'off',
       codeLens: false,
       minimap: {
-        enabled: false,
+        enabled: undefined,
         renderCharacters: false,
       },
       readOnly: false,

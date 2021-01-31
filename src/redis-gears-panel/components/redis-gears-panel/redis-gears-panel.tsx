@@ -16,8 +16,8 @@ import {
 } from '@grafana/data';
 import { getDataSourceSrv, toDataQueryError } from '@grafana/runtime';
 import { Alert, Button, InlineField, InlineFormLabel, Input, Switch, Table } from '@grafana/ui';
-import { CodeEditor } from './code-editor';
 import { PanelOptions } from '../../types';
+import { CodeEditor } from '../code-editor';
 
 /**
  * Properties
@@ -295,7 +295,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
             width={width}
             height={height - footerHeight}
             onChange={this.onChangeScript}
-            showMiniMap={false}
+            showMiniMap={true}
             showLineNumbers={true}
           />
         </div>

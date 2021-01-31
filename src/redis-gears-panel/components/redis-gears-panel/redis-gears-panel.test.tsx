@@ -3,8 +3,8 @@ import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
 import { FieldType, LoadingState, toDataFrame } from '@grafana/data';
 import { Alert, Button, Input, Switch, Table } from '@grafana/ui';
+import { CodeEditor } from '../code-editor';
 import { RedisGearsPanel } from './redis-gears-panel';
-import { CodeEditor } from './code-editor';
 
 /**
  * Get Component

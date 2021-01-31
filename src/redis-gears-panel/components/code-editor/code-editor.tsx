@@ -1,30 +1,83 @@
 import React, { PureComponent } from 'react';
+import { Themeable, withTheme } from '@grafana/ui';
 import Editor from '@monaco-editor/react';
-import { withTheme, Themeable } from '@grafana/ui';
 
+/**
+ * Properties
+ */
 interface Props {
+  /**
+   * Width
+   *
+   * @type {number}
+   */
   width: number;
+
+  /**
+   * Height
+   *
+   * @type {number}
+   */
   height: number;
+
+  /**
+   * Value
+   *
+   * @type {string}
+   */
   value?: string;
-  onChange: (value?: string) => void;
+
+  /**
+   * Show Mini map
+   *
+   * @type {boolean}
+   */
   showMiniMap?: boolean;
+
+  /**
+   * Show Line numbers
+   *
+   * @type {boolean}
+   */
   showLineNumbers?: boolean;
+
+  /**
+   * Language
+   *
+   * @type {string}
+   */
   language?: 'python';
+
+  /**
+   * Read-only
+   *
+   * @type {boolean}
+   */
   readOnly?: boolean;
+
+  /**
+   * On Change
+   */
+  onChange: (value?: string) => void;
 }
 
+/**
+ * Unthemed Code Editor
+ *
+ * @see https://github.com/suren-atoyan/monaco-react
+ */
 export class UnthemedCodeEditor extends PureComponent<Props & Themeable, {}> {
   render() {
     const { width, height, theme, showMiniMap, showLineNumbers, language = 'python', onChange, readOnly } = this.props;
 
-    const value = this.props.value ?? '';
-    const longText = value.length > 100;
-
+    /**
+     * Options similar to Grafana
+     */
     const options: any = {
       wordWrap: 'off',
       codeLens: false, // not included in the bundle
       minimap: {
-        enabled: longText && showMiniMap,
+        enabled: showMiniMap,
         renderCharacters: false,
       },
       readOnly: !!readOnly,
@@ -33,6 +86,10 @@ export class UnthemedCodeEditor extends PureComponent<Props & Themeable, {}> {
       overviewRulerBorder: false,
       automaticLayout: true,
     };
+
+    /**
+     * Line numbers similar to Grafana
+     */
     if (!showLineNumbers) {
       options.glyphMargin = false;
       options.folding = false;
@@ -49,8 +106,7 @@ export class UnthemedCodeEditor extends PureComponent<Props & Themeable, {}> {
         onChange={onChange}
         language={language}
         options={options}
-        value={value}
-        loading="Loading..."
+        value={this.props.value ?? ''}
       />
     );
   }
