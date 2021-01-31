@@ -1,8 +1,10 @@
-import { HelpCommand } from 'redis-cli-panel/types';
+import { HelpCommand } from '../types';
 
 /**
  * Native Redis commands
+ *
  * @see https://redis.io/commands
+ * @see https://github.com/redis/redis-doc/blob/master/commands.json
  */
 export const RedisHelp: { [key: string]: HelpCommand } = {
   /**
@@ -205,10 +207,12 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
 
   /**
    * Client
-   * @see
+   *
+   * @see https://redis.io/topics/client-side-caching
    */
   CLIENT: {
-    syntax: 'CLIENT CACHING | ID | KILL | LIST | GETNAME | GETREDIR | PAUSE | REPLY | SETNAME | TRACKING | UNBLOCK',
+    syntax:
+      'CLIENT CACHING | ID | INFO | KILL | LIST | GETNAME | GETREDIR | UNPAUSE | PAUSE | REPLY | SETNAME | TRACKING | TRACKINGINFO | UNBLOCK',
     summary: 'Client connections.',
     url: 'https://redis.io/commands',
   },
@@ -225,6 +229,13 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity: 'O(1)',
     since: '5.0.0',
     url: 'https://redis.io/commands/client-id',
+  },
+  'CLIENT INFO': {
+    syntax: 'CLIENT INFO',
+    summary: 'Returns information about the current client connection.',
+    complexity: 'O(1)',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/client-info',
   },
   'CLIENT KILL': {
     syntax:
@@ -255,6 +266,13 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '6.0.0',
     url: 'https://redis.io/commands/client-getredir',
   },
+  'CLIENT UNPAUSE': {
+    syntax: 'CLIENT UNPAUSE',
+    summary: 'Resume processing of clients that were paused.',
+    complexity: 'O(1)',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/client-unpause',
+  },
   'CLIENT PAUSE': {
     syntax: 'CLIENT PAUSE timeout',
     summary: 'Stop processing commands from clients for some time.',
@@ -284,6 +302,13 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '6.0.0',
     url: 'https://redis.io/commands/client-tracking',
   },
+  'CLIENT TRACKINGINFO': {
+    syntax: 'CLIENT TRACKINGINFO',
+    summary: 'Return information about server assisted client side caching for the current connection.',
+    complexity: 'O(1)',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/client-trackinginfo',
+  },
   'CLIENT UNBLOCK': {
     syntax: 'CLIENT UNBLOCK client-id [TIMEOUT|ERROR]',
     summary: 'Unblock a client blocked in a blocking command from a different connection.',
@@ -294,6 +319,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
 
   /**
    * Cluster
+   *
    * @see https://redis.io/topics/cluster-spec
    */
   CLUSTER: {
@@ -527,6 +553,13 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '2.0.0',
     url: 'https://redis.io/commands/config-resetstat',
   },
+  COPY: {
+    syntax: 'COPY source destination [DB destination-db] [REPLACE]',
+    summary: 'Copy a key.',
+    complexity: 'O(N) worst case for collections, where N is the number of nested items. O(1) for string values.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/copy',
+  },
   DBSIZE: {
     syntax: 'DBSIZE',
     summary: 'Return the number of keys in the selected database.',
@@ -704,6 +737,27 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '3.2.0',
     url: 'https://redis.io/commands/georadiusbymember',
   },
+  GEOSEARCH: {
+    syntax:
+      'GEOSEARCH key [FROMMEMBER member] [FROMLONLAT longitude latitude] [BYRADIUS radius m|km|ft|mi] \
+      [BYBOX width height m|km|ft|mi] [ASC|DESC] [COUNT count [ANY]] [WITHCOORD] [WITHDIST] [WITHHASH]',
+    summary: 'Query a sorted set representing a geospatial index to fetch members inside an area of a box or a circle.',
+    complexity:
+      'O(N+log(M)) where N is the number of elements in the grid-aligned bounding box area around the shape provided as the filter and M is the number of items inside the shape.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/geosearch',
+  },
+  GEOSEARCHSTORE: {
+    syntax:
+      'GEOSEARCHSTORE destination source [FROMMEMBER member] [FROMLONLAT longitude latitude] [BYRADIUS radius m|km|ft|mi] \
+      [BYBOX width height m|km|ft|mi] [ASC|DESC] [COUNT count [ANY]] [WITHCOORD] [WITHDIST] [WITHHASH] [STOREDIST]',
+    summary:
+      'Query a sorted set representing a geospatial index to fetch members inside an area of a box or a circle, and store the result in another key.',
+    complexity:
+      'O(N+log(M)) where N is the number of elements in the grid-aligned bounding box area around the shape provided as the filter and M is the number of items inside the shape.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/geosearchstore',
+  },
   GET: {
     syntax: 'GET key',
     summary: 'Get the value of a key.',
@@ -717,6 +771,20 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity: 'O(1)',
     since: '2.2.0',
     url: 'https://redis.io/commands/getbit',
+  },
+  GETDEL: {
+    syntax: 'GETDEL key',
+    summary: 'Get the value of a key and delete the key.',
+    complexity: 'O(1)',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/getdel',
+  },
+  GETEX: {
+    syntax: 'GETEX key [EX seconds|PX milliseconds|EXAT timestamp|PXAT milliseconds-timestamp|PERSIST]',
+    summary: 'Get the value of a key and optionally set its expiration.',
+    complexity: 'O(1)',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/getex',
   },
   GETRANGE: {
     syntax: 'GETRANGE key start end',
@@ -827,6 +895,13 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity: 'O(1)',
     since: '2.0.0',
     url: 'https://redis.io/commands/hsetnx',
+  },
+  HRANDFIELD: {
+    syntax: 'HRANDFIELD key [count [WITHVALUES]]',
+    summary: 'Get one or multiple random fields from a hash.',
+    complexity: 'O(N) where N is the number of fields returned.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/hrandfield',
   },
   HSTRLEN: {
     syntax: 'HSTRLEN key field',
@@ -1259,6 +1334,12 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '1.0.0',
     url: 'https://redis.io/commands/renamenx',
   },
+  RESET: {
+    syntax: 'RESET',
+    summary: 'Reset the connection.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/reset',
+  },
   RESTORE: {
     syntax: 'RESTORE key ttl serialized-value [REPLACE] [ABSTTL] [IDLETIME seconds] [FREQ frequency]',
     summary: 'Create a key using the provided serialized value, previously obtained using DUMP.',
@@ -1338,6 +1419,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
 
   /**
    * Script
+   *
    * @see https://redis.io/commands/eval
    */
   SCRIPT: {
@@ -1658,6 +1740,10 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '2.2.0',
     url: 'https://redis.io/commands/watch',
   },
+
+  /**
+   * Sorted Set
+   */
   ZADD: {
     syntax: 'ZADD key [NX|XX] [GT|LT] [CH] [INCR] score member [score member ...]',
     summary: 'Add one or more members to a sorted set, or update its score if it already exists.',
@@ -1678,6 +1764,23 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity: 'O(log(N)) with N being the number of elements in the sorted set.',
     since: '2.0.0',
     url: 'https://redis.io/commands/zcount',
+  },
+  ZDIFF: {
+    syntax: 'ZDIFF numkeys key [key ...] [WITHSCORES]',
+    summary: 'Subtract multiple sorted sets.',
+    complexity:
+      'O(L + (N-K)log(N)) worst case where L is the total number of elements in all the sets, N is the size of the first set, and K is the size of the result set.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/zdiff',
+  },
+  ZDIFFSTORE: {
+    syntax: 'ZDIFFSTORE destination numkeys key [key ...]',
+    summary:
+      'O(L + (N-K)log(N)) worst case where L is the total number of elements in all the sets, N is the size of the first set, and K is the size of the result set.',
+    complexity:
+      'O(L + (N-K)log(N)) worst case where L is the total number of elements in all the sets, N is the size of the first set, and K is the size of the result set.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/zdiffstore',
   },
   ZINCRBY: {
     syntax: 'ZINCRBY key increment member',
@@ -1726,6 +1829,21 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
       'O(log(N)*M) with N being the number of elements in the sorted set, and M being the number of elements popped.',
     since: '5.0.0',
     url: 'https://redis.io/commands/zpopmin',
+  },
+  ZRANDMEMBER: {
+    syntax: 'ZRANDMEMBER key [count [WITHSCORES]]',
+    summary: 'Get one or multiple random elements from a sorted set.',
+    complexity: 'O(N) where N is the number of elements returned.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/zrandmember',
+  },
+  ZRANGESTORE: {
+    syntax: 'ZRANGESTORE dst src min max [BYSCORE|BYLEX] [REV] [LIMIT offset count]',
+    summary: 'Store a range of members from sorted set into another key.',
+    complexity:
+      'O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements stored into the destination key.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/zrangestore',
   },
   ZRANGE: {
     syntax: 'ZRANGE key start stop [WITHSCORES]',
@@ -1858,6 +1976,10 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '2.0.0',
     url: 'https://redis.io/commands/zunionstore',
   },
+
+  /**
+   * Scan commands
+   */
   SCAN: {
     syntax: 'SCAN cursor [MATCH pattern] [COUNT count] [TYPE type]',
     summary: 'Incrementally iterate the keys space.',
@@ -1894,6 +2016,12 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '2.8.0',
     url: 'https://redis.io/commands/zscan',
   },
+
+  /**
+   * Streams
+   *
+   * @see https://redis.io/topics/streams-intro
+   */
   XINFO: {
     syntax: 'XINFO [CONSUMERS key groupname] [GROUPS key] [STREAM key] [HELP]',
     summary: 'Get information on streams and consumer groups.',
@@ -2010,6 +2138,14 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '5.0.0',
     url: 'https://redis.io/commands/xclaim',
   },
+  XAUTOCLAIM: {
+    syntax: 'XAUTOCLAIM key group consumer min-idle-time start [COUNT count] [JUSTID]',
+    summary:
+      'Changes (or acquires) ownership of messages in a consumer group, as if the messages were delivered to the specified consumer.',
+    complexity: 'O(1) if COUNT is small.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/xautoclaim',
+  },
   XPENDING: {
     syntax: 'XPENDING key group [start end count] [consumer]',
     summary:
@@ -2024,6 +2160,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
 
   /**
    * Latency
+   *
    * @see https://redis.io/topics/latency-monitor
    */
   LATENCY: {

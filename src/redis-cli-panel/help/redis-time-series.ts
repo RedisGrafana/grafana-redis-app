@@ -1,7 +1,8 @@
-import { HelpCommand } from 'redis-cli-panel/types';
+import { HelpCommand } from '../types';
 
 /**
  * RedisTimeSeries
+ *
  * @see https://oss.redislabs.com/redistimeseries/
  */
 export const RedisTimeSeriesHelp: { [key: string]: HelpCommand } = {

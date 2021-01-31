@@ -1,7 +1,8 @@
-import { HelpCommand } from 'redis-cli-panel/types';
+import { HelpCommand } from '../types';
 
 /**
  * RedisBloom
+ *
  * @see https://oss.redislabs.com/redisbloom/
  */
 export const RedisBloomHelp: { [key: string]: HelpCommand } = {

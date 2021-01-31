@@ -1,7 +1,8 @@
-import { HelpCommand } from 'redis-cli-panel/types';
+import { HelpCommand } from '../types';
 
 /**
  * RedisGears
+ *
  * @see https://oss.redislabs.com/redisgears
  */
 export const RedisGearsHelp: { [key: string]: HelpCommand } = {
