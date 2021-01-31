@@ -1,14 +1,4 @@
 import { DataQuery } from '@grafana/data';
-import {
-  RedisAIHelp,
-  RedisBloomHelp,
-  RedisGearsHelp,
-  RedisGraphHelp,
-  RedisHelp,
-  RedisJSONHelp,
-  RedisSearchHelp,
-  RedisTimeSeriesHelp,
-} from './help';
 
 /**
  * Panel Options
@@ -115,17 +105,3 @@ export interface HelpCommand {
    */
   url?: string;
 }
-
-/**
- * Help for native redis commands and modules
- */
-export const Help: { [key: string]: HelpCommand } = {
-  ...RedisHelp,
-  ...RedisAIHelp,
-  ...RedisBloomHelp,
-  ...RedisGearsHelp,
-  ...RedisGraphHelp,
-  ...RedisJSONHelp,
-  ...RedisSearchHelp,
-  ...RedisTimeSeriesHelp,
-};

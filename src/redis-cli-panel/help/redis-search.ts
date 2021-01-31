@@ -1,7 +1,8 @@
-import { HelpCommand } from 'redis-cli-panel/types';
+import { HelpCommand } from '../types';
 
 /**
  * RediSearch
+ *
  * @see https://oss.redislabs.com/redisearch/
  */
 export const RedisSearchHelp: { [key: string]: HelpCommand } = {

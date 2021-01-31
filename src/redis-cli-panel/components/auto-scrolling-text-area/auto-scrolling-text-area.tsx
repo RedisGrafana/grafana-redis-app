@@ -9,7 +9,7 @@ type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 /**
  * Auto scrolling text area
  */
-export default class AutoScrollingTextArea extends React.Component<TextareaProps & { autoScroll?: boolean }, {}> {
+export class AutoScrollingTextArea extends React.Component<TextareaProps & { autoScroll?: boolean }, {}> {
   element: HTMLTextAreaElement | null | undefined;
 
   /**
@@ -40,3 +40,5 @@ export default class AutoScrollingTextArea extends React.Component<TextareaProps
     return <TextArea {...this.props} css="" ref={(element) => (this.element = element)} />;
   }
 }
+
+export const CLITextArea = AutoScrollingTextArea;

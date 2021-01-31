@@ -1,12 +1,13 @@
-import { HelpCommand } from 'redis-cli-panel/types';
+import { HelpCommand } from '../types';
 
 /**
  * RedisGraph
+ *
  * @see https://oss.redislabs.com/redisgraph/
  */
 export const RedisGraphHelp: { [key: string]: HelpCommand } = {
   GRAPH: {
-    syntax: 'GRAPH.QUERY, GRAPH.PROFILE, GRAPH.DELETE, GRAPH.EXPLAIN, GRAPH SLOWLOG',
+    syntax: 'GRAPH.QUERY, GRAPH.PROFILE, GRAPH.DELETE, GRAPH.EXPLAIN, GRAPH.SLOWLOG, GRAPH.CONFIG',
     summary:
       'RedisGraph is the first queryable Property Graph database to use sparse matrices to represent the \
     adjacency matrix in graphs and linear algebra to query the graph.',
@@ -14,12 +15,12 @@ export const RedisGraphHelp: { [key: string]: HelpCommand } = {
   },
   'GRAPH QUERY': {
     syntax: 'GRAPH.QUERY <graph name> {query}',
-    summary: 'Execute the given query against a specified graph.',
+    summary: 'Executes the given query against a specified graph.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphquery',
   },
   'GRAPH PROFILE': {
-    syntax: 'GRAPH.QUERY <graph name> {query}',
-    summary: "Execute a query and produces an execution plan augmented with metrics for each operation's execution.",
+    syntax: 'GRAPH.PROFILE <graph name> {query}',
+    summary: "Executes a query and produces an execution plan augmented with metrics for each operation's execution.",
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphprofile',
   },
   'GRAPH DELETE': {
@@ -30,13 +31,18 @@ export const RedisGraphHelp: { [key: string]: HelpCommand } = {
   'GRAPH EXPLAIN': {
     syntax: 'GRAPH.EXPLAIN <graph name> {query}',
     summary:
-      'Construct a query execution plan but does not run it. Inspect this execution plan to better \
+      'Constructs a query execution plan but does not run it. Inspect this execution plan to better \
     understand how your query will get executed.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphexplain',
   },
   'GRAPH SLOWLOG': {
-    syntax: 'GRAPH.SLOWLOG',
-    summary: 'Return a list containing up to 10 of the slowest queries issued against the given graph ID.',
+    syntax: 'GRAPH.SLOWLOG <graph name>',
+    summary: 'Returns a list containing up to 10 of the slowest queries issued against the given graph ID.',
     url: 'https://oss.redislabs.com/redisgraph/commands/#graphslowlog',
+  },
+  'GRAPH CONFIG': {
+    syntax: 'GRAPH.CONFIG GET/SET <config name> [value] value',
+    summary: 'Retrieves or updates a RedisGraph configuration.',
+    url: 'https://oss.redislabs.com/redisgraph/commands/#graphconfig',
   },
 };

@@ -1,12 +1,16 @@
 import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import { Observable } from 'rxjs';
-import { PanelData, LoadingState } from '@grafana/data';
+import { LoadingState, PanelData } from '@grafana/data';
 import { Button } from '@grafana/ui';
-import { PanelOptions, Help } from '../types';
+import { Help } from '../../constants';
+import { PanelOptions } from '../../types';
 import { RedisCLIPanel } from './redis-cli-panel';
-import AutoScrollingTextarea from './auto-scrolling-text-area';
+import { CLITextArea } from '../auto-scrolling-text-area';
 
+/**
+ * Override
+ */
 interface OverrideOptions {
   height?: number;
   query?: string;
@@ -29,6 +33,11 @@ const getOptions = ({ help = {}, ...overrideOptions }: OverrideOptions = {}): Pa
 
 type ShallowComponent = ShallowWrapper<typeof RedisCLIPanel>;
 
+/**
+ * Query result
+ *
+ * @param values
+ */
 const getDataSourceQueryResult = (values: string[]) => ({
   data: [
     {
@@ -46,8 +55,8 @@ const getDataSourceQueryResult = (values: string[]) => ({
   ],
 });
 
-/*
- DataSource
+/**
+ * DataSource
  */
 const dataSourceMock = {
   query: jest.fn().mockImplementation(
@@ -68,8 +77,8 @@ jest.mock('@grafana/runtime', () => ({
   }),
 }));
 
-/*
- RedisCLIPanel
+/**
+ * Redis CLI Panel
  */
 describe('RedisCLIPanel', () => {
   const width = 300;
@@ -90,8 +99,8 @@ describe('RedisCLIPanel', () => {
     dataSourceSrvGetMock.mockClear();
   });
 
-  /*
-   Rendering elements
+  /**
+   * Rendering elements
    */
   describe('Rendering elements', () => {
     it('Should show AutoScrollingTextarea', () => {
@@ -106,13 +115,13 @@ describe('RedisCLIPanel', () => {
           options={options}
         />
       );
-      const testedComponent = wrapper.find(AutoScrollingTextarea);
+      const testedComponent = wrapper.find(CLITextArea);
       expect(testedComponent.exists()).toBeTruthy();
       expect(testedComponent.prop('value')).toEqual(options.output);
     });
 
-    /*
-     Help
+    /**
+     * Help
      */
     describe('Help', () => {
       const getHelpComponent = (wrapper: ShallowComponent) => {
@@ -275,8 +284,8 @@ describe('RedisCLIPanel', () => {
     });
   });
 
-  /*
-   Query
+  /**
+   * Query
    */
   describe('Query', () => {
     const getTestedComponent = (wrapper: ShallowComponent) => {
