@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { AppPluginMeta, PluginConfigPageProps } from '@grafana/data';
 import { BackendSrv, config, getBackendSrv, getLocationSrv } from '@grafana/runtime';
 import { Button, InfoBox } from '@grafana/ui';
-import { GlobalSettings } from '../types';
+import { GlobalSettings } from '../../types';
 
 /**
  * Plug-in Path

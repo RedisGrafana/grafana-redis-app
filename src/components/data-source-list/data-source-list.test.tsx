@@ -1,7 +1,5 @@
 import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
-import { InfoBox } from '@grafana/ui';
-import { RedisCommand } from 'types';
 import {
   HighAvailability,
   MultiLayerSecurity,
@@ -14,9 +12,24 @@ import {
   RedisJSON,
   RedisTimeSeries,
 } from 'icons';
+import { InfoBox } from '@grafana/ui';
+import { DataSourceType, RedisCommand } from '../../constants';
 import { DataSourceList } from './data-source-list';
 
 type ShallowComponent = ShallowWrapper<typeof DataSourceList>;
+
+const backendSrvMock = {
+  post: jest.fn(),
+};
+
+const locationSrvMock = {
+  update: jest.fn(),
+};
+
+jest.mock('@grafana/runtime', () => ({
+  getBackendSrv: () => backendSrvMock,
+  getLocationSrv: () => locationSrvMock,
+}));
 
 /**
  * DataSourceList
@@ -31,16 +44,15 @@ describe('DataSourceList', () => {
     error: `Can't retrieve a list of commands`,
   };
 
-  it('If datasources.length=0 should show no items message', () => {
-    const wrapper = shallow(<DataSourceList datasources={[]} />);
-    const testedComponent = wrapper.findWhere((node) => node.is(InfoBox));
-    expect(testedComponent.exists()).toBeTruthy();
+  beforeEach(() => {
+    Object.values(backendSrvMock).forEach((mock) => mock.mockClear());
+    Object.values(locationSrvMock).forEach((mock) => mock.mockClear());
   });
 
-  it('If datasources is undefined should not show no items message', () => {
-    const wrapper = shallow(<DataSourceList datasources={void 0} />);
+  it('If datasources.length=0 should show no items message', () => {
+    const wrapper = shallow(<DataSourceList dataSources={[]} />);
     const testedComponent = wrapper.findWhere((node) => node.is(InfoBox));
-    expect(testedComponent.exists()).not.toBeTruthy();
+    expect(testedComponent.exists()).toBeTruthy();
   });
 
   /**
@@ -55,13 +67,13 @@ describe('DataSourceList', () => {
      */
     describe('RedisCube', () => {
       it('Should render', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: [''],
             jsonData: {},
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.is(RedisCube));
         expect(testedComponent.prop('fill')).toEqual(FILLS.success);
@@ -69,13 +81,13 @@ describe('DataSourceList', () => {
       });
 
       it('If there are not any commands should use alternative fill and title values', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: [],
             jsonData: {},
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.is(RedisCube));
         expect(testedComponent.prop('fill')).toEqual(FILLS.error);
@@ -88,17 +100,17 @@ describe('DataSourceList', () => {
      */
     describe('Name', () => {
       it('Should render name', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: [],
             jsonData: {},
             name: 'hello',
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.hasClass('card-item-name'));
-        expect(testedComponent.text()).toEqual(datasources[0].name);
+        expect(testedComponent.text()).toEqual(dataSources[0].name);
       });
     });
 
@@ -107,17 +119,17 @@ describe('DataSourceList', () => {
      */
     describe('Url', () => {
       it('Should render url', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: [],
             jsonData: {},
             url: 'hello',
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.hasClass('card-item-sub-name'));
-        expect(testedComponent.text()).toEqual(datasources[0].url);
+        expect(testedComponent.text()).toEqual(dataSources[0].url);
       });
     });
 
@@ -126,12 +138,12 @@ describe('DataSourceList', () => {
      */
     describe('Title', () => {
       it('If there are not any commands should show title', () => {
-        const datasources = [
+        const dataSources = [
           {
             jsonData: {},
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.hasClass('card-item-type'));
         expect(testedComponent.exists()).toBeTruthy();
@@ -139,13 +151,13 @@ describe('DataSourceList', () => {
       });
 
       it('If there are some commands should hide title', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: [''],
             jsonData: {},
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.hasClass('card-item-type'));
         expect(testedComponent.exists()).not.toBeTruthy();
@@ -157,7 +169,7 @@ describe('DataSourceList', () => {
      */
     describe('MultiLayerSecurity', () => {
       it('if jsonData.tlsAuth=true should be shown', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: [],
             jsonData: {
@@ -165,7 +177,7 @@ describe('DataSourceList', () => {
             },
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.is(MultiLayerSecurity));
         expect(testedComponent.exists()).toBeTruthy();
@@ -173,7 +185,7 @@ describe('DataSourceList', () => {
       });
 
       it('if jsonData.acl=true should be shown', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: ['get'],
             jsonData: {
@@ -181,7 +193,7 @@ describe('DataSourceList', () => {
             },
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.is(MultiLayerSecurity));
         expect(testedComponent.exists()).toBeTruthy();
@@ -189,7 +201,7 @@ describe('DataSourceList', () => {
       });
 
       it('if jsonData.acl=false and jsonData.tlsAuth=false should not be shown', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: ['get'],
             jsonData: {
@@ -198,7 +210,7 @@ describe('DataSourceList', () => {
             },
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.is(MultiLayerSecurity));
         expect(testedComponent.exists()).not.toBeTruthy();
@@ -210,7 +222,7 @@ describe('DataSourceList', () => {
      */
     describe('HighAvailability ', () => {
       it('if jsonData.client matches with "cluster" should be shown', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: [],
             jsonData: {
@@ -218,7 +230,7 @@ describe('DataSourceList', () => {
             },
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.is(HighAvailability));
         expect(testedComponent.exists()).toBeTruthy();
@@ -226,7 +238,7 @@ describe('DataSourceList', () => {
       });
 
       it('if jsonData.client matches with "sentinel" should be shown', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: ['get'],
             jsonData: {
@@ -234,7 +246,7 @@ describe('DataSourceList', () => {
             },
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.is(HighAvailability));
         expect(testedComponent.exists()).toBeTruthy();
@@ -242,7 +254,7 @@ describe('DataSourceList', () => {
       });
 
       it('if jsonData.client does not match with cluster|sentinel should not be shown', () => {
-        const datasources = [
+        const dataSources = [
           {
             commands: ['get'],
             jsonData: {
@@ -250,7 +262,7 @@ describe('DataSourceList', () => {
             },
           },
         ];
-        const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+        const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
         const item = getItem(wrapper);
         const testedComponent = item.findWhere((node) => node.is(HighAvailability));
         expect(testedComponent.exists()).not.toBeTruthy();
@@ -307,13 +319,13 @@ describe('DataSourceList', () => {
     tests.forEach(({ name, component, valueToShow, valueToHide }) => {
       describe(name, () => {
         it(`Should be shown if commands contain item "${valueToShow}"`, () => {
-          const datasources = [
+          const dataSources = [
             {
               commands: [valueToShow],
               jsonData: {},
             },
           ];
-          const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+          const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
           const item = getItem(wrapper);
           const testedComponent = item.findWhere((node) => node.is(component));
           expect(testedComponent.exists()).toBeTruthy();
@@ -321,18 +333,85 @@ describe('DataSourceList', () => {
         });
 
         it(`Should not be shown if commands do not contain item "${valueToShow}"`, () => {
-          const datasources = [
+          const dataSources = [
             {
               commands: [valueToHide],
               jsonData: {},
             },
           ];
-          const wrapper = shallow<typeof DataSourceList>(<DataSourceList datasources={datasources} />);
+          const wrapper = shallow<typeof DataSourceList>(<DataSourceList dataSources={dataSources as any} />);
           const item = getItem(wrapper);
           const testedComponent = item.findWhere((node) => node.is(component));
           expect(testedComponent.exists()).not.toBeTruthy();
         });
       });
     });
+  });
+
+  /**
+   * addNewDataSource
+   */
+  describe('addNewDataSource', () => {
+    it('Should add new datasource and redirect on edit page', (done) => {
+      const dataSources = [
+        {
+          id: 1,
+          name: 'Redis Data Source',
+          commands: [],
+          jsonData: {},
+        },
+      ];
+      const wrapper = shallow<ShallowComponent>(<DataSourceList dataSources={dataSources as any} />);
+      const addDataSourceButton = wrapper.findWhere(
+        (node) => node.name() === 'Button' && node.text() === 'Add Redis Data Source'
+      );
+      backendSrvMock.post.mockImplementationOnce(() => Promise.resolve({ id: 123 }));
+      addDataSourceButton.simulate('click');
+      setImmediate(() => {
+        expect(backendSrvMock.post).toHaveBeenCalledWith('/api/datasources', {
+          name: 'Redis',
+          type: DataSourceType.REDIS,
+          access: 'proxy',
+        });
+        expect(locationSrvMock.update).toHaveBeenCalledWith({ path: 'datasources/edit/123' });
+        done();
+      });
+    });
+
+    it('Should calc new name', (done) => {
+      const dataSources = [
+        {
+          id: 1,
+          name: 'Redis',
+          commands: [],
+          jsonData: {},
+        },
+        {
+          id: 2,
+          name: 'Redis-1',
+          commands: [],
+          jsonData: {},
+        },
+      ];
+      const wrapper = shallow<ShallowComponent>(<DataSourceList dataSources={dataSources as any} />);
+      const addDataSourceButton = wrapper.findWhere(
+        (node) => node.name() === 'Button' && node.text() === 'Add Redis Data Source'
+      );
+      backendSrvMock.post.mockImplementationOnce(() => Promise.resolve({ id: 1234 }));
+      addDataSourceButton.simulate('click');
+      setImmediate(() => {
+        expect(backendSrvMock.post).toHaveBeenCalledWith('/api/datasources', {
+          name: 'Redis-2',
+          type: DataSourceType.REDIS,
+          access: 'proxy',
+        });
+        expect(locationSrvMock.update).toHaveBeenCalledWith({ path: 'datasources/edit/1234' });
+        done();
+      });
+    });
+  });
+
+  afterAll(() => {
+    jest.resetAllMocks();
   });
 });
