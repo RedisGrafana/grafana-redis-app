@@ -206,19 +206,6 @@ describe('RootPage', () => {
       });
     });
 
-    it('If dataSourceSrv is unable to get a data source, should reload the page', async () => {
-      const wrapper = shallow<RootPage>(
-        <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />,
-        { disableLifecycleMethods: true }
-      );
-      getDataSourceMock.mockImplementationOnce(() =>
-        Promise.resolve([{ name: 'my-redis', type: DataSourceType.REDIS }])
-      );
-      getRedisMock.mockImplementationOnce(() => Promise.reject());
-      await wrapper.instance().componentDidMount();
-      expect(window.location.reload).toHaveBeenCalled();
-    });
-
     it('If dataSource is unable to make query, should work correctly', async () => {
       const wrapper = shallow<RootPage>(
         <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />,
@@ -229,6 +216,7 @@ describe('RootPage', () => {
       );
       redisMock.query.mockImplementationOnce(() => Promise.reject());
       await wrapper.instance().componentDidMount();
+
       const dataSourceListComponent = wrapper.findWhere((node) => node.is(DataSourceList));
       const loadingMessageComponent = wrapper.findWhere(
         (node) => node.is(InfoBox) && node.prop('title') === 'Loading...'
