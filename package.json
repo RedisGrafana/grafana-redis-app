@@ -6,6 +6,7 @@
     "@grafana/runtime": "7.3.6",
     "@grafana/toolkit": "7.3.6",
     "@grafana/ui": "7.3.6",
+    "@monaco-editor/react": "^4.0.9",
     "@types/enzyme": "^3.10.8",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "emotion": "10.0.27",

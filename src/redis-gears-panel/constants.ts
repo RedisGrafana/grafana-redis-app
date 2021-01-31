@@ -1,4 +1,4 @@
 /**
  * Default script
  */
-export const DefaultScript = 'GB().run()';
+export const DefaultScript = 'gb = GearsBuilder()';

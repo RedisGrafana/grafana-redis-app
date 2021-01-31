@@ -2,7 +2,8 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Observable } from 'rxjs';
 import { FieldType, LoadingState, toDataFrame } from '@grafana/data';
-import { Alert, Button, CodeEditor, Input, Switch, Table } from '@grafana/ui';
+import { Alert, Button, Input, Switch, Table } from '@grafana/ui';
+import { CodeEditor } from '../code-editor';
 import { RedisGearsPanel } from './redis-gears-panel';
 
 /**
@@ -52,7 +53,7 @@ describe('RedisGearsPanel', () => {
   it('Should update script', () => {
     const wrapper = shallow<RedisGearsPanel>(getComponent());
     const component = wrapper.find(CodeEditor);
-    component.simulate('blur', 'myscript');
+    component.simulate('change', 'myscript');
     expect(wrapper.state().script).toEqual('myscript');
   });
 
