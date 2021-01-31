@@ -51,14 +51,14 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     syntax: 'ACL GETUSER username',
     summary: 'Get the rules for a specific ACL user.',
     complexity: 'O(N). Where N is the number of password, command and pattern rules that the user has.',
-    since: '6.0.0',
+    since: '6.0.0, >= 6.2: Added Pub/Sub channel patterns.',
     url: 'https://redis.io/commands/acl-getuser',
   },
   'ACL SETUSER': {
     syntax: 'ACL SETUSER username [rule [rule ...]]',
     summary: 'Modify or create the rules for a specific ACL user.',
     complexity: 'O(N). Where N is the number of rules provided.',
-    since: '6.0.0',
+    since: '6.0.0, >= 6.2: Added Pub/Sub channel patterns.',
     url: 'https://redis.io/commands/acl-setuser',
   },
   'ACL DELUSER': {
@@ -177,6 +177,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
   BRPOPLPUSH: {
     syntax: 'BRPOPLPUSH source destination timeout',
     summary: 'Pop an element from a list, push it to another list and return it; or block until one is available.',
+    warning: 'As per Redis 6.2.0, BRPOPLPUSH is considered deprecated. Please prefer `BLMOVE` in new code.',
     complexity: 'O(1)',
     since: '2.2.0',
     url: 'https://redis.io/commands/brpoplpush',
@@ -242,14 +243,14 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
       'CLIENT KILL [ip:port] [ID client-id] [TYPE normal|master|slave|pubsub] [USER username] [ADDR ip:port] [SKIPME yes/no]',
     summary: 'Kill the connection of a client.',
     complexity: 'O(N) where N is the number of client connections.',
-    since: '2.4.0',
+    since: '2.4.0, >= 6.2: LADDR option.',
     url: 'https://redis.io/commands/client-kill',
   },
   'CLIENT LIST': {
-    syntax: 'CLIENT LIST [TYPE normal|master|replica|pubsub]',
+    syntax: 'CLIENT LIST [TYPE normal|master|replica|pubsub] [ID client-id [client-id ...]]',
     summary: 'Get the list of client connections.',
     complexity: 'O(N) where N is the number of client connections.',
-    since: '2.4.0',
+    since: '2.4.0, >= 6.2: Added laddr field and the optional ID filter.',
     url: 'https://redis.io/commands/client-list',
   },
   'CLIENT GETNAME': {
@@ -274,10 +275,10 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/client-unpause',
   },
   'CLIENT PAUSE': {
-    syntax: 'CLIENT PAUSE timeout',
+    syntax: 'CLIENT PAUSE timeout [WRITE|ALL]',
     summary: 'Stop processing commands from clients for some time.',
     complexity: 'O(1)',
-    since: '2.9.50',
+    since: '2.9.50, >= 6.2: CLIENT PAUSE WRITE mode added along with the mode option.',
     url: 'https://redis.io/commands/client-pause',
   },
   'CLIENT REPLY': {
@@ -298,7 +299,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     syntax:
       'CLIENT TRACKING ON|OFF [REDIRECT client-id] [PREFIX prefix [PREFIX prefix ...]] [BCAST] [OPTIN] [OPTOUT] [NOLOOP]',
     summary: 'Enable or disable server assisted client side caching support.',
-    complexity: 'O(1)',
+    complexity: 'O(1). Some options may introduce additional complexity.',
     since: '6.0.0',
     url: 'https://redis.io/commands/client-tracking',
   },
@@ -667,18 +668,26 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '1.2.0',
     url: 'https://redis.io/commands/expireat',
   },
+  FAILOVER: {
+    syntax: 'FAILOVER [TO host port [FORCE]] [ABORT] [TIMEOUT milliseconds]',
+    summary: 'Start a coordinated failover between this server and one of its replicas.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/failover',
+  },
   FLUSHALL: {
-    syntax: 'FLUSHALL [ASYNC]',
+    syntax: 'FLUSHALL [ASYNC|SYNC]',
     summary: 'Remove all keys from all databases.',
+    complexity: 'O(N) where N is the number of keys in the selected database.',
     danger: 'May cause data loss in Production environment.',
-    since: '1.0.0',
+    since: '1.0.0, >= 6.2.0: Added the ASYNC and SYNC flushing mode modifiers.',
     url: 'https://redis.io/commands/flushall',
   },
   FLUSHDB: {
-    syntax: 'FLUSHDB [ASYNC]',
+    syntax: 'FLUSHDB [ASYNC|SYNC]',
     summary: 'Remove all keys from the current database.',
+    complexity: 'O(N) where N is the number of keys in the selected database.',
     danger: 'May cause data loss in Production environment.',
-    since: '1.0.0',
+    since: '1.0.0, >= 6.2.0: Added the ASYNC and SYNC flushing mode modifiers.',
     url: 'https://redis.io/commands/flushdb',
   },
 
@@ -686,10 +695,10 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
    * Geospatial
    */
   GEOADD: {
-    syntax: 'GEOADD key longitude latitude member [longitude latitude member ...]',
+    syntax: 'GEOADD key [NX|XX] [CH] longitude latitude member [longitude latitude member ...]',
     summary: 'Add one or more geospatial items in the geospatial index represented using a sorted set.',
     complexity: 'O(log(N)) for each item added, where N is the number of elements in the sorted set.',
-    since: '3.2.0',
+    since: '3.2.0, >= 6.2: Added the CH, NX and XX options.',
     url: 'https://redis.io/commands/geoadd',
   },
   GEOHASH: {
@@ -716,13 +725,15 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
   GEORADIUS: {
     syntax:
       'GEORADIUS key longitude latitude radius m|km|ft|mi [WITHCOORD] [WITHDIST] [WITHHASH] \
-      [COUNT count] [ASC|DESC] [STORE key] [STOREDIST key]',
+      [COUNT count [ANY]] [ASC|DESC] [STORE key] [STOREDIST key]',
     summary:
       'Query a sorted set representing a geospatial index to fetch members matching a given maximum distance from a point.',
     complexity:
       'O(N+log(M)) where N is the number of elements inside the bounding box of the circular area delimited \
       by center and radius and M is the number of items inside the index.',
-    since: '3.2.0',
+    warning:
+      'As per Redis 6.2.0, GEORADIUS command family are considered deprecated. Please prefer `GEOSEARCH` and `GEOSEARCHSTORE` in new code.',
+    since: '3.2.0, >= 6.2: Added the ANY option for COUNT.',
     url: 'https://redis.io/commands/georadius',
   },
   GEORADIUSBYMEMBER: {
@@ -734,6 +745,8 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity:
       'O(N+log(M)) where N is the number of elements inside the bounding box of the circular area delimited by center \
       and radius and M is the number of items inside the index.',
+    warning:
+      'As per Redis 6.2.0, GEORADIUS command family are considered deprecated. Please prefer `GEOSEARCH` and `GEOSEARCHSTORE` in new code.',
     since: '3.2.0',
     url: 'https://redis.io/commands/georadiusbymember',
   },
@@ -741,7 +754,9 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     syntax:
       'GEOSEARCH key [FROMMEMBER member] [FROMLONLAT longitude latitude] [BYRADIUS radius m|km|ft|mi] \
       [BYBOX width height m|km|ft|mi] [ASC|DESC] [COUNT count [ANY]] [WITHCOORD] [WITHDIST] [WITHHASH]',
-    summary: 'Query a sorted set representing a geospatial index to fetch members inside an area of a box or a circle.',
+    summary:
+      'Query a sorted set representing a geospatial index to fetch members inside an area of a box or a circle. \
+    This command comes in place of the now deprecated `GEORADIUS` and `GEORADIUSBYMEMBER`.',
     complexity:
       'O(N+log(M)) where N is the number of elements in the grid-aligned bounding box area around the shape provided as the filter and M is the number of items inside the shape.',
     since: '6.2.0',
@@ -752,7 +767,8 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
       'GEOSEARCHSTORE destination source [FROMMEMBER member] [FROMLONLAT longitude latitude] [BYRADIUS radius m|km|ft|mi] \
       [BYBOX width height m|km|ft|mi] [ASC|DESC] [COUNT count [ANY]] [WITHCOORD] [WITHDIST] [WITHHASH] [STOREDIST]',
     summary:
-      'Query a sorted set representing a geospatial index to fetch members inside an area of a box or a circle, and store the result in another key.',
+      'Query a sorted set representing a geospatial index to fetch members inside an area of a box or a circle, and store the result in another key. \
+      This command comes in place of the now deprecated `GEORADIUS` and `GEORADIUSBYMEMBER`.',
     complexity:
       'O(N+log(M)) where N is the number of elements in the grid-aligned bounding box area around the shape provided as the filter and M is the number of items inside the shape.',
     since: '6.2.0',
@@ -800,6 +816,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     syntax: 'GETSET key value',
     summary: 'Set the string value of a key and return its old value.',
     complexity: 'O(1)',
+    warning: 'As per Redis 6.2, GETSET is considered deprecated. Please prefer `SET` with `GET` parameter in new code.',
     since: '1.0.0',
     url: 'https://redis.io/commands/getset',
   },
@@ -811,10 +828,11 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/hdel',
   },
   HELLO: {
-    syntax: 'HELLO protover [AUTH username password] [SETNAME clientname]',
-    summary: 'Switch Redis protocol.',
+    syntax: 'HELLO [protover [AUTH username password] [SETNAME clientname]]',
+    summary: 'Handshake with Redis.',
     complexity: 'O(1)',
-    since: '6.0.0',
+    since:
+      "6.0.0, >= 6.2: protover made optional; when called without arguments the command reports the current connection's context.",
     url: 'https://redis.io/commands/hello',
   },
   HEXISTS: {
@@ -877,6 +895,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     syntax: 'HMSET key field value [field value ...]',
     summary: 'Set multiple hash fields to multiple values.',
     complexity: 'O(N) where N is the number of fields being set.',
+    warning: 'As per Redis 4.0.0, HMSET is considered deprecated. Please prefer `HSET` in new code.',
     since: '2.0.0',
     url: 'https://redis.io/commands/hmset',
   },
@@ -940,8 +959,12 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
   },
   INFO: {
     syntax: 'INFO [section]',
-    summary: 'Get information and statistics about the server.',
-    since: '1.0.0',
+    summary:
+      'Get information and statistics about the server: SERVER (General information about the Redis server), \
+    CLIENTS (Client connections), MEMORY (Memory consumption), PERSISTENCE (RDB and AOF), STATS (General statistics), \
+    REPLICATION (Master/replica replication information), CPU (CPU consumption), COMMANDSTATS (Command statistics), \
+    CLUSTER (Redis Cluster), MODULES (Modules), KEYSPACE (Database related statistics), ERRORSTATS (Redis error statistics)',
+    since: '1.0.0, >=6.2 Added ERRORSTATS and updated COMMANDSTATS.',
     url: 'https://redis.io/commands/info',
   },
   LOLWUT: {
@@ -995,10 +1018,10 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/llen',
   },
   LPOP: {
-    syntax: 'LPOP key',
+    syntax: 'LPOP key [count]',
     summary: 'Remove and get the first element in a list.',
-    complexity: 'O(1)',
-    since: '1.0.0',
+    complexity: 'O(N) where N is the number of elements returned.',
+    since: '1.0.0, >= 6.2: Added the count argument.',
     url: 'https://redis.io/commands/lpop',
   },
   LPOS: {
@@ -1157,7 +1180,8 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
   MONITOR: {
     syntax: 'MONITOR',
     summary: 'Listen for all requests received by the server in real time.',
-    since: '1.0.0',
+    since: '1.0.0, >= 6.2: RESET can be called to exit monitor mode.',
+    danger: 'COMMAND IS NOT SUPPORTED AND WILL OVERFLOW CONNECTION POOL',
     url: 'https://redis.io/commands/monitor',
   },
   MOVE: {
@@ -1358,16 +1382,17 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/role',
   },
   RPOP: {
-    syntax: 'RPOP key',
+    syntax: 'RPOP key [count]',
     summary: 'Remove and get the last element in a list.',
-    complexity: 'O(1)',
-    since: '1.0.0',
+    complexity: 'O(N) where N is the number of elements returned.',
+    since: '1.0.0, >= 6.2: Added the count argument.',
     url: 'https://redis.io/commands/rpop',
   },
   RPOPLPUSH: {
     syntax: 'RPOPLPUSH source destination',
     summary: 'Remove the last element in a list, prepend it to another list and return it.',
     complexity: 'O(1)',
+    warning: 'As per Redis 6.2.0, RPOPLPUSH is considered deprecated. Please prefer `LMOVE` in new code.',
     since: '1.2.0',
     url: 'https://redis.io/commands/rpoplpush',
   },
@@ -1444,10 +1469,10 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/script-exists',
   },
   'SCRIPT FLUSH': {
-    syntax: 'SCRIPT FLUSH',
+    syntax: 'SCRIPT FLUSH [ASYNC|SYNC]',
     summary: 'Remove all the scripts from the script cache.',
     complexity: 'O(N) with N being the number of scripts in cache.',
-    since: '2.6.0',
+    since: '2.6.0, >= 6.2.0: Added the ASYNC and SYNC flushing mode modifiers.',
     url: 'https://redis.io/commands/script-flush',
   },
   'SCRIPT KILL': {
@@ -1604,7 +1629,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     syntax: 'SPOP key [count]',
     summary: 'Remove and return one or multiple random members from a set.',
     complexity: 'O(1)',
-    since: '1.0.0',
+    since: '1.0.0, >= 3.2: Added the count argument.',
     url: 'https://redis.io/commands/spop',
   },
   SRANDMEMBER: {
@@ -1639,7 +1664,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     syntax: 'SUBSCRIBE channel [channel ...]',
     summary: 'Listen for messages published to the given channels.',
     complexity: 'O(N) where N is the number of channels to subscribe to.',
-    since: '2.0.0',
+    since: '2.0.0, >= 6.2: RESET can be called to exit subscribed state.',
     url: 'https://redis.io/commands/subscribe',
   },
   SUNION: {
@@ -1659,6 +1684,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
   SWAPDB: {
     syntax: 'SWAPDB index1 index2',
     summary: 'Swaps two Redis databases.',
+    complexity: 'O(N) where N is the count of clients watching or blocking on keys from both databases.',
     since: '4.0.0',
     url: 'https://redis.io/commands/swapdb',
   },
@@ -1748,7 +1774,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     syntax: 'ZADD key [NX|XX] [GT|LT] [CH] [INCR] score member [score member ...]',
     summary: 'Add one or more members to a sorted set, or update its score if it already exists.',
     complexity: 'O(log(N)) for each item added, where N is the number of elements in the sorted set.',
-    since: '1.2.0',
+    since: '1.2.0, >= 6.2: Added the GT and LT options.',
     url: 'https://redis.io/commands/zadd',
   },
   ZCARD: {
@@ -1846,11 +1872,11 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/zrangestore',
   },
   ZRANGE: {
-    syntax: 'ZRANGE key start stop [WITHSCORES]',
+    syntax: 'ZRANGE key min max [BYSCORE|BYLEX] [REV] [LIMIT offset count] [WITHSCORES]',
     summary: 'Return a range of members in a sorted set, by index.',
     complexity:
       'O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements returned.',
-    since: '1.2.0',
+    since: '1.2.0, >= 6.2: Added the REV, BYSCORE, BYLEX and LIMIT options.',
     url: 'https://redis.io/commands/zrange',
   },
   ZRANGEBYLEX: {
@@ -1860,6 +1886,8 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
       'O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements being \
       returned. If M is constant (e.g. always asking for the first 10 elements with LIMIT), you can consider it O(log(N)).',
     since: '2.8.9',
+    warning:
+      'As per Redis 6.2.0, this command is considered deprecated. Please prefer using the `ZRANGE` command with the `BYLEX` argument in new code.',
     url: 'https://redis.io/commands/zrangebylex',
   },
   ZREVRANGEBYLEX: {
@@ -1870,6 +1898,8 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
       'O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements being returned. \
       If M is constant (e.g. always asking for the first 10 elements with LIMIT), you can consider it O(log(N)).',
     since: '2.8.9',
+    warning:
+      'As per Redis 6.2.0, this command is considered deprecated. Please prefer using the `ZRANGE` command with the `BYLEX` and `REV` arguments in new code.',
     url: 'https://redis.io/commands/zrevrangebylex',
   },
   ZRANGEBYSCORE: {
@@ -1879,6 +1909,8 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
       'O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements being returned. \
       If M is constant (e.g. always asking for the first 10 elements with LIMIT), you can consider it O(log(N)).',
     since: '1.0.5',
+    warning:
+      'As per Redis 6.2.0, this command is considered deprecated. Please prefer using the `ZRANGE` command with the `BYSCORE` argument in new code.',
     url: 'https://redis.io/commands/zrangebyscore',
   },
   ZRANK: {
@@ -1935,6 +1967,8 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
       'O(log(N)+M) with N being the number of elements in the sorted set and M the number of elements being returned. \
       If M is constant (e.g. always asking for the first 10 elements with LIMIT), you can consider it O(log(N)).',
     since: '2.2.0',
+    warning:
+      'As per Redis 6.2.0, this command is considered deprecated. Please prefer using the `ZRANGE` command with the `BYSCORE` and `REV` arguments in new code.',
     url: 'https://redis.io/commands/zrevrangebyscore',
   },
   ZREVRANK: {
@@ -2032,19 +2066,19 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/xinfo',
   },
   XADD: {
-    syntax: 'XADD key ID field value [field value ...]',
+    syntax: 'XADD key [NOMKSTREAM] [MAXLEN|MINID [=|~] threshold [LIMIT count]] *|ID field value [field value ...]',
     summary: 'Appends a new entry to a stream.',
-    complexity: 'O(1)',
-    since: '5.0.0',
+    complexity: 'O(1) when adding a new entry, O(N) when trimming where N being the number of entires evicted.',
+    since: '5.0.0, >= 6.2: Added the NOMKSTREAM option, MINID trimming strategy and the LIMIT option.',
     url: 'https://redis.io/commands/xadd',
   },
   XTRIM: {
-    syntax: 'XTRIM key MAXLEN [~] count',
+    syntax: 'XTRIM key MAXLEN|MINID [=|~] threshold [LIMIT count]',
     summary: "Trims the stream to (approximately if '~' is passed) a certain size.",
     complexity:
       'O(N), with N being the number of evicted entries. Constant times are very small however, since \
       entries are organized in macro nodes containing multiple entries that can be released with a single deallocation.',
-    since: '5.0.0',
+    since: '5.0.0, >= 6.2: Added the MINID trimming strategy and the LIMIT option.',
     url: 'https://redis.io/commands/xtrim',
   },
   XDEL: {
@@ -2062,7 +2096,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity:
       'O(N) with N being the number of elements being returned. If N is constant (e.g. always asking for the \
         first 10 elements with COUNT), you can consider it O(1).',
-    since: '5.0.0',
+    since: '5.0.0, >= 6.2 Added exclusive ranges.',
     url: 'https://redis.io/commands/xrange',
   },
   XREVRANGE: {
@@ -2073,12 +2107,12 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity:
       'O(N) with N being the number of elements returned. If N is constant (e.g. always asking for the first \
         10 elements with COUNT), you can consider it O(1).',
-    since: '5.0.0',
+    since: '5.0.0, >= 6.2 Added exclusive ranges.',
     url: 'https://redis.io/commands/xrevrange',
   },
   XLEN: {
     syntax: 'XLEN key',
-    summary: 'Return the number of entires in a stream.',
+    summary: 'Return the number of entries in a stream.',
     complexity: 'O(1)',
     since: '5.0.0',
     url: 'https://redis.io/commands/xlen',
@@ -2133,7 +2167,8 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     syntax:
       'XCLAIM key group consumer min-idle-time ID [ID ...] [IDLE ms] [TIME ms-unix-time] [RETRYCOUNT count] [FORCE] [JUSTID]',
     summary:
-      'Changes (or acquires) ownership of a message in a consumer group, as if the message was delivered to the specified consumer.',
+      'Changes (or acquires) ownership of a message in a consumer group, as if the message was delivered to the specified consumer. \
+      As of Redis 6.2, consumers can use the `XAUTOCLAIM` command to automatically scan and claim stale pending messages.',
     complexity: 'O(log N) with N being the number of messages in the PEL of the consumer group.',
     since: '5.0.0',
     url: 'https://redis.io/commands/xclaim',
@@ -2147,14 +2182,14 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/xautoclaim',
   },
   XPENDING: {
-    syntax: 'XPENDING key group [start end count] [consumer]',
+    syntax: 'XPENDING key group [[IDLE min-idle-time] start end count [consumer]]',
     summary:
       'Return information and entries from a stream consumer group pending entries list, that are messages fetched but never acknowledged.',
     complexity:
-      'O(N) with N being the number of elements returned, so asking for a small fixed number of entries per call is O(1). \
-      When the command returns just the summary it runs in O(1) time assuming the list of consumers is small, otherwise \
-      there is additional O(N) time needed to iterate every consumer.',
-    since: '5.0.0',
+      'O(N) with N being the number of elements returned, so asking for a small fixed number of entries per call is O(1). O(M), where M \
+      is the total number of entries scanned when used with the IDLE filter. When the command returns just the summary and the list of \
+      consumers is small, it runs in O(1) time; otherwise, an additional O(N) time for iterating every consumer.',
+    since: '5.0.0, >= 6.2.0: Added the IDLE option and exclusive range intervals.',
     url: 'https://redis.io/commands/xpending',
   },
 

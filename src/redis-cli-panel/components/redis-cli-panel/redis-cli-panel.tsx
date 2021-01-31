@@ -163,6 +163,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
           <h4 id="help-syntax">{help.syntax}</h4>
           <div id="help-summary">{help.summary}</div>
 
+          <hr />
           {help.complexity && (
             <div id="help-complexity">
               <b>Time complexity:</b> {help.complexity}
