@@ -91,6 +91,8 @@ jobs:
           path: ./dist
 
   grafana-redis-app:
+    needs:
+      - grafana-redis-datasource
     runs-on: ubuntu-latest
 
     steps:
