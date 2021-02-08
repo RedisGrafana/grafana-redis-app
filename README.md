@@ -67,7 +67,7 @@ Please use this command in OFF-PEAK as it cause latency increase. Interval and c
 
 ## Redis Gears panel
 
-RedisGears is a dynamic framework that enables developers to write and execute functions that implement data flows in Redis, while abstracting away the data’s distribution and deployment. This panel support Python syntax and allows to execute functions in blocking and non-blocking mode.
+[RedisGears](https://oss.redislabs.com/redisgears/) is a dynamic framework that enables developers to write and execute functions that implement data flows in Redis, while abstracting away the data’s distribution and deployment. This panel support Python syntax and allows to execute functions in blocking and non-blocking mode.
 
 ![CLI](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-gears-dashboard.png)
 
@@ -101,7 +101,7 @@ docker run -d -p 3000:3000 --name=redis-app ghcr.io/redisgrafana/redis-app:lates
 
 ### Run using `docker-compose` for development
 
-Application plug-in and Redis Data Source have to be built following [BUILD](https://github.com/RedisGrafana/grafana-redis-app/blob/master/BUILD.md) instructions before starting using `docker-compose/dev.yml` file.
+Application plug-in and Redis Data Source have to be built following [BUILD](https://github.com/RedisGrafana/grafana-redis-app/blob/master/BUILD.md) instructions before starting.
 
 Project provides `docker-compose/dev.yml` to start Redis with Redis Labs modules and Grafana 7.0.
 
