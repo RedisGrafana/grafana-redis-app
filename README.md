@@ -54,17 +54,17 @@ This panel provides [Redis command line interface](https://redis.io/topics/redis
 
 Redis is often used in the context of demanding use cases, where it serves a large number of queries per second per instance, and at the same time, there are very strict latency requirements both for the average response time and for the worst case latency.
 
-![CLI](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-latency-panel-chart.png)
+![Latency-Graph](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-latency-panel-graph.png)
 
 This panel provides commands's latency based on [INFO COMMANDSTATS](https://redis.io/commands/info). Information is provide as chart and table.
 
-![CLI](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-latency-panel-table.png)
+![Latency-Table](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-latency-panel-table.png)
 
 ## Keys consuming a lot of memory panel
 
 Do you want to know which keys consume a lot of memory in your Redis database? This panel is based on [SCAN](https://redis.io/commands/scan) and [MEMORY USAGE](https://redis.io/commands/memory-usage) commands to scan keys and sort results based on memory usage in the table format.
 
-![CLI](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-keys-panel.png)
+![Keys](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-keys-panel.png)
 
 Please use this command in OFF-PEAK as it cause latency increase. Interval and count for SCAN command is configurable to keep latency under control.
 
@@ -72,7 +72,7 @@ Please use this command in OFF-PEAK as it cause latency increase. Interval and c
 
 [RedisGears](https://oss.redislabs.com/redisgears/) is a dynamic framework that enables developers to write and execute functions that implement data flows in Redis, while abstracting away the data’s distribution and deployment. This panel support Python syntax and allows to execute functions in blocking and non-blocking mode.
 
-![CLI](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-gears-dashboard.png)
+![RedisGears-Dashboard](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-gears-dashboard.png)
 
 ## Getting Started
 
