@@ -21,5 +21,6 @@ services:
       - GF_INSTALL_PLUGINS=redis-app
     volumes:
       - ./provisioning/plugins:/etc/grafana/provisioning/plugins
+      - ./provisioning/datasources:/etc/grafana/provisioning/datasources
       # Uncomment to preserve Grafana configuration
       # - ./data:/var/lib/grafana
