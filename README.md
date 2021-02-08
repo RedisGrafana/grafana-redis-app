@@ -23,7 +23,7 @@
 
 ### What is the Redis Application for Grafana?
 
-The Redis Application, is a plug-in for Grafana that provides custom panels for [Redis Data Source](https://grafana.com/grafana/plugins/redis-datasource):
+The Redis Application, is a plug-in for Grafana that provides application pages and custom panels for [Redis Data Source](https://grafana.com/grafana/plugins/redis-datasource):
 
 - [**Command line interface (CLI)**](#redis-cli-panel)
 - [**Command Latency (graph and table)**](#latency-panel)
