@@ -82,8 +82,24 @@
         "path": "img/redis-app.png"
       },
       {
+        "name": "Redis CLI Dashboard",
+        "path": "img/redis-cli-dashboard.png"
+      },
+      {
+        "name": "RedisGears Dashboard",
+        "path": "img/redis-gears-dashboard.png"
+      },
+      {
         "name": "Redis CLI Panel",
         "path": "img/redis-cli-panel.png"
+      },
+      {
+        "name": "Redis Latency Panel",
+        "path": "img/redis-latency-panel-graph.png"
+      },
+      {
+        "name": "Max Memory Keys Panel",
+        "path": "img/redis-keys-panel.png"
       }
     ],
     "updated": "%TODAY%",

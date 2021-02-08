@@ -9,9 +9,7 @@
     "logos": {
       "large": "img/logo.svg",
       "small": "img/logo.svg"
-    },
-    "updated": "%TODAY%",
-    "version": "%VERSION%"
+    }
   },
   "name": "Redis Max Memory Keys",
   "type": "panel"
