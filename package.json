@@ -22,6 +22,7 @@
     "build": "grafana-toolkit plugin:build --coverage",
     "dev": "grafana-toolkit plugin:dev",
     "format": "prettier --write \"**\"",
+    "sign": "grafana-toolkit plugin:sign",
     "start": "docker-compose up",
     "start:dev": "docker-compose -f docker-compose/dev.yml up",
     "stop": "docker-compose down",
