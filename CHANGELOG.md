@@ -18,7 +18,7 @@
 - Add Monaco for RedisGears panel editor #39
 - Update CLI Panel helpers for Redis 6.2 and modules #40
 - Add Docker build #42
-- Update Plugin and panels configuration #44
+- Update Plugin and panels configuration for Redis Data Source 1.3.1 #44
 
 ## v1.0.1 (2020-10-24)
 
