@@ -7,6 +7,8 @@
 LICENSE
 yarn.lock
 .github
+Dockerfile
+.dockerignore
 
 # Folders
 node_modules
