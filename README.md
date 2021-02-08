@@ -12,6 +12,7 @@
 ## Summary
 
 - [**Introduction**](#introduction)
+- [**Dashboards**](#dashboards)
 - [**Custom panels**](#custom-panels)
 - [**Getting Started**](#getting-started)
 - [**Feedback**](#feedback)
@@ -33,6 +34,14 @@ The Redis Application, is a plug-in for Grafana that provides custom panels for 
 
 Only Grafana 7.1 and later with a new plug-in platform supported.
 
+## Dashboards
+
+Redis application plug-in includes Redis Overview, CLI and RedisGears dashboards. All dashboard are available from Application's icon in the left side menu.
+
+![Redis-CLI-Dashboards](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-cli-dashboard.png)
+
+Redis CLI dashboard combines Redis CLI with streaming panels to observe Redis database in real-time.
+
 ## Custom Panels
 
 ## Redis CLI panel
@@ -40,12 +49,6 @@ Only Grafana 7.1 and later with a new plug-in platform supported.
 This panel provides [Redis command line interface](https://redis.io/topics/rediscli) that allows to send commands to Redis, and read the replies sent by the server, directly from the Grafana.
 
 ![CLI](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-cli-panel.png)
-
-Redis application plug-in includes Redis CLI dashboard.
-
-![Redis-CLI-Dashboards](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-cli-dashboard.png)
-
-This dashboard combines Redis CLI with streaming panels to observe Redis database in real-time.
 
 ## Latency panel
 
