@@ -8,6 +8,7 @@ export const RedisGears: FC<SVGProps> = ({ size, fill, ...rest }) => {
   return (
     <a
       target="_blank"
+      rel="noreferrer"
       href="http://redisgears.io"
       title="RedisGears is a serverless engine for transaction, batch and event-driven data processing in Redis."
     >

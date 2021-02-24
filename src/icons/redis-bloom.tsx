@@ -8,6 +8,7 @@ export const RedisBloom: FC<SVGProps> = ({ size, fill, ...rest }) => {
   return (
     <a
       target="_blank"
+      rel="noreferrer"
       href="http://redisbloom.io"
       title="RedisBloom module provides four datatypes, a Scalable Bloom Filter and Cuckoo Filter, a Count-Mins-Sketch and a Top-K."
     >

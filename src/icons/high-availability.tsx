@@ -6,7 +6,7 @@ import { SVGProps } from '../types';
  */
 export const HighAvailability: FC<SVGProps> = ({ size, fill, ...rest }) => {
   return (
-    <a target="_blank" href="http://redis.io" title="High Availability enabled.">
+    <a target="_blank" rel="noreferrer" href="http://redis.io" title="High Availability enabled.">
       <svg version="1.1" id="HighAvailability" x="0px" y="0px" viewBox="0 0 32 32" width={size} height={size} {...rest}>
         <path
           fill={fill ? fill : '#DC382D'}

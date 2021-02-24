@@ -8,6 +8,7 @@ export const RedisJSON: FC<SVGProps> = ({ size, fill, ...rest }) => {
   return (
     <a
       target="_blank"
+      rel="noreferrer"
       href="http://redisjson.io"
       title="RedisJSON is a Redis module that implements ECMA-404 The JSON Data Interchange Standard as a native data type."
     >
