@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.0 (IN PROGRESS)
+
+### Features / Enhancements
+
+- Update Grafana dependencies to 7.4.2
+
 ## v1.1.0 (2021-02-07)
 
 ### Features / Enhancements

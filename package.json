@@ -2,16 +2,16 @@
   "author": "Redis Labs",
   "description": "Redis Application for Grafana",
   "devDependencies": {
-    "@grafana/data": "7.3.6",
-    "@grafana/runtime": "7.3.6",
-    "@grafana/toolkit": "7.3.6",
-    "@grafana/ui": "7.3.6",
-    "@monaco-editor/react": "^4.0.9",
+    "@grafana/data": "7.4.2",
+    "@grafana/runtime": "7.4.2",
+    "@grafana/toolkit": "7.4.2",
+    "@grafana/ui": "7.4.2",
+    "@monaco-editor/react": "^4.0.10",
     "@types/enzyme": "^3.10.8",
     "@types/enzyme-adapter-react-16": "^1.0.6",
-    "emotion": "10.0.27",
+    "emotion": "11.0.0",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.5"
+    "enzyme-adapter-react-16": "^1.15.6"
   },
   "engines": {
     "node": ">=12"
@@ -28,7 +28,8 @@
     "stop": "docker-compose down",
     "stop:dev": "docker-compose -f docker-compose/dev.yml down",
     "test": "grafana-toolkit plugin:test --coverage",
+    "upgrade": "yarn upgrade --latest",
     "watch": "grafana-toolkit plugin:dev --watch"
   },
-  "version": "1.1.0"
+  "version": "1.2.0"
 }
