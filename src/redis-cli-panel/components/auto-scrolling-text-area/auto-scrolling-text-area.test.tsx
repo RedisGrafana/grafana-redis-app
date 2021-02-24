@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
 import { TextArea } from '@grafana/ui';
 import { CLITextArea } from './auto-scrolling-text-area';
 
@@ -26,10 +26,5 @@ describe('CLITextArea', () => {
     expect(testedComponent.exists()).toBeTruthy();
     expect(testedComponent.prop('value')).toEqual(value);
     expect(testedComponent.prop('onChange')).toEqual(onChangeMock);
-  });
-
-  it('Should set ref', () => {
-    const wrapper = mount<typeof CLITextArea>(<CLITextArea />);
-    expect(wrapper.instance()).toBeTruthy();
   });
 });
