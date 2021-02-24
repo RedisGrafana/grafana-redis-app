@@ -1,4 +1,4 @@
-import { css } from 'emotion';
+import { css } from '@emotion/core';
 import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
 import { Observable } from 'rxjs';
 import { DataFrame, DataQueryRequest, DataQueryResponse, DateTime, dateTime, PanelProps } from '@grafana/data';
@@ -402,7 +402,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
 
           {options.viewMode === ViewMode.Graph && (
             <div
-              className={css`
+              css={css`
                 display: flex;
                 align-items: center;
                 margin: 4px 0 4px 8px;
@@ -410,7 +410,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
             >
               <Switch css="" value={options.hideZero} onChange={this.onChangeHideZero} />
               <Label
-                className={css`
+                css={css`
                   margin: 0 0 0 4px;
                 `}
               >
