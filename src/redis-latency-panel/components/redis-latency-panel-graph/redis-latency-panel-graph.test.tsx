@@ -1,6 +1,7 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import { dateTime, dateTimeParse, GraphSeriesXY } from '@grafana/data';
+import { DefaultColorModeId } from '../../constants';
 import { RedisLatencyPanelGraph } from './redis-latency-panel-graph';
 
 /**
@@ -95,7 +96,7 @@ describe('RedisLatencyPanelGraph', () => {
         ],
       };
       const result: GraphSeriesXY[] = RedisLatencyPanelGraph.getGraphSeries(seriesMap, true);
-      expect(result[0].valueField.config.color?.mode).toEqual('fixed');
+      expect(result[0].valueField.config.color?.mode).toEqual(DefaultColorModeId);
     });
   });
 
