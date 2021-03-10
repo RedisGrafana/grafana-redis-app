@@ -1,4 +1,4 @@
-import { css } from '@emotion/core';
+import { css, cx } from 'emotion';
 import React, { ChangeEvent } from 'react';
 import { Observable } from 'rxjs';
 import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
@@ -135,27 +135,27 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
    */
   return (
     <div
-      css={[
+      className={cx(
         styles.wrapper,
         css`
           width: ${width}px;
           height: ${height}px;
-        `,
-      ]}
+        `
+      )}
     >
-      <div css={['gf-form', styles.form]}>
-        <CLITextArea css={styles.textarea} value={output} />
+      <div className={cx('gf-form', styles.form)}>
+        <CLITextArea className={cx(styles.textarea)} value={output} />
       </div>
 
       {query && help && (
-        <div css={styles.help} id="help">
+        <div className={cx(styles.help)} id="help">
           {help.danger && (
-            <h3 id="help-danger" css={styles.danger}>
+            <h3 id="help-danger" className={cx(styles.danger)}>
               {help.danger}
             </h3>
           )}
           {help.warning && (
-            <h3 id="help-warning" css={styles.warning}>
+            <h3 id="help-warning" className={cx(styles.warning)}>
               {help.warning}
             </h3>
           )}
@@ -176,7 +176,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
             </div>
           )}
 
-          <div id="help-url" css={styles.url}>
+          <div id="help-url" className={cx(styles.url)}>
             <a target="_blank" rel="noreferrer" href={help.url}>
               {help.url}
             </a>

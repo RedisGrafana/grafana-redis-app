@@ -1,4 +1,4 @@
-import { css } from '@emotion/core';
+import { css } from 'emotion';
 import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
 import { DefaultScript } from 'redis-gears-panel/constants';
 import { Observable } from 'rxjs';
@@ -280,12 +280,12 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
 
     return (
       <div
-        css={css`
+        className={css`
           position: relative;
         `}
       >
         <div
-          css={css`
+          className={css`
             margin-bottom: 4px;
           `}
         >
