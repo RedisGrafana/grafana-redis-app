@@ -14,6 +14,7 @@ import {
   toDataFrame,
 } from '@grafana/data';
 import { Chart, colors, GraphWithLegend, LegendDisplayMode } from '@grafana/ui';
+import { DefaultColorModeId } from '../../constants';
 import { PanelOptions, SeriesMap, SeriesValue } from '../../types';
 
 /**
@@ -103,7 +104,7 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
                 unit: 'µs',
                 color: {
                   fixedColor: color,
-                  mode: FieldColorModeId.Fixed,
+                  mode: FieldColorModeId ? FieldColorModeId.Fixed : DefaultColorModeId,
                 },
               },
             },
