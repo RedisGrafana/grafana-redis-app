@@ -1,5 +1,5 @@
-import React from 'react';
 import { shallow } from 'enzyme';
+import React from 'react';
 import { dateTime, dateTimeParse, GraphSeriesXY } from '@grafana/data';
 import { RedisLatencyPanelGraph } from './redis-latency-panel-graph';
 
@@ -64,10 +64,38 @@ describe('RedisLatencyPanelGraph', () => {
       };
       const result: GraphSeriesXY[] = RedisLatencyPanelGraph.getGraphSeries(seriesMap, true);
       expect(result.length).toEqual(1);
+
       /**
        * SeriesIndex should be numerated by visible items not by all items
        */
       expect(result[0].seriesIndex).toEqual(0);
+    });
+
+    it('Should define color mode Id', () => {
+      const seriesMap = {
+        get: [
+          {
+            time: dateTime(),
+            value: 0,
+          },
+          {
+            time: dateTime(),
+            value: 0,
+          },
+        ],
+        info: [
+          {
+            time: dateTime(),
+            value: 10,
+          },
+          {
+            time: dateTime().add(10, 'seconds'),
+            value: 20,
+          },
+        ],
+      };
+      const result: GraphSeriesXY[] = RedisLatencyPanelGraph.getGraphSeries(seriesMap, true);
+      expect(result[0].valueField.config.color?.mode).toEqual('fixed');
     });
   });
 
