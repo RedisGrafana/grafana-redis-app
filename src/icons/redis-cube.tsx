@@ -8,6 +8,7 @@ export const RedisCube: FC<SVGProps> = ({ size, fill, title, ...rest }) => {
   return (
     <a
       target="_blank"
+      rel="noreferrer"
       href="http://redis.io"
       title={title ? title : 'Redis is a in-memory data structure store, used as a database, cache and message broker.'}
     >

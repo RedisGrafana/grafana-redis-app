@@ -6,7 +6,7 @@ import { SVGProps } from '../types';
  */
 export const MultiLayerSecurity: FC<SVGProps> = ({ size, fill, ...rest }) => {
   return (
-    <a target="_blank" href="http://redis.io" title="Multi Layer Security enabled.">
+    <a target="_blank" rel="noreferrer" href="http://redis.io" title="Multi Layer Security enabled.">
       <svg
         version="1.1"
         id="MultiLayerSecurity"

@@ -204,11 +204,10 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
         series={RedisLatencyPanelGraph.getGraphSeries(seriesMap, options?.hideZero)}
         timeRange={timeRange}
         timeZone={this.props.timeZone}
-        displayMode={LegendDisplayMode.List}
-        placement="under"
+        legendDisplayMode={LegendDisplayMode.List}
+        placement="bottom"
         onToggleSort={this.onToggleSort}
         hideZero={options?.hideZero}
-        isLegendVisible
         showLines
       >
         <Chart.Tooltip mode="multi"></Chart.Tooltip>

@@ -374,6 +374,9 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
     });
   };
 
+  /**
+   * Render
+   */
   render() {
     const { options, height } = this.props;
     const { dataFrame, seriesMap, formHeight } = this.state;
@@ -382,7 +385,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
     const contentHeight = height - formHeight;
 
     /**
-     * Return RedisLatencyPanelTable
+     * Check for data frames
      */
     if (dataFrame) {
       if (options.viewMode === ViewMode.Table) {
@@ -420,7 +423,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
           )}
         </div>
 
-        <div style={{ height: contentHeight }}>{component}</div>
+        <div style={{ display: 'flex', height: contentHeight }}>{component}</div>
       </>
     );
   }

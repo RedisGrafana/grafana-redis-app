@@ -177,7 +177,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
           )}
 
           <div id="help-url" className={cx(styles.url)}>
-            <a target="_blank" href={help.url}>
+            <a target="_blank" rel="noreferrer" href={help.url}>
               {help.url}
             </a>
           </div>

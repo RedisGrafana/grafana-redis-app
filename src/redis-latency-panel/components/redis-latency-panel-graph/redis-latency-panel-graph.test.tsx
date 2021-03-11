@@ -115,11 +115,7 @@ describe('RedisLatencyPanelGraph', () => {
       };
       const result = RedisLatencyPanelGraph.getTimeRange(timeRange, 'browser');
       expect(result.from.valueOf()).toEqual(dateTimeParse('6h').valueOf());
-      expect(result.to.startOf('hour').valueOf()).toEqual(
-        dateTime()
-          .startOf('hour')
-          .valueOf()
-      );
+      expect(result.to.startOf('hour').valueOf()).toEqual(dateTime().startOf('hour').valueOf());
     });
   });
 

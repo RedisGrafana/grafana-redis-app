@@ -8,6 +8,7 @@ export const RediSearch: FC<SVGProps> = ({ size, fill, ...rest }) => {
   return (
     <a
       target="_blank"
+      rel="noreferrer"
       href="http://redisearch.io"
       title="RediSearch is a Full-Text and Secondary Index engine over Redis."
     >
