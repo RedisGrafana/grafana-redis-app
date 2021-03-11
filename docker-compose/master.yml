@@ -30,6 +30,6 @@ services:
       - ../../grafana-redis-datasource/dist:/var/lib/grafana/plugins/redis-datasource
       - ../dist:/var/lib/grafana/plugins/redis-app
       - ../provisioning/datasources:/etc/grafana/provisioning/datasources
-      - ../provisioning/plugins:/etc/grafana/provisioning/plugins
+      # - ../provisioning/plugins:/etc/grafana/provisioning/plugins
       # Uncomment to preserve Grafana configuration
       # - ./data:/var/lib/grafana

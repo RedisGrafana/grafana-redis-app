@@ -1,4 +1,5 @@
 {
+  "autoEnabled": true,
   "dependencies": {
     "grafanaDependency": ">=7.1.0",
     "grafanaVersion": "7.x.x",
