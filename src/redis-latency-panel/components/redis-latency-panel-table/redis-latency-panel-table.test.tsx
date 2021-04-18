@@ -1,5 +1,5 @@
-import React from 'react';
 import { shallow } from 'enzyme';
+import React from 'react';
 import { dateTime, FieldType, toDataFrame } from '@grafana/data';
 import { Table } from '@grafana/ui';
 import { DisplayNameByFieldName, FieldName } from '../../constants';
@@ -49,7 +49,7 @@ describe('RedisLatencyPanel', () => {
 
       const tableDataFrame = RedisLatencyPanelTable.getTableDataFrame(dataFrame, seriesMap);
       const expectedDataFrame = toDataFrame({
-        name: 'tableDataFrame',
+        name: 'TableDataFrame',
         fields: [
           ...fields,
           {
@@ -97,7 +97,7 @@ describe('RedisLatencyPanel', () => {
           {
             type: FieldType.number,
             name: FieldName.Latency,
-            values: [null, null],
+            values: [undefined, undefined],
           },
         ].map((field) => ({
           ...field,
