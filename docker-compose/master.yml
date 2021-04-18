@@ -29,7 +29,6 @@ services:
       # Redis Data Source should be cloned and built
       - ../../grafana-redis-datasource/dist:/var/lib/grafana/plugins/redis-datasource
       - ../dist:/var/lib/grafana/plugins/redis-app
-      - ../provisioning/datasources:/etc/grafana/provisioning/datasources
-      - ../provisioning/plugins:/etc/grafana/provisioning/plugins
+      - ../provisioning:/etc/grafana/provisioning
       # Uncomment to preserve Grafana configuration
       # - ./data:/var/lib/grafana
