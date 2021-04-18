@@ -168,18 +168,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push latest
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm
-          push: true
-          tags: ghcr.io/redisgrafana/redis-app:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-
       - name: Build and push master
         id: docker_build_master
         uses: docker/build-push-action@v2
@@ -190,6 +178,18 @@ jobs:
           push: true
           build-args: GRAFANA_VERSION=master
           tags: ghcr.io/redisgrafana/redis-app:master
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Build and push latest
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm
+          push: true
+          tags: ghcr.io/redisgrafana/redis-app:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
