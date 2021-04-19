@@ -64,9 +64,12 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
       return duration / calls;
     }
 
+    /**
+     * Calculate
+     */
     const diffDuration = duration - prevDuration;
     const diffCalls = calls - prevCalls;
-    if (diffCalls === 0) {
+    if (diffCalls <= 0 || diffDuration < 0) {
       return 0;
     }
 
