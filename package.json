@@ -6,9 +6,9 @@
     "@grafana/runtime": "next",
     "@grafana/toolkit": "next",
     "@grafana/ui": "next",
-    "@monaco-editor/react": "^4.0.10",
+    "@monaco-editor/react": "^4.1.1",
     "@types/enzyme": "^3.10.8",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.1",
     "emotion": "10.0.27",
     "enzyme": "^3.11.0"
   },

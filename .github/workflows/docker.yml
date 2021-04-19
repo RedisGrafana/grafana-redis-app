@@ -63,7 +63,7 @@ jobs:
         if: steps.check-for-backend.outputs.has-backend == 'true'
         uses: actions/setup-go@v2
         with:
-          go-version: "1.14"
+          go-version: "1.16"
 
       - name: Test backend
         if: steps.check-for-backend.outputs.has-backend == 'true'
@@ -166,9 +166,22 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push master
+        id: docker_build_master
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm
+          push: true
+          build-args: GRAFANA_VERSION=master
+          tags: ghcr.io/redisgrafana/redis-app:master
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Build and push latest
         id: docker_build
         uses: docker/build-push-action@v2
         with:
@@ -179,6 +192,6 @@ jobs:
           tags: ghcr.io/redisgrafana/redis-app:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          
+
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

@@ -49,7 +49,7 @@ describe('RedisLatencyPanel', () => {
 
       const tableDataFrame = RedisLatencyPanelTable.getTableDataFrame(dataFrame, seriesMap);
       const expectedDataFrame = toDataFrame({
-        name: 'tableDataFrame',
+        name: 'TableDataFrame',
         fields: [
           ...fields,
           {
