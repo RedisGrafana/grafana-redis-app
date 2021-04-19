@@ -104,7 +104,7 @@ export class RootPage extends PureComponent<Props, State> {
          * Execute query
          */
         const query = (redis.query({
-          targets: [{ query: RedisCommand.COMMAND }],
+          targets: [{ refId: 'A', query: RedisCommand.COMMAND }],
         } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>;
 
         if (!query.toPromise) {

@@ -1,5 +1,5 @@
-import React from 'react';
 import { shallow } from 'enzyme';
+import React from 'react';
 import { Observable } from 'rxjs';
 import { AppPluginMeta, PluginType } from '@grafana/data';
 import { InfoBox } from '@grafana/ui';
@@ -137,7 +137,7 @@ describe('RootPage', () => {
 
       setImmediate(() => {
         expect(getRedisMock).toHaveBeenCalledWith('redis');
-        expect(redisMock.query).toHaveBeenCalledWith({ targets: [{ query: RedisCommand.COMMAND }] });
+        expect(redisMock.query).toHaveBeenCalledWith({ targets: [{ refId: 'A', query: RedisCommand.COMMAND }] });
         expect(wrapper.state().loading).toBeFalsy();
         expect(wrapper.state().dataSources).toEqual([
           {
