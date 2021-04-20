@@ -68,8 +68,15 @@ describe('RedisGearsPanel', () => {
   it('Should update unblocking', () => {
     const wrapper = shallow<RedisGearsPanel>(getComponent());
     const component = wrapper.find(RadioButtonGroup);
-    component.simulate('change', { target: { value: ExecutionMode.Unblocking } });
+    component.simulate('change', ExecutionMode.Unblocking);
     expect(wrapper.state().unblocking).toEqual(true);
+  });
+
+  it('Should not update unblocking', () => {
+    const wrapper = shallow<RedisGearsPanel>(getComponent());
+    const component = wrapper.find(RadioButtonGroup);
+    component.simulate('change', ExecutionMode.Blocking);
+    expect(wrapper.state().unblocking).toEqual(false);
   });
 
   /**
