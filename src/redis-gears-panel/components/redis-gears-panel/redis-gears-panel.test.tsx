@@ -1,8 +1,9 @@
-import React from 'react';
 import { shallow } from 'enzyme';
+import React from 'react';
 import { Observable } from 'rxjs';
 import { FieldType, LoadingState, toDataFrame } from '@grafana/data';
-import { Alert, Button, Input, Switch, Table } from '@grafana/ui';
+import { Alert, Button, Input, RadioButtonGroup, Table } from '@grafana/ui';
+import { ExecutionMode } from '../../constants';
 import { CodeEditor } from '../code-editor';
 import { RedisGearsPanel } from './redis-gears-panel';
 
@@ -66,8 +67,8 @@ describe('RedisGearsPanel', () => {
 
   it('Should update unblocking', () => {
     const wrapper = shallow<RedisGearsPanel>(getComponent());
-    const component = wrapper.find(Switch);
-    component.simulate('change', { target: { checked: true } });
+    const component = wrapper.find(RadioButtonGroup);
+    component.simulate('change', { target: { value: ExecutionMode.Unblocking } });
     expect(wrapper.state().unblocking).toEqual(true);
   });
 
