@@ -15,6 +15,7 @@
 
 - Add default Color Mode Id for older releases (7.2.X) #49
 - Fix Latency below zero calculation #56
+- "Cannot read property 'Tooltip' of undefined" for Latency Panel in the upcoming release #60
 
 ## v1.1.0 (2021-02-07)
 
