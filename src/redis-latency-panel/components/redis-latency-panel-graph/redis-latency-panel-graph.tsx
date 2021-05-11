@@ -13,7 +13,7 @@ import {
   TimeZone,
   toDataFrame,
 } from '@grafana/data';
-import { Chart, colors, GraphWithLegend, LegendDisplayMode } from '@grafana/ui';
+import { Chart, colors, GraphWithLegend, LegendDisplayMode, Tooltip, TooltipPlugin } from '@grafana/ui';
 import { DefaultColorModeId } from '../../constants';
 import { PanelOptions, SeriesMap, SeriesValue } from '../../types';
 
@@ -210,7 +210,7 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
         hideZero={options?.hideZero}
         showLines
       >
-        <Chart.Tooltip mode="multi"></Chart.Tooltip>
+        {Chart && <Chart.Tooltip mode="multi"></Chart.Tooltip>}
       </GraphWithLegend>
     );
   }
