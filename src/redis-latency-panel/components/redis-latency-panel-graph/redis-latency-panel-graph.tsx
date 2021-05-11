@@ -13,7 +13,7 @@ import {
   TimeZone,
   toDataFrame,
 } from '@grafana/data';
-import { Chart, colors, GraphWithLegend, LegendDisplayMode, Tooltip, TooltipPlugin } from '@grafana/ui';
+import { Chart, colors, GraphWithLegend, LegendDisplayMode } from '@grafana/ui';
 import { DefaultColorModeId } from '../../constants';
 import { PanelOptions, SeriesMap, SeriesValue } from '../../types';
 
