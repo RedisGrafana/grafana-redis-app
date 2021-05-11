@@ -210,7 +210,7 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
         hideZero={options?.hideZero}
         showLines
       >
-        <Chart.Tooltip mode="multi"></Chart.Tooltip>
+        {Chart && <Chart.Tooltip mode="multi"></Chart.Tooltip>}
       </GraphWithLegend>
     );
   }
