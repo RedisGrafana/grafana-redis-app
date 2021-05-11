@@ -1,10 +1,20 @@
 # Change Log
 
-## 1.2.0 (IN PROGRESS)
+## 1.2.0 (2021-05-11)
 
 ### Features / Enhancements
 
-- Update Grafana dependencies to 7.5.4
+- Upgrade Grafana dependencies 7.5.4 #53
+- Update Docker workflow #52
+- Update Docker token and add Master build #54
+- Add RefId to Query as mandatory for the upcoming release #55
+- Update RedisGears Script Editor Execution modes #57
+- Update Dashboards to version 7.5.5 #58
+
+### Bug fixes
+
+- Add default Color Mode Id for older releases (7.2.X) #49
+- Fix Latency below zero calculation #56
 
 ## v1.1.0 (2021-02-07)
 
