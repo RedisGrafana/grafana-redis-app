@@ -23,7 +23,7 @@
 - Fix Latency below zero calculation #56
 - "Cannot read property 'Tooltip' of undefined" for Latency Panel in the upcoming release #60
 
-## v1.1.0 (2021-02-07)
+## 1.1.0 (2021-02-07)
 
 ### Features / Enhancements
 
@@ -43,14 +43,14 @@
 - Add Docker build #42
 - Update Plugin and panels configuration for Redis Data Source 1.3.1 #44
 
-## v1.0.1 (2020-10-24)
+## 1.0.1 (2020-10-24)
 
 ### Features / Enhancements
 
 - Add GitHub action to sign release #13
 - Signed release
 
-## v1.0.0 (2020-10-14)
+## 1.0.0 (2020-10-14)
 
 ### Features / Enhancements
 
