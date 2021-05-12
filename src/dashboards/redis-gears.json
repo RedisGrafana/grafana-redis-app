@@ -393,7 +393,7 @@
       "type": "redis-gears-panel"
     },
     {
-      "datasource": null,
+      "datasource": "$redis",
       "fieldConfig": {
         "defaults": {
           "color": {

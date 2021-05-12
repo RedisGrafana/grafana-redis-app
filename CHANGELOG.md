@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.3.0 (IN PROGRESS)
+
+### Bug fixes
+
+- "Available Requirements" panel should be set to $redis datasource #63
+
 ## 1.2.0 (2021-05-11)
 
 ### Features / Enhancements
