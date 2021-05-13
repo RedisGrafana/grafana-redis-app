@@ -33,13 +33,14 @@ const dataSourceMock = {
 const dataSourceSrvGetMock = jest.fn().mockImplementation(() => Promise.resolve(dataSourceMock));
 
 /**
- * Mock getDataSourceSrv function
+ * Mock @grafana/runtime
  */
 jest.mock('@grafana/runtime', () => ({
   getDataSourceSrv: () => ({
     get: dataSourceSrvGetMock,
   }),
   toDataQueryError: jest.fn().mockImplementation(({ message }: any) => ({ message })),
+  config: { theme: {} },
 }));
 
 /**

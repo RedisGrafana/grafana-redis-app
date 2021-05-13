@@ -13,6 +13,7 @@ import {
   TimeZone,
   toDataFrame,
 } from '@grafana/data';
+import { config } from '@grafana/runtime';
 import { Chart, colors, GraphWithLegend, LegendDisplayMode } from '@grafana/ui';
 import { DefaultColorModeId } from '../../constants';
 import { PanelOptions, SeriesMap, SeriesValue } from '../../types';
@@ -116,7 +117,7 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
          */
         seriesDataFrame.fields = seriesDataFrame.fields.map((field) => ({
           ...field,
-          display: getDisplayProcessor({ field }),
+          display: getDisplayProcessor({ field, theme: config.theme }),
         }));
 
         /**
