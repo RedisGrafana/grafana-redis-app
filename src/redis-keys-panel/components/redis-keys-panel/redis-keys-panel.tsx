@@ -9,7 +9,7 @@ import {
   PanelProps,
   toDataFrame,
 } from '@grafana/data';
-import { getDataSourceSrv } from '@grafana/runtime';
+import { config, getDataSourceSrv } from '@grafana/runtime';
 import { Button, InlineFormLabel, Input, Table, TableSortByFieldState } from '@grafana/ui';
 import {
   DefaultCount,
@@ -213,7 +213,7 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
      */
     tableDataFrame.fields = tableDataFrame.fields.map((field) => ({
       ...field,
-      display: getDisplayProcessor({ field }),
+      display: getDisplayProcessor({ field, theme: config?.theme }),
     }));
 
     return tableDataFrame;

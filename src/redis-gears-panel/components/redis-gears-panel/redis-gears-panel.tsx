@@ -13,7 +13,7 @@ import {
   PanelProps,
   toDataFrame,
 } from '@grafana/data';
-import { getDataSourceSrv, toDataQueryError } from '@grafana/runtime';
+import { config, getDataSourceSrv, toDataQueryError } from '@grafana/runtime';
 import { Alert, Button, InlineField, InlineFormLabel, Input, RadioButtonGroup, Table } from '@grafana/ui';
 import { DefaultScript, ExecutionMode, ExecutionOptions } from '../../constants';
 import { PanelOptions } from '../../types';
@@ -182,7 +182,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
      * Fields
      */
     resultDataFrame.fields.forEach((field: Field) => {
-      field.display = getDisplayProcessor({ field });
+      field.display = getDisplayProcessor({ field, theme: config?.theme });
     });
 
     this.setState({

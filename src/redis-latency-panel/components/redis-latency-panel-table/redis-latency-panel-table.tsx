@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { DataFrame, FieldType, getDisplayProcessor, PanelProps, toDataFrame } from '@grafana/data';
+import { config } from '@grafana/runtime';
 import { Table, TableSortByFieldState } from '@grafana/ui';
 import { DisplayNameByFieldName, FieldName } from '../../constants';
 import { PanelOptions, SeriesMap } from '../../types';
@@ -89,7 +90,7 @@ export class RedisLatencyPanelTable extends PureComponent<Props, State> {
      */
     tableDataFrame.fields = tableDataFrame.fields.map((field) => ({
       ...field,
-      display: getDisplayProcessor({ field }),
+      display: getDisplayProcessor({ field, theme: config?.theme }),
     }));
 
     /**
