@@ -5,6 +5,13 @@ import { DefaultColorModeId } from '../../constants';
 import { RedisLatencyPanelGraph } from './redis-latency-panel-graph';
 
 /**
+ * Mock @grafana/runtime
+ */
+jest.mock('@grafana/runtime', () => ({
+  config: { theme: {} },
+}));
+
+/**
  * Latency Panel Table
  */
 describe('RedisLatencyPanelGraph', () => {

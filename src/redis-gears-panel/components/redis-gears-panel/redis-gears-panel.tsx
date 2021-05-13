@@ -182,7 +182,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
      * Fields
      */
     resultDataFrame.fields.forEach((field: Field) => {
-      field.display = getDisplayProcessor({ field, theme: config?.theme });
+      field.display = getDisplayProcessor({ field, theme: config.theme });
     });
 
     this.setState({
