@@ -57,15 +57,15 @@
   ],
   "info": {
     "author": {
-      "name": "Redis Labs",
-      "url": "https://oss.redislabs.com"
+      "name": "RedisGrafana",
+      "url": "https://redisgrafana.github.io"
     },
-    "description": "Redis Application",
+    "description": "Provides Application pages and custom panels for Redis Data Source.",
     "keywords": ["redis", "timeseries", "plugin"],
     "links": [
       {
         "name": "Website",
-        "url": "https://github.com/RedisGrafana/grafana-redis-app"
+        "url": "https://redisgrafana.github.io"
       },
       {
         "name": "License",
