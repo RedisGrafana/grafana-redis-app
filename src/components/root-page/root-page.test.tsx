@@ -2,7 +2,7 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { Observable } from 'rxjs';
 import { AppPluginMeta, PluginType } from '@grafana/data';
-import { InfoBox } from '@grafana/ui';
+import { Alert } from '@grafana/ui';
 import { DataSourceType, RedisCommand } from '../../constants';
 import { DataSourceList } from '../data-source-list';
 import { RootPage } from './root-page';
@@ -170,7 +170,7 @@ describe('RootPage', () => {
             text: 'Home',
             url: path,
             id: 'home',
-            icon: 'fa fa-fw fa-database',
+            icon: 'fa fa-fw fa-home',
             active: true,
           },
         ],
@@ -191,14 +191,14 @@ describe('RootPage', () => {
         <RootPage basename="" meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
       );
       const loadingMessageComponent = wrapper.findWhere(
-        (node) => node.is(InfoBox) && node.prop('title') === 'Loading...'
+        (node) => node.is(Alert) && node.prop('title') === 'Loading...'
       );
       expect(loadingMessageComponent.exists()).toBeTruthy();
       wrapper.instance().componentDidMount();
       setImmediate(() => {
         const dataSourceListComponent = wrapper.findWhere((node) => node.is(DataSourceList));
         const loadingMessageComponent = wrapper.findWhere(
-          (node) => node.is(InfoBox) && node.prop('title') === 'Loading...'
+          (node) => node.is(Alert) && node.prop('title') === 'Loading...'
         );
         expect(loadingMessageComponent.exists()).not.toBeTruthy();
         expect(dataSourceListComponent.exists()).toBeTruthy();
@@ -217,7 +217,7 @@ describe('RootPage', () => {
 
       const dataSourceListComponent = wrapper.findWhere((node) => node.is(DataSourceList));
       const loadingMessageComponent = wrapper.findWhere(
-        (node) => node.is(InfoBox) && node.prop('title') === 'Loading...'
+        (node) => node.is(Alert) && node.prop('title') === 'Loading...'
       );
       expect(loadingMessageComponent.exists()).not.toBeTruthy();
       expect(dataSourceListComponent.exists()).toBeTruthy();

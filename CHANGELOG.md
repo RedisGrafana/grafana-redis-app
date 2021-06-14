@@ -6,7 +6,7 @@
 
 - "Available Requirements" panel should be set to $redis datasource #63
 - Cannot read property 'v1' of undefined (theme.v1) in the Grafana8 #65
-- Upgrade to Grafana 8.0.2
+- Upgrade to Grafana 8.0.2 (#67)
 
 ## 1.2.0 (2021-05-11)
 
