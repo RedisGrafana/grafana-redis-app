@@ -43,7 +43,8 @@ All dashboards are available from the application's icon in the left side menu.
 
 ### Requirements
 
-Only **Grafana 7.1+** with a new Backend plug-in platform supports Redis plug-ins.
+- **Grafana 8.0** is required for Redis Application 2.X.
+- **Grafana 7.1+** is required for Redis Application 1.X.
 
 ## Getting Started
 

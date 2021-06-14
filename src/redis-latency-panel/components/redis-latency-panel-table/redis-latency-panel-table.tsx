@@ -90,7 +90,7 @@ export class RedisLatencyPanelTable extends PureComponent<Props, State> {
      */
     tableDataFrame.fields = tableDataFrame.fields.map((field) => ({
       ...field,
-      display: getDisplayProcessor({ field, theme: config.theme }),
+      display: getDisplayProcessor({ field, theme: config.theme2 }),
     }));
 
     /**

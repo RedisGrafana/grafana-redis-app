@@ -40,7 +40,7 @@ jest.mock('@grafana/runtime', () => ({
     get: dataSourceSrvGetMock,
   }),
   toDataQueryError: jest.fn().mockImplementation(({ message }: any) => ({ message })),
-  config: { theme: {} },
+  config: { theme2: {} },
 }));
 
 /**

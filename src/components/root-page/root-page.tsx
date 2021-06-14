@@ -103,10 +103,11 @@ export class RootPage extends PureComponent<Props, State> {
         /**
          * Execute query
          */
-        const query = (redis.query({
+        const dsQuery = redis.query({
           targets: [{ refId: 'A', query: RedisCommand.COMMAND }],
-        } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>;
+        } as DataQueryRequest<RedisQuery>) as unknown;
 
+        const query = dsQuery as Observable<DataQueryResponse>;
         if (!query.toPromise) {
           return;
         }

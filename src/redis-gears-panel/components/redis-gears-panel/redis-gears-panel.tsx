@@ -1,6 +1,6 @@
-import { css } from 'emotion';
 import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
 import { Observable } from 'rxjs';
+import { css } from '@emotion/css';
 import {
   DataFrame,
   DataQueryError,
@@ -182,7 +182,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
      * Fields
      */
     resultDataFrame.fields.forEach((field: Field) => {
-      field.display = getDisplayProcessor({ field, theme: config.theme });
+      field.display = getDisplayProcessor({ field, theme: config.theme2 });
     });
 
     this.setState({
@@ -224,10 +224,12 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
      * Query
      */
     const ds = await getDataSourceSrv().get(datasource);
-    return ((ds.query({
+    const query = ds.query({
       ...this.props.data.request,
       targets: targetsWithCommands,
-    } as DataQueryRequest<any>) as unknown) as Observable<DataQueryResponse>).toPromise();
+    } as DataQueryRequest<any>) as unknown;
+
+    return (query as Observable<DataQueryResponse>).toPromise();
   }
 
   /**

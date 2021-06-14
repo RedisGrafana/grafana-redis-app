@@ -71,7 +71,7 @@ jest.mock('@grafana/runtime', () => ({
   getDataSourceSrv: () => ({
     get: dataSourceSrvGetMock,
   }),
-  config: { theme: {} },
+  config: { theme2: {} },
 }));
 
 /**
