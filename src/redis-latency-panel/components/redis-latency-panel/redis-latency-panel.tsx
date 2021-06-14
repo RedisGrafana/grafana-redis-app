@@ -1,6 +1,6 @@
-import { css } from 'emotion';
 import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
 import { Observable } from 'rxjs';
+import { css } from '@emotion/css';
 import { DataFrame, DataQueryRequest, DataQueryResponse, DateTime, dateTime, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { Label, RadioButtonGroup, Switch } from '@grafana/ui';
@@ -64,9 +64,12 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
       return duration / calls;
     }
 
+    /**
+     * Calculate
+     */
     const diffDuration = duration - prevDuration;
     const diffCalls = calls - prevCalls;
-    if (diffCalls === 0) {
+    if (diffCalls <= 0 || diffDuration < 0) {
       return 0;
     }
 
@@ -269,10 +272,12 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
       ...target,
     }));
 
-    return ((ds.query({
+    const query = ds.query({
       ...this.props.data.request,
       targets: targetsWithCommands,
-    } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>).toPromise();
+    } as DataQueryRequest<RedisQuery>) as unknown;
+
+    return (query as Observable<DataQueryResponse>).toPromise();
   }
 
   /**

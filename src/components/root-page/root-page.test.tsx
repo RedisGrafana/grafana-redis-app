@@ -1,8 +1,8 @@
-import React from 'react';
 import { shallow } from 'enzyme';
+import React from 'react';
 import { Observable } from 'rxjs';
 import { AppPluginMeta, PluginType } from '@grafana/data';
-import { InfoBox } from '@grafana/ui';
+import { Alert } from '@grafana/ui';
 import { DataSourceType, RedisCommand } from '../../constants';
 import { DataSourceList } from '../data-source-list';
 import { RootPage } from './root-page';
@@ -106,7 +106,7 @@ describe('RootPage', () => {
   describe('Mounting', () => {
     it('Should update navigation', () => {
       const wrapper = shallow<RootPage>(
-        <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
+        <RootPage basename="" meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
       );
       const testedMethod = jest.spyOn(wrapper.instance(), 'updateNav');
       wrapper.instance().componentDidMount();
@@ -115,7 +115,7 @@ describe('RootPage', () => {
 
     it('Should make get /api/datasources request', () => {
       const wrapper = shallow<RootPage>(
-        <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
+        <RootPage basename="" meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
       );
       wrapper.instance().componentDidMount();
       expect(getDataSourceMock).toHaveBeenCalledWith('/api/datasources');
@@ -131,13 +131,13 @@ describe('RootPage', () => {
         ])
       );
       const wrapper = shallow<RootPage>(
-        <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
+        <RootPage basename="" meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
       );
       wrapper.instance().componentDidMount();
 
       setImmediate(() => {
         expect(getRedisMock).toHaveBeenCalledWith('redis');
-        expect(redisMock.query).toHaveBeenCalledWith({ targets: [{ query: RedisCommand.COMMAND }] });
+        expect(redisMock.query).toHaveBeenCalledWith({ targets: [{ refId: 'A', query: RedisCommand.COMMAND }] });
         expect(wrapper.state().loading).toBeFalsy();
         expect(wrapper.state().dataSources).toEqual([
           {
@@ -157,7 +157,7 @@ describe('RootPage', () => {
   describe('updateNav', () => {
     it('Should call onNavChanged prop', () => {
       const wrapper = shallow<RootPage>(
-        <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
+        <RootPage basename="" meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
       );
       wrapper.instance().updateNav();
       const node = {
@@ -170,7 +170,7 @@ describe('RootPage', () => {
             text: 'Home',
             url: path,
             id: 'home',
-            icon: 'fa fa-fw fa-database',
+            icon: 'fa fa-fw fa-home',
             active: true,
           },
         ],
@@ -188,17 +188,17 @@ describe('RootPage', () => {
   describe('rendering', () => {
     it('Should show message if loading=true', (done) => {
       const wrapper = shallow<RootPage>(
-        <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
+        <RootPage basename="" meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />
       );
       const loadingMessageComponent = wrapper.findWhere(
-        (node) => node.is(InfoBox) && node.prop('title') === 'Loading...'
+        (node) => node.is(Alert) && node.prop('title') === 'Loading...'
       );
       expect(loadingMessageComponent.exists()).toBeTruthy();
       wrapper.instance().componentDidMount();
       setImmediate(() => {
         const dataSourceListComponent = wrapper.findWhere((node) => node.is(DataSourceList));
         const loadingMessageComponent = wrapper.findWhere(
-          (node) => node.is(InfoBox) && node.prop('title') === 'Loading...'
+          (node) => node.is(Alert) && node.prop('title') === 'Loading...'
         );
         expect(loadingMessageComponent.exists()).not.toBeTruthy();
         expect(dataSourceListComponent.exists()).toBeTruthy();
@@ -209,7 +209,7 @@ describe('RootPage', () => {
 
     it('If dataSource is unable to make query, should work correctly', async () => {
       const wrapper = shallow<RootPage>(
-        <RootPage meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />,
+        <RootPage basename="" meta={meta} path={path} query={null as any} onNavChanged={onNavChangedMock} />,
         { disableLifecycleMethods: true }
       );
 
@@ -217,7 +217,7 @@ describe('RootPage', () => {
 
       const dataSourceListComponent = wrapper.findWhere((node) => node.is(DataSourceList));
       const loadingMessageComponent = wrapper.findWhere(
-        (node) => node.is(InfoBox) && node.prop('title') === 'Loading...'
+        (node) => node.is(Alert) && node.prop('title') === 'Loading...'
       );
       expect(loadingMessageComponent.exists()).not.toBeTruthy();
       expect(dataSourceListComponent.exists()).toBeTruthy();

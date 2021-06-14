@@ -1,5 +1,5 @@
-import React from 'react';
 import { shallow } from 'enzyme';
+import React from 'react';
 import { Observable } from 'rxjs';
 import { FieldType, toDataFrame } from '@grafana/data';
 import { Button, Table } from '@grafana/ui';
@@ -65,12 +65,13 @@ const dataSourceMock = {
 const dataSourceSrvGetMock = jest.fn().mockImplementation(() => Promise.resolve(dataSourceMock));
 
 /**
- * Mock getDataSourceSrv function
+ * Mock @grafana/runtime
  */
 jest.mock('@grafana/runtime', () => ({
   getDataSourceSrv: () => ({
     get: dataSourceSrvGetMock,
   }),
+  config: { theme2: {} },
 }));
 
 /**

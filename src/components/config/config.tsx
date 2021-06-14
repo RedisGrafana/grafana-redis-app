@@ -1,13 +1,9 @@
 import React, { PureComponent } from 'react';
 import { AppPluginMeta, PluginConfigPageProps } from '@grafana/data';
-import { BackendSrv, config, getBackendSrv, getLocationSrv } from '@grafana/runtime';
-import { Button, InfoBox } from '@grafana/ui';
+import { BackendSrv, getBackendSrv, getLocationSrv } from '@grafana/runtime';
+import { Button } from '@grafana/ui';
+import { ApplicationRoot } from '../../constants';
 import { GlobalSettings } from '../../types';
-
-/**
- * Plug-in Path
- */
-const HOME_PATH = 'a/redis-app/';
 
 /**
  * Page Properties
@@ -18,7 +14,6 @@ interface Props extends PluginConfigPageProps<AppPluginMeta<GlobalSettings>> {}
  * State
  */
 interface State {
-  isConfigured: boolean;
   isEnabled: boolean;
 }
 
@@ -47,7 +42,6 @@ export class Config extends PureComponent<Props, State> {
     super(props);
 
     this.state = {
-      isConfigured: false,
       isEnabled: false,
     };
   }
@@ -56,38 +50,17 @@ export class Config extends PureComponent<Props, State> {
    * Mount
    */
   componentDidMount(): void {
-    if (this.props.plugin.meta?.enabled) {
-      const datasources = Object.values(config.datasources).filter((ds) => {
-        return ds.type === 'redis-datasource';
-      });
-
-      /**
-       * Datasources found
-       */
-      this.setState({
-        isConfigured: datasources.length > 0,
-        isEnabled: true,
-      });
-    }
+    this.setState({
+      isEnabled: this.props.plugin.meta?.enabled ? true : false,
+    });
   }
-
-  /**
-   * Update
-   */
-  onUpdate = () => {
-    if (!this.state.isEnabled) {
-      return;
-    }
-
-    this.goHome();
-  };
 
   /**
    * Home
    */
   goHome = (): void => {
     getLocationSrv().update({
-      path: HOME_PATH,
+      path: ApplicationRoot,
       partial: false,
     });
   };
@@ -115,7 +88,7 @@ export class Config extends PureComponent<Props, State> {
    */
   onEnable = () => {
     this.updatePluginSettings({ enabled: true, jsonData: {}, pinned: true }).then(() => {
-      Config.getLocation().assign(HOME_PATH);
+      Config.getLocation().assign(ApplicationRoot);
     });
   };
 
@@ -123,31 +96,18 @@ export class Config extends PureComponent<Props, State> {
    * Page Render
    */
   render() {
-    const { isConfigured, isEnabled } = this.state;
+    const { isEnabled } = this.state;
 
     return (
       <>
-        <InfoBox>
-          <h2>Redis Application</h2>
+        <h2>Redis Application</h2>
+        <p>The Redis Application, is a plug-in for Grafana that provides custom panels for Redis Data Source.</p>
+        {!isEnabled && (
           <p>
-            The Redis Application, is a plug-in for Grafana that provides custom panels for{' '}
-            <a target="_blank" rel="noreferrer" href="https://grafana.com/grafana/plugins/redis-datasource">
-              Redis Data Source
-            </a>
-            .
+            Click below to <b>Enable</b> the Application and start monitoring your Redis instances today.
           </p>
-          {isConfigured ? (
-            <p>
-              Click <b>Update</b> to reload the Application configuration.
-            </p>
-          ) : (
-            <p>
-              Click below to <b>Enable</b> the Application and start monitoring your Redis databases today.
-            </p>
-          )}
-        </InfoBox>
+        )}
         <div className="gf-form gf-form-button-row">
-          {isConfigured && <Button onClick={this.onUpdate}>Update</Button>}
           {isEnabled ? (
             <Button variant="destructive" onClick={this.onDisable}>
               Disable

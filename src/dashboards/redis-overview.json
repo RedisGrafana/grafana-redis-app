@@ -17,13 +17,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.2.1"
+      "version": "7.5.5"
     },
     {
       "type": "datasource",
       "id": "redis-datasource",
       "name": "Redis",
-      "version": "1.2.0"
+      "version": "1.4.0"
     },
     {
       "type": "panel",
@@ -56,7 +56,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1602737238007,
+  "iteration": 1620744886095,
   "links": [
     {
       "icon": "external link",
@@ -87,9 +87,6 @@
       "datasource": "$redis",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "decimals": 0,
           "mappings": [],
           "thresholds": {
@@ -130,9 +127,10 @@
           "fields": "/.*/",
           "values": true
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "command": "info",
@@ -161,9 +159,6 @@
       "datasource": "-- Dashboard --",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "decimals": 1,
           "mappings": [],
           "max": 11000,
@@ -204,9 +199,10 @@
           "values": true
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": true,
+        "text": {}
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "panelId": 24,
@@ -243,9 +239,6 @@
       "datasource": "$redis",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "mappings": [],
           "min": 0,
           "thresholds": {
@@ -337,9 +330,10 @@
           "fields": "/.*/",
           "values": true
         },
-        "showUnfilled": true
+        "showUnfilled": true,
+        "text": {}
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "command": "info",
@@ -388,9 +382,6 @@
       "datasource": "$redis",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "decimals": 0,
           "mappings": [],
           "thresholds": {
@@ -423,9 +414,10 @@
           "fields": "/.*/",
           "values": true
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "command": "info",
@@ -454,7 +446,6 @@
       "datasource": "$redis",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [],
           "thresholds": {
@@ -487,9 +478,10 @@
           "fields": "/.*/",
           "values": true
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "command": "info",
@@ -518,9 +510,6 @@
       "datasource": "-- Dashboard --",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -551,9 +540,10 @@
           "fields": "/.*/",
           "values": true
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "panelId": 19,
@@ -579,9 +569,6 @@
       "datasource": "$redis",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -613,9 +600,10 @@
           "fields": "/.*/",
           "values": true
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "query": "dbsize",
@@ -632,9 +620,6 @@
       "datasource": "-- Dashboard --",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "decimals": 0,
           "mappings": [],
           "min": 0,
@@ -666,9 +651,10 @@
           "fields": "/.*/",
           "values": true
         },
-        "showUnfilled": true
+        "showUnfilled": true,
+        "text": {}
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "panelId": 24,
@@ -705,9 +691,6 @@
       "datasource": "-- Dashboard --",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "decimals": 0,
           "mappings": [],
           "min": 0,
@@ -739,9 +722,10 @@
           "fields": "/.*/",
           "values": true
         },
-        "showUnfilled": true
+        "showUnfilled": true,
+        "text": {}
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "panelId": 24,
@@ -778,9 +762,6 @@
       "datasource": "-- Dashboard --",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -812,9 +793,10 @@
           "fields": "/.*/",
           "values": true
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "panelId": 8,
@@ -942,7 +924,7 @@
           }
         ]
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "command": "clientList",
@@ -1095,7 +1077,7 @@
           }
         ]
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "command": "info",
@@ -1220,7 +1202,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "command": "slowlogGet",
@@ -1259,6 +1241,7 @@
     },
     {
       "collapsed": false,
+      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1274,9 +1257,6 @@
       "datasource": "$redis",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -1307,9 +1287,10 @@
           "fields": "/.*/",
           "values": true
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "command": "clusterInfo",
@@ -1337,9 +1318,6 @@
       "datasource": "$redis",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -1370,9 +1348,10 @@
           "fields": "/.*/",
           "values": true
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "command": "info",
@@ -1401,9 +1380,6 @@
       "datasource": "-- Dashboard --",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "mappings": [],
           "min": 0,
           "thresholds": {
@@ -1434,9 +1410,10 @@
           "fields": "/.*/",
           "values": true
         },
-        "showUnfilled": true
+        "showUnfilled": true,
+        "text": {}
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "panelId": 60,
@@ -1445,7 +1422,6 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
       "transformations": [
         {
           "id": "filterFieldsByName",
@@ -1587,7 +1563,7 @@
           }
         ]
       },
-      "pluginVersion": "7.2.1",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
           "command": "clusterNodes",
@@ -1622,7 +1598,7 @@
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 26,
+  "schemaVersion": 27,
   "style": "dark",
   "tags": ["redis"],
   "templating": {
@@ -1633,6 +1609,8 @@
           "text": "Redis",
           "value": "Redis"
         },
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Redis",
@@ -1658,5 +1636,5 @@
   "timezone": "",
   "title": "Redis Overview",
   "uid": "RpSjVqWMz",
-  "version": 9
+  "version": 1
 }

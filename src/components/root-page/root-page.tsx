@@ -9,7 +9,7 @@ import {
   NavModelItem,
 } from '@grafana/data';
 import { config, getBackendSrv, getDataSourceSrv } from '@grafana/runtime';
-import { InfoBox } from '@grafana/ui';
+import { Alert } from '@grafana/ui';
 import { DataSourceType, RedisCommand } from '../../constants';
 import { RedisQuery } from '../../redis-cli-panel/types';
 import { GlobalSettings, RedisDataSourceInstanceSettings } from '../../types';
@@ -103,10 +103,11 @@ export class RootPage extends PureComponent<Props, State> {
         /**
          * Execute query
          */
-        const query = (redis.query({
-          targets: [{ query: RedisCommand.COMMAND }],
-        } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>;
+        const dsQuery = redis.query({
+          targets: [{ refId: 'A', query: RedisCommand.COMMAND }],
+        } as DataQueryRequest<RedisQuery>) as unknown;
 
+        const query = dsQuery as Observable<DataQueryResponse>;
         if (!query.toPromise) {
           return;
         }
@@ -156,7 +157,7 @@ export class RootPage extends PureComponent<Props, State> {
       text: 'Home',
       url: path,
       id: 'home',
-      icon: 'fa fa-fw fa-database',
+      icon: 'fa fa-fw fa-home',
       active: true,
     });
 
@@ -191,9 +192,9 @@ export class RootPage extends PureComponent<Props, State> {
      */
     if (loading) {
       return (
-        <InfoBox title="Loading...">
+        <Alert title="Loading..." severity="info">
           <p>Loading time depends on the number of configured data sources.</p>
-        </InfoBox>
+        </Alert>
       );
     }
 

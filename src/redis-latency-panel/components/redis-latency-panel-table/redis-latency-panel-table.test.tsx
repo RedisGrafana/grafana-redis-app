@@ -6,6 +6,13 @@ import { DisplayNameByFieldName, FieldName } from '../../constants';
 import { RedisLatencyPanelTable } from './redis-latency-panel-table';
 
 /**
+ * Mock @grafana/runtime
+ */
+jest.mock('@grafana/runtime', () => ({
+  config: { theme2: {} },
+}));
+
+/**
  * Latency Panel Table
  */
 describe('RedisLatencyPanel', () => {

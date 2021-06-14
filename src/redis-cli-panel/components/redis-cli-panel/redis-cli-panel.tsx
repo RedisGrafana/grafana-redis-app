@@ -1,7 +1,7 @@
-import { css, cx } from 'emotion';
 import React, { ChangeEvent } from 'react';
 import { Observable } from 'rxjs';
 import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
+import { css, cx } from '@emotion/css';
 import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { Button, LegacyForms } from '@grafana/ui';
@@ -64,9 +64,11 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
     /**
      * Run Query
      */
-    const res = await ((ds.query({
-      targets: [{ query: replaceVariables(query), cli: !options.raw }],
-    } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>)
+
+    const dsQuery = ds.query({
+      targets: [{ refId: 'A', query: replaceVariables(query), cli: !options.raw }],
+    } as DataQueryRequest<RedisQuery>) as unknown;
+    const res = await (dsQuery as Observable<DataQueryResponse>)
       .pipe(
         switchMap$((response) => {
           /**

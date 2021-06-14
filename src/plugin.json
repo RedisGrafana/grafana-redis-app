@@ -1,14 +1,14 @@
 {
   "autoEnabled": true,
   "dependencies": {
-    "grafanaDependency": ">=7.1.0",
-    "grafanaVersion": "7.x.x",
+    "grafanaDependency": ">=8.0.0",
+    "grafanaVersion": "8.x.x",
     "plugins": [
       {
         "id": "redis-datasource",
         "name": "Redis Data Source",
         "type": "datasource",
-        "version": "^1.3.1"
+        "version": "^1.4.0"
       }
     ]
   },
@@ -58,15 +58,15 @@
   ],
   "info": {
     "author": {
-      "name": "Redis Labs",
-      "url": "https://oss.redislabs.com"
+      "name": "RedisGrafana",
+      "url": "https://redisgrafana.github.io"
     },
-    "description": "Redis Application",
+    "description": "Provides Application pages and custom panels for Redis Data Source.",
     "keywords": ["redis", "timeseries", "plugin"],
     "links": [
       {
         "name": "Website",
-        "url": "https://github.com/RedisGrafana/grafana-redis-app"
+        "url": "https://redisgrafana.github.io"
       },
       {
         "name": "License",

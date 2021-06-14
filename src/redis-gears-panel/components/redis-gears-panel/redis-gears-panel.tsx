@@ -1,7 +1,6 @@
-import { css } from 'emotion';
 import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
-import { DefaultScript } from 'redis-gears-panel/constants';
 import { Observable } from 'rxjs';
+import { css } from '@emotion/css';
 import {
   DataFrame,
   DataQueryError,
@@ -14,8 +13,9 @@ import {
   PanelProps,
   toDataFrame,
 } from '@grafana/data';
-import { getDataSourceSrv, toDataQueryError } from '@grafana/runtime';
-import { Alert, Button, InlineField, InlineFormLabel, Input, Switch, Table } from '@grafana/ui';
+import { config, getDataSourceSrv, toDataQueryError } from '@grafana/runtime';
+import { Alert, Button, InlineField, InlineFormLabel, Input, RadioButtonGroup, Table } from '@grafana/ui';
+import { DefaultScript, ExecutionMode, ExecutionOptions } from '../../constants';
 import { PanelOptions } from '../../types';
 import { CodeEditor } from '../code-editor';
 
@@ -141,7 +141,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
     /**
      * Error
      */
-    if (!response || response.state === LoadingState.Error) {
+    if (!response || response.state === LoadingState.Error || !response.data.length) {
       this.setState({
         result: undefined,
         isRunning: false,
@@ -166,7 +166,6 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
     }
 
     let resultDataFrame: DataFrame = response.data[0];
-
     if (resultDataFrame.length === 0) {
       resultDataFrame = toDataFrame({
         fields: [
@@ -183,7 +182,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
      * Fields
      */
     resultDataFrame.fields.forEach((field: Field) => {
-      field.display = getDisplayProcessor({ field });
+      field.display = getDisplayProcessor({ field, theme: config.theme2 });
     });
 
     this.setState({
@@ -225,10 +224,12 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
      * Query
      */
     const ds = await getDataSourceSrv().get(datasource);
-    return ((ds.query({
+    const query = ds.query({
       ...this.props.data.request,
       targets: targetsWithCommands,
-    } as DataQueryRequest<any>) as unknown) as Observable<DataQueryResponse>).toPromise();
+    } as DataQueryRequest<any>) as unknown;
+
+    return (query as Observable<DataQueryResponse>).toPromise();
   }
 
   /**
@@ -236,9 +237,9 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
    *
    * @param event {HTMLInputElement}
    */
-  onChangeUnblocking = (event: ChangeEvent<HTMLInputElement>) => {
+  onChangeUnblocking = (event?: ExecutionMode) => {
     this.setState({
-      unblocking: event.target.checked,
+      unblocking: event ? true : false,
     });
   };
 
@@ -269,15 +270,6 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
     const { height, width } = this.props;
     const { script, result, unblocking, requirements, isRunning, footerHeight, error } = this.state;
 
-    let resultComponent = null;
-
-    /**
-     * Show result table If there is a result
-     */
-    if (result) {
-      resultComponent = <Table noHeader={true} data={result} width={width} height={100} />;
-    }
-
     return (
       <div
         className={css`
@@ -303,23 +295,31 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
         <div ref={this.footerRef}>
           {error && error.message && <Alert title={error.message} onRemove={this.onClearError} />}
 
-          <div className="gf-form-inline">
+          <div className="gf-form">
             <InlineField label={<InlineFormLabel width={6}>Requirements</InlineFormLabel>}>
               <Input css="" value={requirements} onChange={this.onChangeRequirements} width={40} />
             </InlineField>
 
-            <InlineField label={<InlineFormLabel width={6}>Unblocking</InlineFormLabel>}>
-              <Switch css="" value={unblocking} onChange={this.onChangeUnblocking} />
-            </InlineField>
+            <RadioButtonGroup
+              className={css`
+                margin-right: 4px;
+              `}
+              value={unblocking ? ExecutionMode.Unblocking : ExecutionMode.Blocking}
+              options={ExecutionOptions}
+              onChange={this.onChangeUnblocking}
+            />
 
-            <div className="gf-form">
-              <Button onClick={this.onRunScript} disabled={isRunning}>
-                {isRunning ? 'Running...' : 'Run script'}
-              </Button>
-            </div>
-
-            {resultComponent}
+            <Button onClick={this.onRunScript} disabled={isRunning}>
+              {isRunning ? 'Running...' : 'Run script'}
+            </Button>
           </div>
+
+          {result && (
+            <>
+              <hr />
+              <Table noHeader={true} data={result} width={width} height={100} />
+            </>
+          )}
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react';
-import { getBackendSrv, getLocationSrv } from '@grafana/runtime';
-import { Button, Container, HorizontalGroup, InfoBox, LinkButton, VerticalGroup } from '@grafana/ui';
+import { getBackendSrv, locationService } from '@grafana/runtime';
+import { Alert, Button, Container, HorizontalGroup, LinkButton, VerticalGroup } from '@grafana/ui';
 import { DataSourceName, DataSourceType, RedisCommand } from '../../constants';
 import {
   HighAvailability,
@@ -58,10 +58,8 @@ export const DataSourceList: FC<Props> = ({ dataSources }) => {
         type: DataSourceType.REDIS,
         access: 'proxy',
       })
-      .then(({ id }) => {
-        getLocationSrv().update({
-          path: `datasources/edit/${id}`,
-        });
+      .then(({ datasource }) => {
+        locationService.push(`/datasources/edit/${datasource.uid}`);
       });
   }, [dataSources]);
 
@@ -77,9 +75,9 @@ export const DataSourceList: FC<Props> = ({ dataSources }) => {
             Add Redis Data Source
           </Button>
         </div>
-        <InfoBox title="Please add Redis Data Sources." url={'https://grafana.com/plugins/redis-datasource'}>
+        <Alert title="Please add Redis Data Sources." severity="info">
           <p>You can add as many data sources as you want to support multiple Redis databases.</p>
-        </InfoBox>
+        </Alert>
       </div>
     );
   }

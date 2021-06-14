@@ -1,8 +1,9 @@
-import React from 'react';
 import { shallow } from 'enzyme';
+import React from 'react';
 import { Observable } from 'rxjs';
 import { FieldType, LoadingState, toDataFrame } from '@grafana/data';
-import { Alert, Button, Input, Switch, Table } from '@grafana/ui';
+import { Alert, Button, Input, RadioButtonGroup, Table } from '@grafana/ui';
+import { ExecutionMode } from '../../constants';
 import { CodeEditor } from '../code-editor';
 import { RedisGearsPanel } from './redis-gears-panel';
 
@@ -32,13 +33,14 @@ const dataSourceMock = {
 const dataSourceSrvGetMock = jest.fn().mockImplementation(() => Promise.resolve(dataSourceMock));
 
 /**
- * Mock getDataSourceSrv function
+ * Mock @grafana/runtime
  */
 jest.mock('@grafana/runtime', () => ({
   getDataSourceSrv: () => ({
     get: dataSourceSrvGetMock,
   }),
   toDataQueryError: jest.fn().mockImplementation(({ message }: any) => ({ message })),
+  config: { theme2: {} },
 }));
 
 /**
@@ -66,9 +68,16 @@ describe('RedisGearsPanel', () => {
 
   it('Should update unblocking', () => {
     const wrapper = shallow<RedisGearsPanel>(getComponent());
-    const component = wrapper.find(Switch);
-    component.simulate('change', { target: { checked: true } });
+    const component = wrapper.find(RadioButtonGroup);
+    component.simulate('change', ExecutionMode.Unblocking);
     expect(wrapper.state().unblocking).toEqual(true);
+  });
+
+  it('Should not update unblocking', () => {
+    const wrapper = shallow<RedisGearsPanel>(getComponent());
+    const component = wrapper.find(RadioButtonGroup);
+    component.simulate('change', ExecutionMode.Blocking);
+    expect(wrapper.state().unblocking).toEqual(false);
   });
 
   /**

@@ -35,3 +35,8 @@ export enum ClientTypeValue {
   SOCKET = 'socket',
   STANDALONE = 'standalone',
 }
+
+/**
+ * Application root page
+ */
+export const ApplicationRoot = '/a/redis-app';

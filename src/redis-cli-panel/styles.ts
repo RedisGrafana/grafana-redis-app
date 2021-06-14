@@ -1,11 +1,11 @@
-import { css } from 'emotion';
-import { stylesFactory, useTheme } from '@grafana/ui';
+import { css } from '@emotion/css';
+import { stylesFactory, useTheme2 } from '@grafana/ui';
 
 /**
  * Styles
  */
 export const Styles = stylesFactory(() => {
-  const theme = useTheme();
+  const theme = useTheme2();
 
   /**
    * Return
