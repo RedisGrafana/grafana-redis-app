@@ -4,7 +4,7 @@ import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
 import { css, cx } from '@emotion/css';
 import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { Button, LegacyForms } from '@grafana/ui';
+import { Button, LegacyForms, useTheme2 } from '@grafana/ui';
 import { Help } from '../../constants';
 import { Styles } from '../../styles';
 import { HelpCommand, PanelOptions, RedisQuery } from '../../types';
@@ -27,7 +27,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
   replaceVariables,
 }) => {
   const { query, raw, output, help } = options;
-  const styles = Styles();
+  const styles = Styles(useTheme2());
 
   /**
    * Run Query

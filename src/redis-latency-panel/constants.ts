@@ -9,11 +9,6 @@ export const DefaultInterval = 1000;
 export const MaxItemsPerSeries = 300;
 
 /**
- * Default color Mode id for 7.2.X
- */
-export const DefaultColorModeId = 'fixed';
-
-/**
  * Fields
  */
 export enum FieldName {
