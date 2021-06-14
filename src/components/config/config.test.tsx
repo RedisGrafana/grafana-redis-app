@@ -1,6 +1,6 @@
 import { shallow } from 'enzyme';
 import React from 'react';
-import { config, setLocationSrv } from '@grafana/runtime';
+import { setLocationSrv } from '@grafana/runtime';
 import { ApplicationRoot } from '../../constants';
 import { Config } from './config';
 
@@ -19,8 +19,6 @@ const getPlugin = (overridePlugin: any = { meta: {} }) => ({
  Config
  */
 describe('Config', () => {
-  let initialDataSources = config.datasources;
-
   beforeAll(() => {
     jest.spyOn(Config, 'getLocation').mockImplementation((): any => ({
       assign: jest.fn(),
@@ -32,31 +30,20 @@ describe('Config', () => {
    Initialization
    */
   describe('Initialization', () => {
-    it('If plugin is not enabled, state should have isEnabled = false', () => {
-      const plugin = getPlugin({ meta: { enabled: false } });
-      config.datasources = {
-        redis: {
-          type: 'redis-datasource',
-        } as any,
-      };
-      const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
-      expect(wrapper.state().isEnabled).toBeFalsy();
-    });
-
-    it('If plugin is enabled but config does not have needed datasources, state should have isEnabled = true', () => {
-      const plugin = getPlugin({ meta: { enabled: true } });
-      config.datasources = {};
+    it('If plugin is not enabled and meta is not set, state should have isEnabled = false', () => {
+      const plugin = getPlugin({});
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
       expect(wrapper.state().isEnabled).toBeTruthy();
     });
 
-    it('If plugin is enabled and config has needed datasources, state should have isEnabled = true', () => {
+    it('If plugin is not enabled, state should have isEnabled = false', () => {
+      const plugin = getPlugin({ meta: { enabled: false } });
+      const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
+      expect(wrapper.state().isEnabled).toBeFalsy();
+    });
+
+    it('If plugin is enabled, state should have isEnabled = true', () => {
       const plugin = getPlugin({ meta: { enabled: true } });
-      config.datasources = {
-        redis: {
-          type: 'redis-datasource',
-        } as any,
-      };
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
       expect(wrapper.state().isEnabled).toBeTruthy();
     });
@@ -66,14 +53,6 @@ describe('Config', () => {
    Rendering
    */
   describe('rendering', () => {
-    beforeAll(() => {
-      config.datasources = {
-        redis: {
-          type: 'redis-datasource',
-        } as any,
-      };
-    });
-
     it('If plugin is not configured, should show enable button', () => {
       const plugin = getPlugin({ meta: { enabled: false } });
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
@@ -161,7 +140,6 @@ describe('Config', () => {
   });
 
   afterAll(() => {
-    config.datasources = initialDataSources;
     jest.resetAllMocks();
   });
 });

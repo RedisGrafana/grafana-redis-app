@@ -108,7 +108,6 @@ export class RootPage extends PureComponent<Props, State> {
         } as DataQueryRequest<RedisQuery>) as unknown;
 
         const query = dsQuery as Observable<DataQueryResponse>;
-
         if (!query.toPromise) {
           return;
         }
