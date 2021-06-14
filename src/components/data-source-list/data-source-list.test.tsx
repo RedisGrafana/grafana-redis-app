@@ -1,4 +1,3 @@
-import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import {
   HighAvailability,
@@ -12,7 +11,8 @@ import {
   RedisJSON,
   RedisTimeSeries,
 } from 'icons';
-import { InfoBox } from '@grafana/ui';
+import React from 'react';
+import { Alert } from '@grafana/ui';
 import { DataSourceType, RedisCommand } from '../../constants';
 import { DataSourceList } from './data-source-list';
 
@@ -22,13 +22,11 @@ const backendSrvMock = {
   post: jest.fn(),
 };
 
-const locationSrvMock = {
-  update: jest.fn(),
-};
-
 jest.mock('@grafana/runtime', () => ({
   getBackendSrv: () => backendSrvMock,
-  getLocationSrv: () => locationSrvMock,
+  locationService: {
+    push: () => jest.fn(),
+  },
 }));
 
 /**
@@ -46,12 +44,11 @@ describe('DataSourceList', () => {
 
   beforeEach(() => {
     Object.values(backendSrvMock).forEach((mock) => mock.mockClear());
-    Object.values(locationSrvMock).forEach((mock) => mock.mockClear());
   });
 
   it('If datasources.length=0 should show no items message', () => {
     const wrapper = shallow(<DataSourceList dataSources={[]} />);
-    const testedComponent = wrapper.findWhere((node) => node.is(InfoBox));
+    const testedComponent = wrapper.findWhere((node) => node.is(Alert));
     expect(testedComponent.exists()).toBeTruthy();
   });
 
@@ -365,7 +362,7 @@ describe('DataSourceList', () => {
       const addDataSourceButton = wrapper.findWhere(
         (node) => node.name() === 'Button' && node.text() === 'Add Redis Data Source'
       );
-      backendSrvMock.post.mockImplementationOnce(() => Promise.resolve({ id: 123 }));
+      backendSrvMock.post.mockImplementationOnce(() => Promise.resolve({ datasource: { uid: 123 } }));
       addDataSourceButton.simulate('click');
       setImmediate(() => {
         expect(backendSrvMock.post).toHaveBeenCalledWith('/api/datasources', {
@@ -373,7 +370,6 @@ describe('DataSourceList', () => {
           type: DataSourceType.REDIS,
           access: 'proxy',
         });
-        expect(locationSrvMock.update).toHaveBeenCalledWith({ path: 'datasources/edit/123' });
         done();
       });
     });
@@ -397,7 +393,7 @@ describe('DataSourceList', () => {
       const addDataSourceButton = wrapper.findWhere(
         (node) => node.name() === 'Button' && node.text() === 'Add Redis Data Source'
       );
-      backendSrvMock.post.mockImplementationOnce(() => Promise.resolve({ id: 1234 }));
+      backendSrvMock.post.mockImplementationOnce(() => Promise.resolve({ datasource: { uid: 123 } }));
       addDataSourceButton.simulate('click');
       setImmediate(() => {
         expect(backendSrvMock.post).toHaveBeenCalledWith('/api/datasources', {
@@ -405,7 +401,6 @@ describe('DataSourceList', () => {
           type: DataSourceType.REDIS,
           access: 'proxy',
         });
-        expect(locationSrvMock.update).toHaveBeenCalledWith({ path: 'datasources/edit/1234' });
         done();
       });
     });
