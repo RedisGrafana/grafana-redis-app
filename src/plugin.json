@@ -17,6 +17,7 @@
       "addToNav": true,
       "defaultNav": true,
       "name": "Home",
+      "icon": "home-alt",
       "path": "/a/redis-app/",
       "role": "Admin",
       "type": "page"
@@ -24,6 +25,7 @@
     {
       "addToNav": true,
       "name": "Redis CLI",
+      "icon": "calculator-alt",
       "path": "dashboards/redis-cli.json",
       "role": "Admin",
       "type": "dashboard"
@@ -31,6 +33,7 @@
     {
       "addToNav": true,
       "name": "Redis Overview",
+      "icon": "monitor",
       "path": "dashboards/redis-overview.json",
       "role": "Admin",
       "type": "dashboard"
@@ -38,6 +41,7 @@
     {
       "addToNav": true,
       "name": "RedisGears",
+      "icon": "cog",
       "path": "dashboards/redis-gears.json",
       "role": "Admin",
       "type": "dashboard"

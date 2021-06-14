@@ -1,10 +1,10 @@
-# Redis Application plug-in for Grafana
+# Redis Application plugin for Grafana
 
 ![Application](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-app.png)
 
 [![Grafana 7](https://img.shields.io/badge/Grafana-7-orange)](https://www.grafana.com)
 [![Redis Data Source](https://img.shields.io/badge/dynamic/json?color=blue&label=Redis%20Data%20Source&query=%24.version&url=https%3A%2F%2Fgrafana.com%2Fapi%2Fplugins%2Fredis-datasource)](https://grafana.com/grafana/plugins/redis-datasource)
-[![Redis Application plug-in](https://img.shields.io/badge/dynamic/json?color=blue&label=Redis%20Application%20plug-in&query=%24.version&url=https%3A%2F%2Fgrafana.com%2Fapi%2Fplugins%2Fredis-app)](https://grafana.com/grafana/plugins/redis-app)
+[![Redis Application plugin](https://img.shields.io/badge/dynamic/json?color=blue&label=Redis%20Application%20plugin&query=%24.version&url=https%3A%2F%2Fgrafana.com%2Fapi%2Fplugins%2Fredis-app)](https://grafana.com/grafana/plugins/redis-app)
 ![CI](https://github.com/RedisGrafana/grafana-redis-app/workflows/CI/badge.svg)
 ![Docker](https://github.com/RedisGrafana/grafana-redis-app/workflows/Docker/badge.svg)
 [![codecov](https://codecov.io/gh/RedisGrafana/grafana-redis-app/branch/master/graph/badge.svg?token=15SIRGU8SX)](https://codecov.io/gh/RedisGrafana/grafana-redis-app)
@@ -22,7 +22,7 @@
 
 ## Introduction
 
-The Redis Application is a plug-in for Grafana that provides application pages, custom panels, and dashboards for [Redis Data Source](https://grafana.com/grafana/plugins/redis-datasource).
+The Redis Application is a plugin for Grafana that provides application pages, custom panels, and dashboards for [Redis Data Source](https://grafana.com/grafana/plugins/redis-datasource).
 
 ### Custom Panels
 
@@ -56,25 +56,25 @@ grafana-cli plugins install redis-app
 
 For Docker instructions and installation without Internet access, follow the [Quickstart](https://redisgrafana.github.io/quickstart/) page.
 
-### Open Grafana and enable Redis Application plug-in
+### Open Grafana and enable Redis Application plugin
 
-Open Grafana in your browser, enable Redis Application plug-in, and configure Redis Data Sources.
+Open Grafana in your browser, enable Redis Application plugin, and configure Redis Data Sources.
 
 ![Enable](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/enable.png)
 
 ## Documentation
 
-Take a look at the [Documentation](https://redisgrafana.github.io/redis-app/overview/) to learn more about the Redis Application plug-in, Redis Data Source, provided dashboards, and custom panels.
+Take a look at the [Documentation](https://redisgrafana.github.io/redis-app/overview/) to learn more about the Redis Application plugin, Redis Data Source, provided dashboards, and custom panels.
 
 ## Development
 
-[Developing Redis Application plug-in](https://redisgrafana.github.io/development/redis-app/) page provides instructions on building the application.
+[Developing Redis Application plugin](https://redisgrafana.github.io/development/redis-app/) page provides instructions on building the application.
 
-Are you interested in the latest features and updates? Start nightly built [Docker image for Redis Application plug-in](https://redisgrafana.github.io/development/images/).
+Are you interested in the latest features and updates? Start nightly built [Docker image for Redis Application plugin](https://redisgrafana.github.io/development/images/).
 
 ## Feedback
 
-We love to hear from users, developers, and the whole community interested in this plug-in. These are various ways to get in touch with us:
+We love to hear from users, developers, and the whole community interested in this plugin. These are various ways to get in touch with us:
 
 - Ask a question, request a new feature, and file a bug with [GitHub issues](https://github.com/RedisGrafana/grafana-redis-app/issues/new/choose).
 - Star the repository to show your support.

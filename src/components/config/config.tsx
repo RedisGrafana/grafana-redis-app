@@ -66,7 +66,7 @@ export class Config extends PureComponent<Props, State> {
   };
 
   /**
-   * Plug-in Settings
+   * Plugin Settings
    *
    * @param settings Plugin Settings
    */
@@ -75,7 +75,7 @@ export class Config extends PureComponent<Props, State> {
   };
 
   /**
-   * Plug-in disable
+   * Plugin disable
    */
   onDisable = () => {
     this.updatePluginSettings({ enabled: false, jsonData: {}, pinned: false }).then(() => {
@@ -84,7 +84,7 @@ export class Config extends PureComponent<Props, State> {
   };
 
   /**
-   * Plug-in enable
+   * Plugin enable
    */
   onEnable = () => {
     this.updatePluginSettings({ enabled: true, jsonData: {}, pinned: true }).then(() => {
@@ -101,7 +101,7 @@ export class Config extends PureComponent<Props, State> {
     return (
       <>
         <h2>Redis Application</h2>
-        <p>The Redis Application, is a plug-in for Grafana that provides custom panels for Redis Data Source.</p>
+        <p>The Redis Application, is a plugin for Grafana that provides custom panels for Redis Data Source.</p>
         {!isEnabled && (
           <p>
             Click below to <b>Enable</b> the Application and start monitoring your Redis instances today.
