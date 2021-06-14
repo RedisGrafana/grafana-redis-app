@@ -3,7 +3,7 @@ import { Config, RootPage } from './components';
 import { GlobalSettings } from './types';
 
 /**
- * Application Plug-in
+ * Application Plugin
  */
 export const plugin = new AppPlugin<GlobalSettings>().setRootPage(RootPage).addConfigPage({
   title: 'Config',

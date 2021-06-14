@@ -29,7 +29,7 @@
 
 ### Features / Enhancements
 
-- Make Application plug-in's icon bolder for better visibility #19
+- Make Application plugin's icon bolder for better visibility #19
 - Update Grafana dependencies to 7.3.6 #21
 - Update Angular legacy code to React #25
 - Update Redis CLI auto-scrolling textarea to autosize #26

@@ -1,6 +1,6 @@
 ---
 name: Question 🤔
-about: Usage question or discussion about Redis Application plug-in for Grafana.
+about: Usage question or discussion about Redis Application plugin for Grafana.
 title: ''
 labels: 'kind/question'
 assignees: ''
