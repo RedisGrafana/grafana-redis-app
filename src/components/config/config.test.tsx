@@ -1,6 +1,7 @@
+import { shallow } from 'enzyme';
 import React from 'react';
 import { config, setLocationSrv } from '@grafana/runtime';
-import { shallow } from 'enzyme';
+import { ApplicationRoot } from '../../constants';
 import { Config } from './config';
 
 /*
@@ -31,7 +32,7 @@ describe('Config', () => {
    Initialization
    */
   describe('Initialization', () => {
-    it('If plugin is not enabled, state should have isEnabled = false and isConfigured = false', () => {
+    it('If plugin is not enabled, state should have isEnabled = false', () => {
       const plugin = getPlugin({ meta: { enabled: false } });
       config.datasources = {
         redis: {
@@ -40,18 +41,16 @@ describe('Config', () => {
       };
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
       expect(wrapper.state().isEnabled).toBeFalsy();
-      expect(wrapper.state().isConfigured).toBeFalsy();
     });
 
-    it('If plugin is enabled but config does not have needed datasources, state should have isEnabled = true and isConfigured = false', () => {
+    it('If plugin is enabled but config does not have needed datasources, state should have isEnabled = true', () => {
       const plugin = getPlugin({ meta: { enabled: true } });
       config.datasources = {};
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
       expect(wrapper.state().isEnabled).toBeTruthy();
-      expect(wrapper.state().isConfigured).toBeFalsy();
     });
 
-    it('If plugin is enabled and config has needed datasources, state should have isEnabled = true and isConfigured = true', () => {
+    it('If plugin is enabled and config has needed datasources, state should have isEnabled = true', () => {
       const plugin = getPlugin({ meta: { enabled: true } });
       config.datasources = {
         redis: {
@@ -60,7 +59,6 @@ describe('Config', () => {
       };
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
       expect(wrapper.state().isEnabled).toBeTruthy();
-      expect(wrapper.state().isConfigured).toBeTruthy();
     });
   });
 
@@ -76,22 +74,18 @@ describe('Config', () => {
       };
     });
 
-    it('If plugin is not configured, should show only enable button', () => {
+    it('If plugin is not configured, should show enable button', () => {
       const plugin = getPlugin({ meta: { enabled: false } });
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
       const enableButton = wrapper.findWhere((node) => node.name() === 'Button' && node.text() === 'Enable');
-      const updateButton = wrapper.findWhere((node) => node.name() === 'Button' && node.text() === 'Update');
       expect(enableButton.exists()).toBeTruthy();
-      expect(updateButton.exists()).not.toBeTruthy();
     });
 
-    it('If plugin is configured, should show update and disable buttons', () => {
+    it('If plugin is configured, should show disable buttons', () => {
       const plugin = getPlugin({ meta: { enabled: true } });
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
       const disableButton = wrapper.findWhere((node) => node.name() === 'Button' && node.text() === 'Disable');
-      const updateButton = wrapper.findWhere((node) => node.name() === 'Button' && node.text() === 'Update');
       expect(disableButton.exists()).toBeTruthy();
-      expect(updateButton.exists()).toBeTruthy();
     });
 
     it('Enable button should call onEnable method', () => {
@@ -113,38 +107,12 @@ describe('Config', () => {
       disableButton.simulate('click');
       expect(testedMethod).toHaveBeenCalled();
     });
-
-    it('Update button should call onUpdate method', () => {
-      const plugin = getPlugin({ meta: { enabled: true } });
-      const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
-      const testedMethod = jest.spyOn(wrapper.instance(), 'onUpdate').mockImplementation(() => null);
-      wrapper.instance().forceUpdate();
-      const updateButton = wrapper.findWhere((node) => node.name() === 'Button' && node.text() === 'Update');
-      updateButton.simulate('click');
-      expect(testedMethod).toHaveBeenCalled();
-    });
   });
 
   /*
    Methods
    */
   describe('Methods', () => {
-    it('onUpdate should call goHome method', () => {
-      const plugin = getPlugin({ meta: { enabled: true } });
-      const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
-      const testedMethod = jest.spyOn(wrapper.instance(), 'goHome').mockImplementation();
-      wrapper.instance().onUpdate();
-      expect(testedMethod).toHaveBeenCalled();
-    });
-
-    it('onUpdate should not call goHome method if enabled=false', () => {
-      const plugin = getPlugin({ meta: { enabled: false } });
-      const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
-      const testedMethod = jest.spyOn(wrapper.instance(), 'goHome').mockImplementation();
-      wrapper.instance().onUpdate();
-      expect(testedMethod).not.toHaveBeenCalled();
-    });
-
     it('onDisable should call updatePluginSettings method', () => {
       const plugin = getPlugin({ meta: { enabled: true } });
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
@@ -186,7 +154,7 @@ describe('Config', () => {
       const wrapper = shallow<Config>(<Config plugin={plugin} query={null as any} />);
       wrapper.instance().goHome();
       expect(updateLocationMock).toHaveBeenCalledWith({
-        path: 'a/redis-app/',
+        path: ApplicationRoot,
         partial: false,
       });
     });

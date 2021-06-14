@@ -8,7 +8,7 @@ import { RedisLatencyPanelGraph } from './redis-latency-panel-graph';
  * Mock @grafana/runtime
  */
 jest.mock('@grafana/runtime', () => ({
-  config: { theme: {} },
+  config: { theme2: {} },
 }));
 
 /**

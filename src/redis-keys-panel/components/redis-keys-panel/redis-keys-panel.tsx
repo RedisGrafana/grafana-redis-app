@@ -213,7 +213,7 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
      */
     tableDataFrame.fields = tableDataFrame.fields.map((field) => ({
       ...field,
-      display: getDisplayProcessor({ field, theme: config.theme }),
+      display: getDisplayProcessor({ field, theme: config.theme2 }),
     }));
 
     return tableDataFrame;
@@ -454,10 +454,12 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
       }));
     }
 
-    return ((ds.query({
+    const query = ds.query({
       ...this.props.data.request,
       targets: targetsWithCommands,
-    } as DataQueryRequest<RedisQuery>) as unknown) as Observable<DataQueryResponse>).toPromise();
+    } as DataQueryRequest<RedisQuery>) as unknown;
+
+    return (query as Observable<DataQueryResponse>).toPromise();
   }
 
   /**
