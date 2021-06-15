@@ -137,9 +137,7 @@ describe('RedisLatencyPanelGraph', () => {
       );
 
       const timeSeries = wrapper.findWhere((node) => node.name() === 'TimeSeries');
-      const tooltip = wrapper.findWhere((node) => node.name() === 'TooltipPlugin');
       expect(timeSeries.exists()).toBeTruthy();
-      expect(tooltip.exists()).toBeTruthy();
     });
   });
 });
