@@ -126,5 +126,20 @@ describe('RedisLatencyPanelGraph', () => {
       const div = wrapper.findWhere((node) => node.name() === 'div');
       expect(div.exists()).toBeTruthy();
     });
+
+    it('Should return Time Series if data frame has data', () => {
+      const wrapper = shallow<RedisLatencyPanelGraph>(
+        getComponent({
+          seriesMap: { get: [{ time: dateTime(), value: 1 }] },
+          timeRange: { raw: { from: dateTime() } },
+          options: { hideZero: true },
+        })
+      );
+
+      const timeSeries = wrapper.findWhere((node) => node.name() === 'TimeSeries');
+      const tooltip = wrapper.findWhere((node) => node.name() === 'TooltipPlugin');
+      expect(timeSeries.exists()).toBeTruthy();
+      expect(tooltip.exists()).toBeTruthy();
+    });
   });
 });
