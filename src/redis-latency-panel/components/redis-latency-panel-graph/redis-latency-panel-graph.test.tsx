@@ -36,6 +36,7 @@ describe('RedisLatencyPanelGraph', () => {
       };
       const result: DataFrame[] = RedisLatencyPanelGraph.getGraphDataFrame(seriesMap, false);
       expect(result[0].length).toEqual(2);
+      expect(result[0].fields[0].values.length).toEqual(2);
       expect(result[1].length).toEqual(2);
     });
 
@@ -69,6 +70,7 @@ describe('RedisLatencyPanelGraph', () => {
        * SeriesIndex should be numerated by visible items not by all items
        */
       expect(result[0].length).toEqual(2);
+      expect(result[0].fields[0].values.length).toEqual(2);
     });
   });
 
@@ -110,6 +112,19 @@ describe('RedisLatencyPanelGraph', () => {
         seriesMap: { get: [{ time: dateTime(), value: 2 }] },
       });
       expect(currentTimeRange !== wrapper.state().timeRange).toBeTruthy();
+    });
+
+    it('Should return gathering results div if data frame is empty', () => {
+      const wrapper = shallow<RedisLatencyPanelGraph>(
+        getComponent({
+          seriesMap: {},
+          timeRange: { raw: { from: dateTime() } },
+          options: { hideZero: true },
+        })
+      );
+
+      const div = wrapper.findWhere((node) => node.name() === 'div');
+      expect(div.exists()).toBeTruthy();
     });
   });
 });
