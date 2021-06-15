@@ -1,15 +1,10 @@
 import { css } from '@emotion/css';
-import { stylesFactory, useTheme2 } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
 
 /**
  * Styles
  */
-export const Styles = stylesFactory(() => {
-  const theme = useTheme2();
-
-  /**
-   * Return
-   */
+export const Styles = (theme: GrafanaTheme2) => {
   return {
     wrapper: css`
       position: relative;
@@ -51,4 +46,4 @@ export const Styles = stylesFactory(() => {
       margin-right: 12px;
     `,
   };
-});
+};

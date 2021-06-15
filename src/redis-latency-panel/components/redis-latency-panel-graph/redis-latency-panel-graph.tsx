@@ -1,21 +1,19 @@
 import React, { PureComponent } from 'react';
 import {
+  DataFrame,
   DateTime,
   dateTimeParse,
   FieldColorModeId,
   FieldType,
   getDisplayProcessor,
-  getSeriesTimeStep,
   GraphSeriesValue,
-  GraphSeriesXY,
   PanelProps,
   TimeRange,
   TimeZone,
   toDataFrame,
 } from '@grafana/data';
 import { config } from '@grafana/runtime';
-import { colors, GraphWithLegend, LegendDisplayMode } from '@grafana/ui';
-import { DefaultColorModeId } from '../../constants';
+import { LegendDisplayMode, TimeSeries, TooltipDisplayMode, TooltipPlugin } from '@grafana/ui';
 import { PanelOptions, SeriesMap, SeriesValue } from '../../types';
 
 /**
@@ -47,13 +45,13 @@ interface State {
  */
 export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
   /**
-   * Convert seriesMap to GraphSeriesXY
+   * Convert seriesMap to Data Frames
    * @param seriesMap
    * @param hideZero
    */
-  static getGraphSeries(seriesMap: SeriesMap, hideZero: boolean): GraphSeriesXY[] {
+  static getGraphDataFrame(seriesMap: SeriesMap, hideZero: boolean): DataFrame[] {
     return Object.entries(seriesMap).reduce(
-      (acc: GraphSeriesXY[], [command, seriesValues]: [string, SeriesValue[]], index) => {
+      (acc: DataFrame[], [command, seriesValues]: [string, SeriesValue[]], index) => {
         const { times, values, shouldBeHidden } = seriesValues.reduce(
           (acc: { times: DateTime[]; values: number[]; shouldBeHidden: boolean }, { time, value }) => {
             let shouldBeHidden = acc.shouldBeHidden;
@@ -82,11 +80,6 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
         }
 
         /**
-         * Color
-         */
-        const color = colors[index % colors.length];
-
-        /**
          * Data Frame
          */
         const seriesDataFrame = toDataFrame({
@@ -99,13 +92,12 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
             },
             {
               type: FieldType.number,
-              name: command,
+              name: ' ',
               values,
               config: {
                 unit: 'µs',
                 color: {
-                  fixedColor: color,
-                  mode: FieldColorModeId ? FieldColorModeId.Fixed : DefaultColorModeId,
+                  mode: FieldColorModeId.PaletteClassic,
                 },
               },
             },
@@ -128,19 +120,7 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
           data.push([times[i].valueOf(), values[i]]);
         }
 
-        return acc.concat([
-          {
-            seriesIndex: acc.length,
-            yAxis: { index: 1 },
-            label: command,
-            isVisible: true,
-            data,
-            timeField: seriesDataFrame.fields[0],
-            valueField: seriesDataFrame.fields[1],
-            timeStep: getSeriesTimeStep(seriesDataFrame.fields[0]),
-            color,
-          },
-        ]);
+        return acc.concat(seriesDataFrame);
       },
       []
     );
@@ -184,11 +164,6 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
   }
 
   /**
-   * onToggleSort
-   */
-  onToggleSort() {}
-
-  /**
    * Render
    */
   render() {
@@ -196,21 +171,36 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
     const { timeRange } = this.state;
 
     /**
-     * Return GraphWithLegend
+     * Convert to Data Frames
+     */
+    const dataFrames = RedisLatencyPanelGraph.getGraphDataFrame(seriesMap, options.hideZero);
+    if (!dataFrames.length) {
+      return <div>Gathering latency data...</div>;
+    }
+
+    /**
+     * Return Time Series
      */
     return (
-      <GraphWithLegend
+      <TimeSeries
+        frames={dataFrames}
         width={width}
         height={height}
-        series={RedisLatencyPanelGraph.getGraphSeries(seriesMap, options?.hideZero)}
         timeRange={timeRange}
+        legend={{ displayMode: LegendDisplayMode.List, placement: 'bottom', calcs: [] }}
         timeZone={this.props.timeZone}
-        legendDisplayMode={LegendDisplayMode.List}
-        placement="bottom"
-        onToggleSort={this.onToggleSort}
-        hideZero={options?.hideZero}
-        showLines
-      ></GraphWithLegend>
+      >
+        {(config, alignedDataFrame) => {
+          return (
+            <TooltipPlugin
+              config={config}
+              data={alignedDataFrame}
+              mode={TooltipDisplayMode.Multi}
+              timeZone={this.props.timeZone}
+            />
+          );
+        }}
+      </TimeSeries>
     );
   }
 }
