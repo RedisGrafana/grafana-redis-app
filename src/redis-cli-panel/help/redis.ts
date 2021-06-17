@@ -2240,4 +2240,35 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '2.8.13',
     url: 'https://redis.io/commands/latency-help',
   },
+
+  /**
+   * Redis 7
+   */
+  EXPIRETIME: {
+    syntax: 'EXPIRETIME key',
+    summary:
+      'Returns the absolute Unix timestamp (since January 1, 1970) in seconds at which the given key will expire.',
+    since: '7.0.0',
+    url: 'https://redis.io/commands/expiretime',
+  },
+  PEXPIRETIME: {
+    syntax: 'PEXPIRETIME key',
+    summary:
+      'Returns the absolute Unix timestamp (since January 1, 1970) in milliseconds at which the given key will expire.',
+    since: '7.0.0',
+    url: 'https://redis.io/commands/pexpiretime',
+  },
+  EVAL_RO: {
+    syntax: 'EVAL_RO script numkeys key [key ...] arg [arg ...]',
+    summary: "This is a read-only variant of the EVAL command that isn't allowed to execute commands that modify data.",
+    since: '7.0.0',
+    url: 'https://redis.io/commands/eval_ro',
+  },
+  EVALSHA_RO: {
+    syntax: 'EVALSHA_RO sha1 numkeys key [key ...] arg [arg ...]',
+    summary:
+      "This is a read-only variant of the EVALSHA command that isn't allowed to execute commands that modify data.",
+    since: '7.0.0',
+    url: 'https://redis.io/commands/evalsha_ro',
+  },
 };
