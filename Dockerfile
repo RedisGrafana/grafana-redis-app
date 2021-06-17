@@ -8,6 +8,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Set Grafana options
 ENV GF_ENABLE_GZIP="true"
 ENV GF_USERS_DEFAULT_THEME="light"
+ENV GF_FEATURE_TOGGLES_ENABLE="ngalert"
+ENV GF_PLUGINS_PLUGIN_ADMIN_ENABLED="true"
 
 # Paths
 ENV GF_PATHS_PROVISIONING="/etc/grafana/provisioning"
