@@ -19,6 +19,8 @@ services:
       - GF_ENABLE_GZIP=true
       - GF_USERS_DEFAULT_THEME=light
       - GF_INSTALL_PLUGINS=redis-app
+      - GF_FEATURE_TOGGLES_ENABLE=ngalert
+      - GF_PLUGINS_PLUGIN_ADMIN_ENABLED=true
     volumes:
       - ./provisioning:/etc/grafana/provisioning
       # Uncomment to preserve Grafana configuration
