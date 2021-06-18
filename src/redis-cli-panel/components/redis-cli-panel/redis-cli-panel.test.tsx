@@ -542,6 +542,12 @@ describe('RedisCLIPanel', () => {
           ...options,
           raw: true,
         });
+
+        testedComponent.simulate('change', ResponseMode.CLI);
+        expect(onOptionsChangeMock).toHaveBeenCalledWith({
+          ...options,
+          raw: false,
+        });
       });
     });
   });
