@@ -45,5 +45,8 @@ export const Styles = (theme: GrafanaTheme2) => {
       right: 0;
       margin-right: 12px;
     `,
+    cli: css`
+      margin-right: 4px;
+    `,
   };
 };
