@@ -10,7 +10,7 @@ import {
 } from '@grafana/data';
 import { config, getBackendSrv, getDataSourceSrv } from '@grafana/runtime';
 import { Alert } from '@grafana/ui';
-import { DataSourceType, RedisCommand } from '../../constants';
+import { ApplicationName, DataSourceType, RedisCommand } from '../../constants';
 import { RedisQuery } from '../../redis-cli-panel/types';
 import { GlobalSettings, RedisDataSourceInstanceSettings } from '../../types';
 import { DataSourceList } from '../data-source-list';
@@ -165,7 +165,7 @@ export class RootPage extends PureComponent<Props, State> {
      * Header
      */
     const node = {
-      text: 'Redis Application',
+      text: ApplicationName,
       img: meta.info.logos.large,
       subTitle: 'Redis Data Source',
       url: path,

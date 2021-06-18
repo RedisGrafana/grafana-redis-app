@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { AppPluginMeta, PluginConfigPageProps } from '@grafana/data';
 import { BackendSrv, getBackendSrv, getLocationSrv } from '@grafana/runtime';
 import { Button } from '@grafana/ui';
-import { ApplicationRoot } from '../../constants';
+import { ApplicationName, ApplicationRoot } from '../../constants';
 import { GlobalSettings } from '../../types';
 
 /**
@@ -100,7 +100,7 @@ export class Config extends PureComponent<Props, State> {
 
     return (
       <>
-        <h2>Redis Application</h2>
+        <h2>{ApplicationName}</h2>
         <p>The Redis Application, is a plugin for Grafana that provides custom panels for Redis Data Source.</p>
         {!isEnabled && (
           <p>
