@@ -23,10 +23,23 @@
       "type": "page"
     },
     {
-      "addToNav": true,
+      "addToNav": false,
+      "name": "Redis Overview",
+      "path": "dashboards/redis-overview.json",
+      "role": "Admin",
+      "type": "dashboard"
+    },
+    {
+      "addToNav": false,
       "name": "Redis CLI",
-      "icon": "calculator-alt",
       "path": "dashboards/redis-cli.json",
+      "role": "Admin",
+      "type": "dashboard"
+    },
+    {
+      "addToNav": false,
+      "name": "RedisGears",
+      "path": "dashboards/redis-gears.json",
       "role": "Admin",
       "type": "dashboard"
     },
@@ -34,17 +47,25 @@
       "addToNav": true,
       "name": "Redis Overview",
       "icon": "monitor",
-      "path": "dashboards/redis-overview.json",
+      "path": "/d/RpSjVqWMz",
       "role": "Admin",
-      "type": "dashboard"
+      "type": "page"
+    },
+    {
+      "addToNav": true,
+      "name": "Redis CLI",
+      "icon": "calculator-alt",
+      "path": "/d/_SGxCBNGk",
+      "role": "Admin",
+      "type": "page"
     },
     {
       "addToNav": true,
       "name": "RedisGears",
       "icon": "cog",
-      "path": "dashboards/redis-gears.json",
+      "path": "/d/xFPiNzLMz",
       "role": "Admin",
-      "type": "dashboard"
+      "type": "page"
     },
     {
       "name": "Redis CLI Panel",
