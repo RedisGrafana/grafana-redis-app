@@ -4,16 +4,11 @@ import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
 import { css, cx } from '@emotion/css';
 import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { Button, LegacyForms, useTheme2 } from '@grafana/ui';
-import { Help } from '../../constants';
+import { Button, RadioButtonGroup, useTheme2 } from '@grafana/ui';
+import { Help, ResponseMode, ResponseModeOptions } from '../../constants';
 import { Styles } from '../../styles';
 import { HelpCommand, PanelOptions, RedisQuery } from '../../types';
 import { CLITextArea } from '../auto-scrolling-text-area';
-
-/**
- * Legacy Forms
- */
-const { Switch } = LegacyForms;
 
 /**
  * Redis CLI Panel
@@ -26,7 +21,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
   onOptionsChange,
   replaceVariables,
 }) => {
-  const { query, raw, output, help } = options;
+  const { query, output, help } = options;
   const styles = Styles(useTheme2());
 
   /**
@@ -105,6 +100,21 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
      * Update Output and clear Query
      */
     onOptionsChange({ ...options, output: `${output ? `${output}\n` : ''}${result}`, query: '' });
+  };
+
+  /**
+   * Change view mode
+   * @param event
+   */
+  const onChangeResponseMode = (event?: ResponseMode) => {
+    if (event === undefined) {
+      return;
+    }
+
+    onOptionsChange({
+      ...options,
+      raw: event === ResponseMode.RAW ? true : false,
+    });
   };
 
   /**
@@ -197,14 +207,11 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
           value={query}
         />
 
-        <Switch
-          label="Raw"
-          labelClass="width-4"
-          tooltip="If checked, use raw formatting for replies."
-          checked={raw || false}
-          onChange={(event: any) => {
-            onOptionsChange({ ...options, raw: event.currentTarget.checked });
-          }}
+        <RadioButtonGroup
+          className={cx(styles.cli)}
+          value={options.raw ? ResponseMode.RAW : ResponseMode.CLI}
+          options={ResponseModeOptions}
+          onChange={onChangeResponseMode}
         />
 
         <Button

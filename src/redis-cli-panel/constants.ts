@@ -23,3 +23,25 @@ export const Help: { [key: string]: HelpCommand } = {
   ...RedisSearchHelp,
   ...RedisTimeSeriesHelp,
 };
+
+/**
+ * Response Modes
+ */
+export enum ResponseMode {
+  CLI = 'CLI',
+  RAW = 'Raw',
+}
+
+/**
+ * Response Mode options
+ */
+export const ResponseModeOptions = [
+  {
+    label: 'CLI',
+    value: ResponseMode.CLI,
+  },
+  {
+    label: 'Raw',
+    value: ResponseMode.RAW,
+  },
+];

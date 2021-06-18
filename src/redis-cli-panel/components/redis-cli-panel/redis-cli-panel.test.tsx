@@ -1,12 +1,12 @@
-import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
+import React from 'react';
 import { Observable } from 'rxjs';
 import { LoadingState, PanelData } from '@grafana/data';
-import { Button } from '@grafana/ui';
-import { Help } from '../../constants';
+import { Button, RadioButtonGroup } from '@grafana/ui';
+import { Help, ResponseMode } from '../../constants';
 import { PanelOptions } from '../../types';
-import { RedisCLIPanel } from './redis-cli-panel';
 import { CLITextArea } from '../auto-scrolling-text-area';
+import { RedisCLIPanel } from './redis-cli-panel';
 
 /**
  * Override
@@ -510,6 +510,45 @@ describe('RedisCLIPanel', () => {
     expect(onOptionsChangeMock).toHaveBeenCalledWith({
       ...options,
       output: '',
+    });
+  });
+
+  describe('Options', () => {
+    /**
+     * Response Mode
+     */
+    describe('ResponseMode', () => {
+      it('Should apply options value and change', () => {
+        const options = {};
+        const wrapper = shallow(
+          <RedisCLIPanel
+            {...additionalProps}
+            width={width}
+            height={height}
+            data={data}
+            onOptionsChange={onOptionsChangeMock}
+            replaceVariables={replaceVariablesMock}
+            options={options}
+          />
+        );
+        const testedComponent = wrapper.find(RadioButtonGroup);
+        expect(testedComponent.prop('value')).toEqual(ResponseMode.CLI);
+
+        testedComponent.simulate('change');
+        expect(onOptionsChangeMock).not.toHaveBeenCalled();
+
+        testedComponent.simulate('change', ResponseMode.RAW);
+        expect(onOptionsChangeMock).toHaveBeenCalledWith({
+          ...options,
+          raw: true,
+        });
+
+        testedComponent.simulate('change', ResponseMode.CLI);
+        expect(onOptionsChangeMock).toHaveBeenCalledWith({
+          ...options,
+          raw: false,
+        });
+      });
     });
   });
 
