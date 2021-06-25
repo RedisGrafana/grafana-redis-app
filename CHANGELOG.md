@@ -1,6 +1,10 @@
 # Change Log
 
-## 2.0.0 (IN PROGRESS)
+## 2.0.0 (2021-06-25)
+
+### Breaking changes
+
+Supports Grafana 8.0+, for Grafana 7.X use version 1.2.0
 
 ### Features / Enhancements
 
@@ -9,11 +13,13 @@
 - Replace old Latency Graph with TimeSeries component (#70)
 - Add Redis 7 commands to CLI (#71)
 - Add NgAlert and Plugin catalog to docker image (#72)
+- Update dashboards in the application's menu as pages (#73)
+- Update CLI legacy switch to ButtonGroup (#74)
 
 ### Bug fixes
 
 - "Available Requirements" panel should be set to $redis datasource #63
-- Cannot read property 'v1' of undefined (theme.v1) in the Grafana8 #65
+- Cannot read property 'v1' of undefined (theme.v1) in the Grafana 8 #65
 - Add theme to getDisplayProcessor (#66)
 - Fix adding new data source and minor updates (#68)
 

@@ -13,7 +13,7 @@ import {
   toDataFrame,
 } from '@grafana/data';
 import { config } from '@grafana/runtime';
-import { LegendDisplayMode, TimeSeries, TooltipDisplayMode, TooltipPlugin } from '@grafana/ui';
+import { colors, LegendDisplayMode, TimeSeries, TooltipDisplayMode, TooltipPlugin } from '@grafana/ui';
 import { PanelOptions, SeriesMap, SeriesValue } from '../../types';
 
 /**
@@ -80,6 +80,11 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
         }
 
         /**
+         * Color
+         */
+        const color = colors[index % colors.length];
+
+        /**
          * Data Frame
          */
         const seriesDataFrame = toDataFrame({
@@ -97,7 +102,8 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
               config: {
                 unit: 'µs',
                 color: {
-                  mode: FieldColorModeId.PaletteClassic,
+                  fixedColor: color,
+                  mode: FieldColorModeId.Fixed,
                 },
               },
             },
