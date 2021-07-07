@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.1 (2021-07-07)
+
+### Features / Enhancements
+
+- Update Redis Data Source dependency to 1.5.0
+
 ## 2.0.0 (2021-06-25)
 
 ### Breaking changes

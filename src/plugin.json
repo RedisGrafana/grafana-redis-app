@@ -7,7 +7,7 @@
         "id": "redis-datasource",
         "name": "Redis Data Source",
         "type": "datasource",
-        "version": "^1.4.0"
+        "version": "^1.5.0"
       }
     ]
   },
@@ -16,8 +16,8 @@
     {
       "addToNav": true,
       "defaultNav": true,
-      "name": "Home",
       "icon": "home-alt",
+      "name": "Home",
       "path": "/a/redis-app/",
       "role": "Admin",
       "type": "page"
@@ -45,24 +45,24 @@
     },
     {
       "addToNav": true,
-      "name": "Redis Overview",
       "icon": "monitor",
+      "name": "Redis Overview",
       "path": "/d/RpSjVqWMz",
       "role": "Admin",
       "type": "page"
     },
     {
       "addToNav": true,
-      "name": "Redis CLI",
       "icon": "calculator-alt",
+      "name": "Redis CLI",
       "path": "/d/_SGxCBNGk",
       "role": "Admin",
       "type": "page"
     },
     {
       "addToNav": true,
-      "name": "RedisGears",
       "icon": "cog",
+      "name": "RedisGears",
       "path": "/d/xFPiNzLMz",
       "role": "Admin",
       "type": "page"
