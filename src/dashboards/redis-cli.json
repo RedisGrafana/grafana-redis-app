@@ -5,7 +5,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.0.0"
+      "version": "8.0.6"
     },
     {
       "type": "panel",
@@ -61,7 +61,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1623701324423,
+  "iteration": 1626489484261,
   "links": [
     {
       "asDropdown": false,
@@ -89,8 +89,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 51,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -187,8 +187,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 50,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -320,7 +320,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.0.6",
       "targets": [
         {
           "command": "info",
@@ -384,7 +384,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.0.6",
       "targets": [
         {
           "command": "info",
@@ -449,7 +449,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.0.6",
       "targets": [
         {
           "command": "info",
@@ -526,8 +526,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 52,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -647,8 +647,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 52,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -750,8 +750,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 49,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -838,8 +838,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "fillOpacity": 52,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -1022,5 +1022,5 @@
   "timezone": "",
   "title": "Redis CLI",
   "uid": "_SGxCBNGk",
-  "version": 4
+  "version": 1
 }
