@@ -2,17 +2,17 @@
   "author": "RedisGrafana",
   "description": "Redis Application for Grafana",
   "devDependencies": {
-    "@grafana/data": "8.0.6",
-    "@grafana/runtime": "8.0.6",
-    "@grafana/toolkit": "8.0.6",
-    "@grafana/ui": "8.0.6",
-    "@monaco-editor/react": "^4.2.1",
+    "@grafana/data": "8.1.1",
+    "@grafana/runtime": "8.1.1",
+    "@grafana/toolkit": "8.1.1",
+    "@grafana/ui": "8.1.1",
+    "@monaco-editor/react": "^4.2.2",
     "@types/enzyme": "^3.10.9",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "emotion": "11.0.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.1"
   },
   "engines": {
     "node": ">=12"
