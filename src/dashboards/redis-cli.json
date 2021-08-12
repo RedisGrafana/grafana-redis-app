@@ -979,7 +979,7 @@
       "pluginVersion": "7.3.7",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Keys consuming a lot of memory (CAUSE LATENCY - USE OFF-PEAK)",
+      "title": "Keys consuming a lot of memory (LATENCY MAY INCREASE - USE OFF-PEAK)",
       "type": "redis-keys-panel"
     }
   ],

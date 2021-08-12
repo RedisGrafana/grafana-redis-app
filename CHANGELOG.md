@@ -4,13 +4,14 @@
 
 ### Features / Enhancements
 
-- Update to Grafana 8.0.6
+- Update to Grafana 8.0.6 (#78)
+- Update to Grafana 8.1.1 (#79)
 
 ## 2.0.1 (2021-07-07)
 
 ### Features / Enhancements
 
-- Update Redis Data Source dependency to 1.5.0
+- Update Redis Data Source dependency to 1.5.0 (#77)
 
 ## 2.0.0 (2021-06-25)
 
