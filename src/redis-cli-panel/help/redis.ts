@@ -655,17 +655,17 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/exists',
   },
   EXPIRE: {
-    syntax: 'EXPIRE key seconds',
+    syntax: 'EXPIRE key seconds [NX|XX|GT|LT]',
     summary: "Set a key's time to live in seconds.",
     complexity: 'O(1)',
-    since: '1.0.0',
+    since: '1.0.0, >= 7.0: Added options: NX, XX, GT and LT.',
     url: 'https://redis.io/commands/expire',
   },
   EXPIREAT: {
-    syntax: 'EXPIREAT key timestamp',
+    syntax: 'EXPIREAT key timestamp [NX|XX|GT|LT]',
     summary: 'Set the expiration for a key as a UNIX timestamp.',
     complexity: 'O(1)',
-    since: '1.2.0',
+    since: '1.2.0, >= 7.0: Added options: NX, XX, GT and LT.',
     url: 'https://redis.io/commands/expireat',
   },
   FAILOVER: {
@@ -1226,17 +1226,17 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/persist',
   },
   PEXPIRE: {
-    syntax: 'PEXPIRE key milliseconds',
+    syntax: 'PEXPIRE key milliseconds [NX|XX|GT|LT]',
     summary: "Set a key's time to live in milliseconds.",
     complexity: 'O(1)',
-    since: '2.6.0',
+    since: '2.6.0, >= 7.0: Added options: NX, XX, GT and LT.',
     url: 'https://redis.io/commands/pexpire',
   },
   PEXPIREAT: {
-    syntax: 'PEXPIREAT key milliseconds-timestamp',
+    syntax: 'PEXPIREAT key milliseconds-timestamp [NX|XX|GT|LT]',
     summary: 'Set the expiration for a key as a UNIX timestamp specified in milliseconds.',
     complexity: 'O(1)',
-    since: '2.6.0',
+    since: '2.6.0, >= 7.0: Added options: NX, XX, GT and LT.',
     url: 'https://redis.io/commands/pexpireat',
   },
   PFADD: {
@@ -1440,6 +1440,13 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity: 'O(1)',
     since: '1.0.0',
     url: 'https://redis.io/commands/scard',
+  },
+  SINTERCARD: {
+    syntax: 'SINTERCARD key [key ...]',
+    summary: 'Returns the cardinality of the set which would result from the intersection of all the given sets.',
+    complexity: 'O(N*M) worst case where N is the cardinality of the smallest set and M is the number of sets.',
+    since: '7.0.0',
+    url: 'https://redis.io/commands/sintercard',
   },
 
   /**
@@ -1783,6 +1790,15 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity: 'O(1)',
     since: '1.2.0',
     url: 'https://redis.io/commands/zcard',
+  },
+  ZINTERCARD: {
+    syntax: 'ZINTERCARD numkeys key [key ...]',
+    summary:
+      'This command is similar to ZINTER, but instead of returning the result set, it returns just the cardinality of the result.',
+    complexity:
+      'O(N*K) worst case with N being the smallest input sorted set, K being the number of input sorted sets.',
+    since: '7.0.0',
+    url: 'https://redis.io/commands/zintercard',
   },
   ZCOUNT: {
     syntax: 'ZCOUNT key min max',
