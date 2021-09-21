@@ -6,6 +6,9 @@
 
 - Update to Grafana 8.0.6 (#78)
 - Update to Grafana 8.1.1 (#79)
+- Add CLI commands for Redis 7.0.0 (#80)
+- Update to Grafana 8.1.4 (#81)
+- Add new command for Redis 6.2, Redis 7.0 (#82)
 
 ## 2.0.1 (2021-07-07)
 
