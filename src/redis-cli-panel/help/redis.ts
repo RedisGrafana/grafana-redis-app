@@ -146,6 +146,13 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '3.2.0',
     url: 'https://redis.io/commands/bitfield',
   },
+  BITFIELD_RO: {
+    syntax: 'BITFIELD_RO key GET type offset',
+    summary: 'Perform arbitrary bitfield integer operations on strings. Read-only variant of BITFIELD.',
+    complexity: 'O(1) for each subcommand specified.',
+    since: '6.2.0',
+    url: 'https://redis.io/commands/bitfield_ro',
+  },
   BITOP: {
     syntax: 'BITOP operation destkey key [key ...]',
     summary: 'Perform bitwise operations between strings.',
@@ -1024,6 +1031,20 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     since: '1.0.0, >= 6.2: Added the count argument.',
     url: 'https://redis.io/commands/lpop',
   },
+  LMPOP: {
+    syntax: 'LMPOP numkeys [key [key ...]] LEFT|RIGHT [COUNT count]',
+    summary: 'Pop elements from a list.',
+    complexity: 'O(N+M) where N is the number of provided keys and M is the number of elements returned.',
+    since: '7.0.0',
+    url: 'https://redis.io/commands/lmpop',
+  },
+  BLMPOP: {
+    syntax: 'BLMPOP timeout numkeys [key [key ...]] LEFT|RIGHT [COUNT count]',
+    summary: 'Pop elements from a list, or block until one is available.',
+    complexity: 'O(N+M) where N is the number of provided keys and M is the number of elements returned.',
+    since: '7.0.0',
+    url: 'https://redis.io/commands/blmpop',
+  },
   LPOS: {
     syntax: 'LPOS key element [RANK rank] [COUNT num-matches] [MAXLEN len]',
     summary: 'Return the index of matching elements on a list.',
@@ -1631,6 +1652,15 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
       currently O(N) as there is a copy step that will be avoided in next releases.',
     since: '1.0.0',
     url: 'https://redis.io/commands/sort',
+  },
+  SORT_RO: {
+    syntax: 'SORT_RO key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA]',
+    summary: 'Sort the elements in a list, set or sorted set. Read-only variant of SORT.',
+    complexity:
+      'O(N+M*log(M)) where N is the number of elements in the list or set to sort, and M the number of \
+      returned elements. When the elements are not sorted, complexity is O(N).',
+    since: '7.0.0',
+    url: 'https://redis.io/commands/sort_ro',
   },
   SPOP: {
     syntax: 'SPOP key [count]',
