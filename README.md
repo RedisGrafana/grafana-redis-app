@@ -41,7 +41,7 @@ All dashboards are available from the application's icon in the left side menu.
 
 ![Redis-CLI-Dashboards](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-cli-dashboard.png)
 
-## Demo
+### Demo
 
 Demo is available on [demo.volkovlabs.io](https://demo.volkovlabs.io):
 
