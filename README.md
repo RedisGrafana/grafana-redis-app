@@ -41,6 +41,13 @@ All dashboards are available from the application's icon in the left side menu.
 
 ![Redis-CLI-Dashboards](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/redis-cli-dashboard.png)
 
+## Demo
+
+Demo is available on [demo.volkovlabs.io](https://demo.volkovlabs.io):
+
+- [Redis Overview dashboard](https://demo.volkovlabs.io/d/TgibHBv7z/redis-overview?orgId=1&refresh=1h)
+- [Projects](https://demo.volkovlabs.io)
+
 ### Requirements
 
 - **Grafana 8.0+** is required for Redis Application 2.X.
