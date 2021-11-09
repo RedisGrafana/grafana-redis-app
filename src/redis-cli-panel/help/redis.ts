@@ -132,10 +132,10 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/bgsave',
   },
   BITCOUNT: {
-    syntax: 'BITCOUNT key [start end]',
-    summary: 'Count set bits in a string.',
+    syntax: 'BITCOUNT key [start end [BYTE|BIT]]',
+    summary: 'Count the number of set bits (population counting) in a string.',
     complexity: 'O(N)',
-    since: '2.6.0',
+    since: '2.6.0, >= 7.0: Added the BYTE|BIT option.',
     url: 'https://redis.io/commands/bitcount',
   },
   BITFIELD: {
@@ -161,10 +161,10 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/bitop',
   },
   BITPOS: {
-    syntax: 'BITPOS key bit [start] [end]',
-    summary: 'Find first bit set or clear in a string.',
+    syntax: 'BITPOS key bit [start [end [BYTE|BIT]]]',
+    summary: 'Return the position of the first bit set to 1 or 0 in a string.',
     complexity: 'O(N)',
-    since: '2.8.7',
+    since: '2.8.7, >= 7.0: Added the BYTE|BIT option.',
     url: 'https://redis.io/commands/bitpos',
   },
   BLPOP: {
@@ -1032,14 +1032,14 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/lpop',
   },
   LMPOP: {
-    syntax: 'LMPOP numkeys [key [key ...]] LEFT|RIGHT [COUNT count]',
+    syntax: 'LMPOP numkeys key [key ...] LEFT|RIGHT [COUNT count]',
     summary: 'Pop elements from a list.',
     complexity: 'O(N+M) where N is the number of provided keys and M is the number of elements returned.',
     since: '7.0.0',
     url: 'https://redis.io/commands/lmpop',
   },
   BLMPOP: {
-    syntax: 'BLMPOP timeout numkeys [key [key ...]] LEFT|RIGHT [COUNT count]',
+    syntax: 'BLMPOP timeout numkeys key [key ...] LEFT|RIGHT [COUNT count]',
     summary: 'Pop elements from a list, or block until one is available.',
     complexity: 'O(N+M) where N is the number of provided keys and M is the number of elements returned.',
     since: '7.0.0',
@@ -1463,7 +1463,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/scard',
   },
   SINTERCARD: {
-    syntax: 'SINTERCARD key [key ...]',
+    syntax: 'SINTERCARD numkeys key [key ...] [LIMIT limit]',
     summary: 'Returns the cardinality of the set which would result from the intersection of all the given sets.',
     complexity: 'O(N*M) worst case where N is the cardinality of the smallest set and M is the number of sets.',
     since: '7.0.0',
@@ -1822,7 +1822,7 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     url: 'https://redis.io/commands/zcard',
   },
   ZINTERCARD: {
-    syntax: 'ZINTERCARD numkeys key [key ...]',
+    syntax: 'ZINTERCARD numkeys key [key ...] [LIMIT limit]',
     summary:
       'This command is similar to ZINTER, but instead of returning the result set, it returns just the cardinality of the result.',
     complexity:
@@ -2316,5 +2316,22 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
       "This is a read-only variant of the EVALSHA command that isn't allowed to execute commands that modify data.",
     since: '7.0.0',
     url: 'https://redis.io/commands/evalsha_ro',
+  },
+  ZMPOP: {
+    syntax: 'ZMPOP numkeys key [key ...] MIN|MAX [COUNT count]',
+    summary:
+      'Pops one or more elements, that are member-score pairs, from the first non-empty sorted set in the provided list of key names.',
+    since: '7.0.0',
+    complexity:
+      'O(K) + O(N*log(M)) where K is the number of provided keys, N being the number of elements in the sorted set, and M being the number of elements popped.',
+    url: 'https://redis.io/commands/zmpop',
+  },
+  BZMPOP: {
+    syntax: 'BZMPOP timeout numkeys key [key ...] MIN|MAX [COUNT count]',
+    summary: 'BZMPOP is the blocking variant of ZMPOP.',
+    since: '7.0.0',
+    complexity:
+      'O(K) + O(N*log(M)) where K is the number of provided keys, N being the number of elements in the sorted set, and M being the number of elements popped.',
+    url: 'https://redis.io/commands/bzmpop',
   },
 };

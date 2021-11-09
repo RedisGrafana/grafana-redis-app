@@ -9,6 +9,8 @@
 - Add CLI commands for Redis 7.0.0 (#80)
 - Update to Grafana 8.1.4 (#81)
 - Add new command for Redis 6.2, Redis 7.0 (#82)
+- Add demo at https://demo.volkovlabs.io (#83)
+- Update Redis 7.0 commands help
 
 ## 2.0.1 (2021-07-07)
 
