@@ -10,16 +10,6 @@
 [![codecov](https://codecov.io/gh/RedisGrafana/grafana-redis-app/branch/master/graph/badge.svg?token=15SIRGU8SX)](https://codecov.io/gh/RedisGrafana/grafana-redis-app)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/RedisGrafana/grafana-redis-app.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/RedisGrafana/grafana-redis-app/context:javascript)
 
-## Summary
-
-- [**Introduction**](#introduction)
-- [**Getting Started**](#getting-started)
-- [**Documentation**](#documentation)
-- [**Development**](#development)
-- [**Feedback**](#feedback)
-- [**Contributing**](#contributing)
-- [**License**](#license)
-
 ## Introduction
 
 The Redis Application is a plugin for Grafana that provides application pages, custom panels, and dashboards for [Redis Data Source](https://grafana.com/grafana/plugins/redis-datasource).
