@@ -68,12 +68,17 @@ const dataSourceMock = {
   ),
   name: 'datasource',
 };
+const dataSourceInstanceSettingsMock = {
+  jsonData: { cliDisabled: false },
+};
 
 const dataSourceSrvGetMock = jest.fn().mockImplementation(() => Promise.resolve(dataSourceMock));
+const dataSourceSrvGetInstanceSettingsMock = jest.fn().mockImplementation(() => dataSourceInstanceSettingsMock);
 
 jest.mock('@grafana/runtime', () => ({
   getDataSourceSrv: () => ({
     get: dataSourceSrvGetMock,
+    getInstanceSettings: dataSourceSrvGetInstanceSettingsMock,
   }),
 }));
 
@@ -550,6 +555,31 @@ describe('RedisCLIPanel', () => {
         });
       });
     });
+  });
+
+  it('If CLI disabled should not display buttons', () => {
+    const options = getOptions({
+      output: 'custom-output',
+    });
+    const overrideData = {
+      ...data,
+      request: { targets: [{ datasource: 'datasource/id' }] },
+    };
+
+    dataSourceInstanceSettingsMock.jsonData.cliDisabled = true;
+    const wrapper = shallow(
+      <RedisCLIPanel
+        {...additionalProps}
+        width={width}
+        height={height}
+        data={overrideData}
+        onOptionsChange={onOptionsChangeMock}
+        replaceVariables={replaceVariablesMock}
+        options={options}
+      />
+    );
+    const button = wrapper.find(Button);
+    expect(button.exists()).toBeFalsy();
   });
 
   afterAll(() => {
