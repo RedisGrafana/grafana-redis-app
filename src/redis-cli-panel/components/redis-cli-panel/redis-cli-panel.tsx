@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { Observable } from 'rxjs';
 import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
+import { RedisDataSourceOptions } from 'types';
 import { css, cx } from '@emotion/css';
 import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
@@ -25,6 +26,15 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
   const styles = Styles(useTheme2());
 
   /**
+   * Get configured Data Source Id
+   */
+  const targets = data.request?.targets;
+  let datasource = '';
+  if (targets && targets.length && targets[0].datasource) {
+    datasource = targets[0].datasource;
+  }
+
+  /**
    * Run Query
    *
    * @param event {any} Event
@@ -38,20 +48,11 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
     }
 
     /**
-     * Get configured Data Source Id
+     * Check Data Source
      */
-    const targets = data.request?.targets;
-    let datasource = '';
-    if (targets && targets.length && targets[0].datasource) {
-      datasource = targets[0].datasource;
-    } else {
+    if (!datasource) {
       return onOptionsChange({ ...options, output: 'Unknown Data Source' });
     }
-
-    /**
-     * Get Data Source
-     */
-    const ds = await getDataSourceSrv().get(datasource);
 
     // Response Error
     let error = '';
@@ -59,7 +60,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
     /**
      * Run Query
      */
-
+    const ds = await getDataSourceSrv().get(datasource);
     const dsQuery = ds.query({
       targets: [{ refId: 'A', query: replaceVariables(query), cli: !options.raw }],
     } as DataQueryRequest<RedisQuery>) as unknown;
@@ -141,6 +142,31 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
      */
     onOptionsChange({ ...options, query: event.target.value, help });
   };
+
+  /**
+   * Check if CLI disabled
+   */
+  const jsonData = getDataSourceSrv().getInstanceSettings(datasource)?.jsonData as RedisDataSourceOptions;
+  const cliDisabled = jsonData?.cliDisabled;
+
+  /**
+   * CLI disabled
+   */
+  if (cliDisabled) {
+    return (
+      <div
+        className={cx(
+          styles.wrapper,
+          css`
+            width: ${width}px;
+            height: ${height}px;
+          `
+        )}
+      >
+        CLI is disabled for this Data Source.
+      </div>
+    );
+  }
 
   /**
    * Return

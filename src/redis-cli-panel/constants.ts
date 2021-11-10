@@ -37,11 +37,11 @@ export enum ResponseMode {
  */
 export const ResponseModeOptions = [
   {
-    label: 'CLI',
+    label: ResponseMode.CLI,
     value: ResponseMode.CLI,
   },
   {
-    label: 'Raw',
+    label: ResponseMode.RAW,
     value: ResponseMode.RAW,
   },
 ];
