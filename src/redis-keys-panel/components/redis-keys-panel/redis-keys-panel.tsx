@@ -659,7 +659,6 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
             <Input
               name="size"
               value={queryConfig.size}
-              css=""
               type="number"
               onChange={this.onChangeSize}
               width={8}
@@ -677,7 +676,6 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
             <Input
               name="count"
               value={queryConfig.count}
-              css=""
               type="number"
               onChange={this.onChangeCount}
               width={10}
@@ -690,7 +688,6 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
             <Input
               name="matchPattern"
               value={queryConfig.matchPattern}
-              css=""
               onChange={this.onChangeMatchPattern}
               width={12}
               disabled={isUpdating}

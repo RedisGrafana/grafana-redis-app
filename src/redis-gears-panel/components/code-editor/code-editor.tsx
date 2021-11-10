@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Themeable, withTheme } from '@grafana/ui';
+import { Themeable2, withTheme2 } from '@grafana/ui';
 import Editor from '@monaco-editor/react';
 
 /**
@@ -66,7 +66,7 @@ interface Props {
  *
  * @see https://github.com/suren-atoyan/monaco-react
  */
-export class UnthemedCodeEditor extends PureComponent<Props & Themeable, {}> {
+export class UnthemedCodeEditor extends PureComponent<Props & Themeable2, {}> {
   render() {
     const { width, height, theme, showMiniMap, showLineNumbers, language = 'python', onChange, readOnly } = this.props;
 
@@ -112,4 +112,4 @@ export class UnthemedCodeEditor extends PureComponent<Props & Themeable, {}> {
   }
 }
 
-export const CodeEditor = withTheme(UnthemedCodeEditor);
+export const CodeEditor = withTheme2(UnthemedCodeEditor);
