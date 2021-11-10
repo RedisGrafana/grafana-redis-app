@@ -297,7 +297,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
 
           <div className="gf-form">
             <InlineField label={<InlineFormLabel width={6}>Requirements</InlineFormLabel>}>
-              <Input css="" value={requirements} onChange={this.onChangeRequirements} width={40} />
+              <Input value={requirements} onChange={this.onChangeRequirements} width={40} />
             </InlineField>
 
             <RadioButtonGroup

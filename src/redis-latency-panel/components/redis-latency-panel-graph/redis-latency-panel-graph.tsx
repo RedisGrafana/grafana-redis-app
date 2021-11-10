@@ -193,7 +193,7 @@ export class RedisLatencyPanelGraph extends PureComponent<Props, State> {
         width={width}
         height={height}
         timeRange={timeRange}
-        legend={{ displayMode: LegendDisplayMode.List, placement: 'bottom', calcs: [] }}
+        legend={{ displayMode: LegendDisplayMode?.List, placement: 'bottom', calcs: [] }}
         timeZone={this.props.timeZone}
       >
         {(config, alignedDataFrame) => {

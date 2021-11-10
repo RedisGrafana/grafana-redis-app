@@ -1,6 +1,6 @@
 # Change Log
 
-## 2.1.0 (IN PROGRESS)
+## 2.1.0 (2021-11-10)
 
 ### Features / Enhancements
 
@@ -10,7 +10,8 @@
 - Update to Grafana 8.1.4 (#81)
 - Add new command for Redis 6.2, Redis 7.0 (#82)
 - Add demo at https://demo.volkovlabs.io (#83)
-- Update Redis 7.0 commands help
+- Update Redis 7.0 commands help (#85)
+- Update to Grafana 8.2.3 (#86)
 
 ## 2.0.1 (2021-07-07)
 

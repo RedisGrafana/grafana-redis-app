@@ -416,7 +416,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
                 margin: 4px 0 4px 8px;
               `}
             >
-              <Switch css="" value={options.hideZero} onChange={this.onChangeHideZero} />
+              <Switch value={options.hideZero} onChange={this.onChangeHideZero} />
               <Label
                 className={css`
                   margin: 0 0 0 4px;
