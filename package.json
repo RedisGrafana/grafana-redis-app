@@ -2,10 +2,10 @@
   "author": "RedisGrafana",
   "description": "Redis Application for Grafana",
   "devDependencies": {
-    "@grafana/data": "8.2.3",
-    "@grafana/runtime": "8.2.3",
-    "@grafana/toolkit": "8.2.3",
-    "@grafana/ui": "8.2.3",
+    "@grafana/data": "8.2.5",
+    "@grafana/runtime": "8.2.5",
+    "@grafana/toolkit": "8.2.5",
+    "@grafana/ui": "8.2.5",
     "@monaco-editor/react": "^4.3.1",
     "@types/enzyme": "^3.10.10",
     "@types/enzyme-adapter-react-16": "^1.0.6",
@@ -33,5 +33,5 @@
     "upgrade": "yarn upgrade --latest",
     "watch": "grafana-toolkit plugin:dev --watch"
   },
-  "version": "2.1.0"
+  "version": "2.2.0"
 }
