@@ -332,8 +332,8 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
    */
   CLUSTER: {
     syntax:
-      'CLUSTER ADDSLOTS | BUMPEPOCH | COUNT-FAILURE-REPORTS | COUNTKEYSINSLOT | DELSLOTS | FAILOVER \
-      | FLUSHSLOTS | FORGET | GETKEYSINSLOT | INFO | KEYSLOT | MEET | MYID | NODES | REPLICATE | RESET \
+      'CLUSTER ADDSLOTS | ADDSLOTSRANGE | BUMPEPOCH | COUNT-FAILURE-REPORTS | COUNTKEYSINSLOT | DELSLOTS | DELSLOTSRANGE \
+      | FAILOVER | FLUSHSLOTS | FORGET | GETKEYSINSLOT | INFO | KEYSLOT | MEET | MYID | NODES | REPLICATE | RESET \
       | SAVECONFIG | SET-CONFIG-EPOCH | SETSLOT | SLAVES | REPLICAS | SLOTS',
     summary: 'Redis Cluster is a distributed implementation of Redis.',
     since: '3.0.0',
@@ -345,6 +345,14 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity: 'O(N) where N is the total number of hash slot arguments.',
     since: '3.0.0',
     url: 'https://redis.io/commands/cluster-addslots',
+  },
+  'CLUSTER ADDSLOTSRANGE': {
+    syntax: 'CLUSTER ADDSLOTSRANGE start-slot end-slot [start-slot end-slot ...]',
+    summary:
+      'The CLUSTER ADDSLOTSRANGE is similar to the CLUSTER ADDSLOTS command in that they both assign hash slots to nodes.',
+    complexity: 'O(N) where N is the total number of the slots between the start slot and end slot arguments.',
+    since: '7.0.0',
+    url: 'https://redis.io/commands/cluster-addslotsrange',
   },
   'CLUSTER BUMPEPOCH': {
     syntax: 'CLUSTER BUMPEPOCH',
@@ -373,6 +381,14 @@ export const RedisHelp: { [key: string]: HelpCommand } = {
     complexity: 'O(N) where N is the total number of hash slot arguments.',
     since: '3.0.0',
     url: 'https://redis.io/commands/cluster-delslots',
+  },
+  'CLUSTER DELSLOTSRANGE': {
+    syntax: 'CLUSTER DELSLOTSRANGE start-slot end-slot [start-slot end-slot ...]',
+    summary:
+      'The CLUSTER DELSLOTSRANGE command is similar to the CLUSTER DELSLOTS command in that they both remove hash slots from the node.',
+    complexity: 'O(N) where N is the total number of the slots between the start slot and end slot arguments.',
+    since: '7.0.0',
+    url: 'https://redis.io/commands/cluster-delslotsrange',
   },
   'CLUSTER FAILOVER': {
     syntax: 'CLUSTER FAILOVER [FORCE|TAKEOVER]',
