@@ -4,7 +4,8 @@
 
 ### Features / Enhancements
 
-- Update to Grafana 8.2.5
+- Upgrade to Grafana 8.2.5 (#88)
+- Add CLUSTER Slots commands introduces in Redis 7
 
 ## 2.1.0 (2021-11-10)
 
