@@ -24,4 +24,4 @@ COPY provisioning $GF_PATHS_PROVISIONING
 
 # Add Execute permissions
 USER root
-RUN chmod +x $GF_PATHS_PLUGINS/redis-datasource/redis-datasource*
+#RUN chmod +x $GF_PATHS_PLUGINS/redis-datasource/redis-datasource*
