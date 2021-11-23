@@ -15,13 +15,15 @@ ENV GF_PLUGINS_PLUGIN_ADMIN_ENABLED="true"
 ENV GF_PATHS_PROVISIONING="/etc/grafana/provisioning"
 ENV GF_PATHS_PLUGINS="/var/lib/grafana/plugins"
 
+# As root
+USER root
+
 # Copy artifacts
 COPY dist $GF_PATHS_PLUGINS/redis-app
 COPY redis-datasource $GF_PATHS_PLUGINS/redis-datasource
 
 # Provisioning
-COPY provisioning $GF_PATHS_PROVISIONING
+COPY provisioning/plugins $GF_PATHS_PROVISIONING
 
 # Add Execute permissions
-USER root
-#RUN chmod +x $GF_PATHS_PLUGINS/redis-datasource/redis-datasource*
+RUN chmod +x $GF_PATHS_PLUGINS/redis-datasource/redis-datasource*
