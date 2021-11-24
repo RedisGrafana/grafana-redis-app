@@ -1,7 +1,6 @@
-# Ignore everything
-**
-
-# Allow files and directories
-!/dist
-!/provisioning
-!/redis-datasource
+.github
+config
+coverage
+docker-compose
+node_modules
+src
