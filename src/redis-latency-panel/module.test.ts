@@ -23,7 +23,7 @@ describe('RedisLatencyPanel', () => {
       })),
     };
 
-    const result = plugin['registerOptionEditors'](builder);
+    const result = plugin['optionsSupplier'](builder);
 
     /**
      * Interval

@@ -1,7 +1,15 @@
 import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { css } from '@emotion/css';
-import { DataFrame, DataQueryRequest, DataQueryResponse, DateTime, dateTime, PanelProps } from '@grafana/data';
+import {
+  DataFrame,
+  DataQueryRequest,
+  DataQueryResponse,
+  DataSourceRef,
+  DateTime,
+  dateTime,
+  PanelProps,
+} from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { Label, RadioButtonGroup, Switch } from '@grafana/ui';
 import { DefaultInterval, FieldName, MaxItemsPerSeries, ViewMode, ViewModeOptions } from '../../constants';
@@ -248,7 +256,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
    */
   async makeQuery(): Promise<DataQueryResponse | null> {
     const targets = this.props.data.request?.targets;
-    let datasource = '';
+    let datasource: string | DataSourceRef = '';
     if (targets && targets.length && targets[0].datasource) {
       datasource = targets[0].datasource;
     }
@@ -277,7 +285,7 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
       targets: targetsWithCommands,
     } as DataQueryRequest<RedisQuery>) as unknown;
 
-    return (query as Observable<DataQueryResponse>).toPromise();
+    return lastValueFrom(query as Observable<DataQueryResponse>);
   }
 
   /**

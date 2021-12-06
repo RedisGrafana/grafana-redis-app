@@ -355,14 +355,13 @@ describe('RedisKeysPanel', () => {
    * makeQuery
    */
   describe('makeQuery', () => {
-    it('If no targets nothing should be loaded and shown', async (done) => {
+    it('If no targets nothing should be loaded and shown', async () => {
       const wrapper = shallow<RedisKeysPanel>(getComponent({ data: { request: { targets: [] } } }));
       const data = await wrapper.instance().makeQuery();
       expect(data).toBeNull();
-      done();
     });
 
-    it('Should use default command if command empty in targets', async (done) => {
+    it('Should use default command if command empty in targets', async () => {
       const wrapper = shallow<RedisKeysPanel>(
         getComponent({
           data: {
@@ -390,10 +389,9 @@ describe('RedisKeysPanel', () => {
           },
         ],
       });
-      done();
     });
 
-    it('Should use query params from props if there are', async (done) => {
+    it('Should use query params from props if there are', async () => {
       const wrapper = shallow<RedisKeysPanel>(
         getComponent({
           data: {
@@ -423,7 +421,6 @@ describe('RedisKeysPanel', () => {
           },
         ],
       });
-      done();
     });
   });
 

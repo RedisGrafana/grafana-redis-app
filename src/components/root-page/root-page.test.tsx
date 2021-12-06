@@ -3,7 +3,7 @@ import React from 'react';
 import { Observable } from 'rxjs';
 import { AppPluginMeta, PluginType } from '@grafana/data';
 import { Alert } from '@grafana/ui';
-import { ApplicationName, DataSourceType, RedisCommand } from '../../constants';
+import { ApplicationName, ApplicationSubTitle, DataSourceType, RedisCommand } from '../../constants';
 import { DataSourceList } from '../data-source-list';
 import { RootPage } from './root-page';
 
@@ -163,7 +163,7 @@ describe('RootPage', () => {
       const node = {
         text: ApplicationName,
         img: meta.info.logos.large,
-        subTitle: 'Redis Data Source',
+        subTitle: ApplicationSubTitle,
         url: path,
         children: [
           {

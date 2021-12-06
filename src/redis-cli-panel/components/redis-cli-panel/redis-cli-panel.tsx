@@ -1,9 +1,15 @@
 import React, { ChangeEvent } from 'react';
-import { Observable } from 'rxjs';
-import { map as map$, switchMap as switchMap$ } from 'rxjs/operators';
+import { lastValueFrom, Observable } from 'rxjs';
 import { RedisDataSourceOptions } from 'types';
 import { css, cx } from '@emotion/css';
-import { DataFrame, DataQueryRequest, DataQueryResponse, PanelProps } from '@grafana/data';
+import {
+  DataQueryRequest,
+  DataQueryResponse,
+  DataQueryResponseData,
+  DataSourceRef,
+  Field,
+  PanelProps,
+} from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { Button, RadioButtonGroup, useTheme2 } from '@grafana/ui';
 import { Help, ResponseMode, ResponseModeOptions } from '../../constants';
@@ -29,7 +35,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
    * Get configured Data Source Id
    */
   const targets = data.request?.targets;
-  let datasource = '';
+  let datasource: string | DataSourceRef = '';
   if (targets && targets.length && targets[0].datasource) {
     datasource = targets[0].datasource;
   }
@@ -64,33 +70,39 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
     const dsQuery = ds.query({
       targets: [{ refId: 'A', query: replaceVariables(query), cli: !options.raw }],
     } as DataQueryRequest<RedisQuery>) as unknown;
-    const res = await (dsQuery as Observable<DataQueryResponse>)
-      .pipe(
-        switchMap$((response) => {
-          /**
-           * Check for error in response
-           */
-          if (response.error && response.error.message) {
-            error = response.error.message;
-          }
-
-          return response.data;
-        }),
-        switchMap$((data: DataFrame) => data.fields),
-        map$((field) =>
-          field.values.toArray().map((value) => {
-            return value;
-          })
-        )
-      )
-      .toPromise();
+    const q = lastValueFrom(dsQuery as Observable<DataQueryResponse>);
 
     /**
-     * Result
+     * Get Results
+     */
+    const results: string[] = [];
+    await q
+      .then((response: DataQueryResponse) => {
+        /**
+         * Check for error in response
+         */
+        if (response.error && response.error.message) {
+          error = response.error.message;
+        }
+
+        return response.data;
+      })
+      .then((data: DataQueryResponseData[]) =>
+        data.forEach((item: DataQueryResponseData) => {
+          item.fields.forEach((field: Field) => {
+            field.values.toArray().map((value) => {
+              results.push(value);
+            });
+          });
+        })
+      );
+
+    /**
+     * Show Output
      */
     let result = `${ds.name}> ${query}\n`;
-    if (res && res.length) {
-      result += res.join('\n');
+    if (results && results.length) {
+      result += results.join('\n');
     } else if (error) {
       result += `(error) ${error}\n`;
     } else {

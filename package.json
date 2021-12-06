@@ -2,10 +2,10 @@
   "author": "RedisGrafana",
   "description": "Redis Application for Grafana",
   "devDependencies": {
-    "@grafana/data": "8.2.5",
-    "@grafana/runtime": "8.2.5",
-    "@grafana/toolkit": "8.2.5",
-    "@grafana/ui": "8.2.5",
+    "@grafana/data": "8.3.0",
+    "@grafana/runtime": "8.3.0",
+    "@grafana/toolkit": "8.3.0",
+    "@grafana/ui": "8.3.0",
     "@monaco-editor/react": "^4.3.1",
     "@types/enzyme": "^3.10.10",
     "@types/enzyme-adapter-react-16": "^1.0.6",
@@ -15,7 +15,7 @@
     "tslib": "^2.3.1"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "license": "Apache-2.0",
   "name": "redis-app",
