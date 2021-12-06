@@ -7,7 +7,8 @@
 - Upgrade to Grafana 8.2.5 (#88)
 - Add CLUSTER Slots commands introduces in Redis 7 (#89)
 - Fix Docker plugins provisioning (#90)
-- Upgrade to Grafana 8.3.0
+- Upgrade to Grafana 8.3.0 (#93)
+- Fix LGTM and Update Panel Options (#95)
 
 ## 2.1.0 (2021-11-10)
 

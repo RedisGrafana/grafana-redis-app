@@ -11,7 +11,7 @@ describe('RedisKeysPanel', () => {
 
   it('Should add interval input', () => {
     const builder: any = {
-      addNumberInput: jest.fn().mockImplementation(() => builder),
+      addSliderInput: jest.fn().mockImplementation(() => builder),
     };
 
     plugin['optionsSupplier'](builder);
@@ -19,10 +19,6 @@ describe('RedisKeysPanel', () => {
     /**
      * Interval
      */
-    expect(builder.addNumberInput).toHaveBeenCalledWith({
-      path: 'interval',
-      name: 'Interval to run SCAN command, ms',
-      defaultValue: 1000,
-    });
+    expect(builder.addSliderInput).toHaveBeenCalled();
   });
 });

@@ -8,22 +8,30 @@ import { PanelOptions } from './types';
  */
 export const plugin = new PanelPlugin<PanelOptions>(RedisLatencyPanel).setPanelOptions((builder) => {
   return builder
-    .addNumberInput({
-      path: 'interval',
-      name: 'Interval to run INFO command, ms',
-      defaultValue: DefaultInterval,
-    })
     .addRadio({
       path: 'viewMode',
-      name: 'View mode',
+      name: 'Redis Latency',
       defaultValue: ViewMode.Table,
       settings: {
         options: ViewModeOptions,
       },
     })
-    .addNumberInput({
+    .addSliderInput({
+      path: 'interval',
+      name: 'Interval to run INFO command, ms',
+      settings: {
+        min: 100,
+        max: 30000,
+      },
+      defaultValue: DefaultInterval,
+    })
+    .addSliderInput({
       path: 'maxItemsPerSeries',
       name: 'Number of Samples per command',
+      settings: {
+        min: 10,
+        max: 1000,
+      },
       defaultValue: MaxItemsPerSeries,
     })
     .addBooleanSwitch({
