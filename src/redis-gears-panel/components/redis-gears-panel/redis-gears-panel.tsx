@@ -1,11 +1,12 @@
 import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { css } from '@emotion/css';
 import {
   DataFrame,
   DataQueryError,
   DataQueryRequest,
   DataQueryResponse,
+  DataSourceRef,
   Field,
   FieldType,
   getDisplayProcessor,
@@ -200,7 +201,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
     /**
      * Data Source
      */
-    let datasource = '';
+    let datasource: string | DataSourceRef = '';
     if (targets && targets.length && targets[0].datasource) {
       datasource = targets[0].datasource;
     }
@@ -229,7 +230,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
       targets: targetsWithCommands,
     } as DataQueryRequest<any>) as unknown;
 
-    return (query as Observable<DataQueryResponse>).toPromise();
+    return lastValueFrom(query as Observable<DataQueryResponse>);
   }
 
   /**

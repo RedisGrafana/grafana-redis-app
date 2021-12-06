@@ -1,5 +1,5 @@
-import React from 'react';
 import { shallow } from 'enzyme';
+import React from 'react';
 import { Observable } from 'rxjs';
 import { dateTime, FieldType, toDataFrame } from '@grafana/data';
 import { RadioButtonGroup, Switch } from '@grafana/ui';
@@ -85,14 +85,13 @@ describe('RedisLatencyPanel', () => {
    * makeQuery
    */
   describe('makeQuery', () => {
-    it('If no targets nothing should be loaded and shown', async (done) => {
+    it('If no targets nothing should be loaded and shown', async () => {
       const wrapper = shallow<RedisLatencyPanel>(getComponent({ data: { request: { targets: [] } } }));
       const data = await wrapper.instance().makeQuery();
       expect(data).toBeNull();
-      done();
     });
 
-    it('Should use default command if command empty in targets', async (done) => {
+    it('Should use default command if command empty in targets', async () => {
       const wrapper = shallow<RedisLatencyPanel>(
         getComponent({
           data: {
@@ -118,10 +117,9 @@ describe('RedisLatencyPanel', () => {
           },
         ],
       });
-      done();
     });
 
-    it('Should use query params from props if there are', async (done) => {
+    it('Should use query params from props if there are', async () => {
       const wrapper = shallow<RedisLatencyPanel>(
         getComponent({
           data: {
@@ -147,7 +145,6 @@ describe('RedisLatencyPanel', () => {
           },
         ],
       });
-      done();
     });
   });
 

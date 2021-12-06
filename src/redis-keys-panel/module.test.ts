@@ -14,7 +14,7 @@ describe('RedisKeysPanel', () => {
       addNumberInput: jest.fn().mockImplementation(() => builder),
     };
 
-    plugin['registerOptionEditors'](builder);
+    plugin['optionsSupplier'](builder);
 
     /**
      * Interval

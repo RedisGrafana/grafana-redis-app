@@ -42,6 +42,7 @@ export enum ClientTypeValue {
 export const ApplicationRoot = '/a/redis-app';
 
 /**
- * Application's name
+ * Application
  */
 export const ApplicationName = 'Redis Application';
+export const ApplicationSubTitle = 'Redis Data Source Manager';

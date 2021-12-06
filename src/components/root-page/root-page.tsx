@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import {
   AppRootProps,
   DataQueryRequest,
@@ -10,7 +10,7 @@ import {
 } from '@grafana/data';
 import { config, getBackendSrv, getDataSourceSrv } from '@grafana/runtime';
 import { Alert } from '@grafana/ui';
-import { ApplicationName, DataSourceType, RedisCommand } from '../../constants';
+import { ApplicationName, ApplicationSubTitle, DataSourceType, RedisCommand } from '../../constants';
 import { RedisQuery } from '../../redis-cli-panel/types';
 import { GlobalSettings, RedisDataSourceInstanceSettings } from '../../types';
 import { DataSourceList } from '../data-source-list';
@@ -107,8 +107,8 @@ export class RootPage extends PureComponent<Props, State> {
           targets: [{ refId: 'A', query: RedisCommand.COMMAND }],
         } as DataQueryRequest<RedisQuery>) as unknown;
 
-        const query = dsQuery as Observable<DataQueryResponse>;
-        if (!query.toPromise) {
+        const query = lastValueFrom(dsQuery as Observable<DataQueryResponse>);
+        if (!query) {
           return;
         }
 
@@ -116,7 +116,6 @@ export class RootPage extends PureComponent<Props, State> {
          * Get available commands
          */
         await query
-          .toPromise()
           .then((response: DataQueryResponse) => response.data)
           .then((data: DataQueryResponseData[]) =>
             data.forEach((item: DataQueryResponseData) => {
@@ -167,7 +166,7 @@ export class RootPage extends PureComponent<Props, State> {
     const node = {
       text: ApplicationName,
       img: meta.info.logos.large,
-      subTitle: 'Redis Data Source',
+      subTitle: ApplicationSubTitle,
       url: path,
       children: tabs,
     };

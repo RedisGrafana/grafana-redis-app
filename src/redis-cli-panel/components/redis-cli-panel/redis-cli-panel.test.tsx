@@ -493,6 +493,51 @@ describe('RedisCLIPanel', () => {
         done();
       });
     });
+
+    it('Run query with error received', (done) => {
+      const getDataSourceQueryError = () => ({
+        error: {
+          message: 'Error',
+        },
+        data: [],
+      });
+
+      dataSourceMock.query.mockImplementationOnce(
+        () =>
+          new Observable((subscriber) => {
+            subscriber.next(getDataSourceQueryError());
+            subscriber.complete();
+          })
+      );
+
+      const options = getOptions({
+        query: 'WRONG COMMAND',
+        output: '',
+      });
+      const overrideData = {
+        ...data,
+        request: { targets: [{ datasource: 'datasource/id' }] },
+      };
+
+      const wrapper = shallow(
+        <RedisCLIPanel
+          {...additionalProps}
+          width={width}
+          height={height}
+          data={overrideData}
+          onOptionsChange={onOptionsChangeMock}
+          replaceVariables={replaceVariablesMock}
+          options={options}
+        />
+      );
+
+      const testedComponent = getTestedComponent(wrapper);
+      testedComponent.simulate('keypress', { key: 'Enter' });
+      setImmediate(() => {
+        expect(onOptionsChangeMock).toHaveBeenCalled();
+        done();
+      });
+    });
   });
 
   it('Clear button should clean output', () => {

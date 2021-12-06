@@ -1,9 +1,10 @@
 import React, { ChangeEvent, createRef, PureComponent, RefObject } from 'react';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import {
   DataFrame,
   DataQueryRequest,
   DataQueryResponse,
+  DataSourceRef,
   FieldType,
   getDisplayProcessor,
   PanelProps,
@@ -409,7 +410,7 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
     /**
      * Data Source
      */
-    let datasource = '';
+    let datasource: string | DataSourceRef = '';
     if (targets && targets.length && targets[0].datasource) {
       datasource = targets[0].datasource;
     }
@@ -459,7 +460,7 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
       targets: targetsWithCommands,
     } as DataQueryRequest<RedisQuery>) as unknown;
 
-    return (query as Observable<DataQueryResponse>).toPromise();
+    return lastValueFrom(query as Observable<DataQueryResponse>);
   }
 
   /**

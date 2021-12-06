@@ -5,7 +5,9 @@
 ### Features / Enhancements
 
 - Upgrade to Grafana 8.2.5 (#88)
-- Add CLUSTER Slots commands introduces in Redis 7
+- Add CLUSTER Slots commands introduces in Redis 7 (#89)
+- Fix Docker plugins provisioning (#90)
+- Upgrade to Grafana 8.3.0
 
 ## 2.1.0 (2021-11-10)
 
