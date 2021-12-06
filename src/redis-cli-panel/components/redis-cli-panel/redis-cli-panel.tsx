@@ -101,7 +101,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
      * Show Output
      */
     let result = `${ds.name}> ${query}\n`;
-    if (results && results.length) {
+    if (results.length) {
       result += results.join('\n');
     } else if (error) {
       result += `(error) ${error}\n`;
