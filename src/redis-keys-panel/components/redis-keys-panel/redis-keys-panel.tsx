@@ -530,12 +530,12 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
     /**
      * Set State
      */
-    this.setState({
+    this.setState((prevState) => ({
       progress: {
-        ...this.state.progress,
+        ...prevState.progress,
         total,
       },
-    });
+    }));
   }
 
   /**
@@ -549,15 +549,15 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
     /**
      * Set state
      */
-    this.setState({
+    this.setState((prevState) => ({
       isUpdating: true,
       dataFrame: null,
       redisKeys: [],
       progress: {
-        total: this.state.progress.total,
+        total: prevState.progress.total,
         processed: 0,
       },
-    });
+    }));
 
     /**
      * Scanning
@@ -614,36 +614,36 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
    * Change Size
    */
   onChangeSize = (event: ChangeEvent<HTMLInputElement>) => {
-    this.setState({
+    this.setState((prevState) => ({
       queryConfig: {
-        ...this.state.queryConfig,
+        ...prevState.queryConfig,
         size: parseInt(event.target.value || '0', 10),
       },
-    });
+    }));
   };
 
   /**
    * Change Count
    */
   onChangeCount = (event: ChangeEvent<HTMLInputElement>) => {
-    this.setState({
+    this.setState((prevState) => ({
       queryConfig: {
-        ...this.state.queryConfig,
+        ...prevState.queryConfig,
         count: parseInt(event.target.value || '0', 10),
       },
-    });
+    }));
   };
 
   /**
    * Change Match Pattern
    */
   onChangeMatchPattern = (event: ChangeEvent<HTMLInputElement>) => {
-    this.setState({
+    this.setState((prevState) => ({
       queryConfig: {
-        ...this.state.queryConfig,
+        ...prevState.queryConfig,
         matchPattern: event.target.value,
       },
-    });
+    }));
   };
 
   /**

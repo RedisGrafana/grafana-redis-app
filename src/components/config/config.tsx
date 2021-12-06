@@ -50,9 +50,9 @@ export class Config extends PureComponent<Props, State> {
    * Mount
    */
   componentDidMount(): void {
-    this.setState({
+    this.setState(() => ({
       isEnabled: this.props.plugin.meta?.enabled ? true : false,
-    });
+    }));
   }
 
   /**

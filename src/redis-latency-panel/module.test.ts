@@ -15,7 +15,7 @@ describe('RedisLatencyPanel', () => {
      * Builder
      */
     const builder: any = {
-      addNumberInput: jest.fn().mockImplementation(() => builder),
+      addSliderInput: jest.fn().mockImplementation(() => builder),
       addRadio: jest.fn().mockImplementation(() => builder),
       addBooleanSwitch: jest.fn().mockImplementation((config) => ({
         ...builder,
@@ -28,11 +28,7 @@ describe('RedisLatencyPanel', () => {
     /**
      * Interval
      */
-    expect(builder.addNumberInput).toHaveBeenCalledWith({
-      path: 'interval',
-      name: 'Interval to run INFO command, ms',
-      defaultValue: 1000,
-    });
+    expect(builder.addSliderInput).toHaveBeenCalled();
     expect(result.switchField.showIf({ viewMode: ViewMode.Graph })).toBeTruthy();
     expect(result.switchField.showIf({ viewMode: ViewMode.Table })).not.toBeTruthy();
   });
