@@ -1,0 +1,16 @@
+{
+  "id": "redis-cpu-panel",
+  "info": {
+    "author": {
+      "name": "RedisGrafana",
+      "url": "https://redisgrafana.github.io"
+    },
+    "description": "Redis CPU panel",
+    "logos": {
+      "large": "img/logo.svg",
+      "small": "img/logo.svg"
+    }
+  },
+  "name": "Redis CPU Usage",
+  "type": "panel"
+}

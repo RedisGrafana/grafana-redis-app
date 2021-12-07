@@ -9,6 +9,7 @@
 - Fix Docker plugins provisioning (#90)
 - Upgrade to Grafana 8.3.0 (#93)
 - Fix LGTM and Update Panel Options (#95)
+- Add Redis CPU Usage panel (#96)
 
 ## 2.1.0 (2021-11-10)
 
