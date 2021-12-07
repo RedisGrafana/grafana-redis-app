@@ -189,7 +189,6 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm
           push: true
-          build-args: GRAFANA_VERSION=8.3.1
           tags: ghcr.io/redisgrafana/redis-app:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
