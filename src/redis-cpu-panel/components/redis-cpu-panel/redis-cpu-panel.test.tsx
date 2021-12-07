@@ -277,7 +277,7 @@ describe('RedisCPUPanel', () => {
       it('Should set timer and request data with interval', (done) => {
         const options = {
           interval: 1000,
-          maxItemsPerSeries: 1000,
+          maxItemsPerSeries: 1,
         };
         const wrapper = shallow<RedisCPUPanel>(getComponent({ data, options }));
         const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
