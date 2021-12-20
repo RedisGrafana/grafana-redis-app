@@ -13,7 +13,16 @@ import {
   toDataFrame,
 } from '@grafana/data';
 import { config } from '@grafana/runtime';
-import { colors, LegendDisplayMode, TimeSeries, TooltipDisplayMode, TooltipPlugin } from '@grafana/ui';
+import {
+  colors,
+  GraphGradientMode,
+  LegendDisplayMode,
+  StackingMode,
+  TimeSeries,
+  TooltipDisplayMode,
+  TooltipPlugin,
+} from '@grafana/ui';
+import { DisplayFieldName, DisplayNameByFieldName } from '../../constants';
 import { PanelOptions, SeriesMap, SeriesValue } from '../../types';
 
 /**
@@ -50,7 +59,7 @@ export class RedisCPUGraph extends PureComponent<Props, State> {
    */
   static getGraphDataFrame(seriesMap: SeriesMap): DataFrame[] {
     return Object.entries(seriesMap).reduce(
-      (acc: DataFrame[], [command, seriesValues]: [string, SeriesValue[]], index) => {
+      (acc: DataFrame[], [name, seriesValues]: [string, SeriesValue[]], index) => {
         const { times, values } = seriesValues.reduce(
           (acc: { times: DateTime[]; values: number[] }, { time, value }) => {
             return {
@@ -70,7 +79,7 @@ export class RedisCPUGraph extends PureComponent<Props, State> {
          * Data Frame
          */
         const seriesDataFrame = toDataFrame({
-          name: command,
+          name,
           fields: [
             {
               type: FieldType.time,
@@ -86,6 +95,15 @@ export class RedisCPUGraph extends PureComponent<Props, State> {
                 color: {
                   fixedColor: color,
                   mode: FieldColorModeId.Fixed,
+                },
+                displayName: DisplayNameByFieldName[name as DisplayFieldName],
+                custom: {
+                  gradientMode: GraphGradientMode?.Hue,
+                  fillOpacity: 50,
+                  stacking: {
+                    mode: StackingMode?.Normal,
+                    group: 'stackA',
+                  },
                 },
               },
             },

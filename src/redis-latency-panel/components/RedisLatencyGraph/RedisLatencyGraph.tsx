@@ -13,7 +13,14 @@ import {
   toDataFrame,
 } from '@grafana/data';
 import { config } from '@grafana/runtime';
-import { colors, LegendDisplayMode, TimeSeries, TooltipDisplayMode, TooltipPlugin } from '@grafana/ui';
+import {
+  colors,
+  GraphGradientMode,
+  LegendDisplayMode,
+  TimeSeries,
+  TooltipDisplayMode,
+  TooltipPlugin,
+} from '@grafana/ui';
 import { PanelOptions, SeriesMap, SeriesValue } from '../../types';
 
 /**
@@ -104,6 +111,10 @@ export class RedisLatencyGraph extends PureComponent<Props, State> {
                 color: {
                   fixedColor: color,
                   mode: FieldColorModeId.Fixed,
+                },
+                custom: {
+                  gradientMode: GraphGradientMode?.Hue,
+                  fillOpacity: 20,
                 },
               },
             },
