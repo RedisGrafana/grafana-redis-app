@@ -17,9 +17,17 @@ export enum FieldName {
 }
 
 /**
+ * Display Fields
+ */
+export enum DisplayFieldName {
+  User = 'user',
+  System = 'system',
+}
+
+/**
  * Table Field names
  */
 export const DisplayNameByFieldName = {
-  [FieldName.System]: 'System',
-  [FieldName.User]: 'User',
+  [DisplayFieldName.System]: 'System',
+  [DisplayFieldName.User]: 'User',
 };

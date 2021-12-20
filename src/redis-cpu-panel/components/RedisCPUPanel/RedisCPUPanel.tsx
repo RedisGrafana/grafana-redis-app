@@ -11,7 +11,7 @@ import {
 } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
 import { RedisQuery } from '../../../types';
-import { DefaultInterval, FieldName, MaxItemsPerSeries } from '../../constants';
+import { DefaultInterval, DisplayNameByFieldName, FieldName, MaxItemsPerSeries } from '../../constants';
 import { PanelOptions, SeriesMap, ValuesForCalculation } from '../../types';
 import { RedisCPUGraph } from '../RedisCPUGraph';
 
@@ -81,21 +81,23 @@ export class RedisCPUPanel extends PureComponent<Props, State> {
 
     const user = ((newValues.user - values.user) / (newValues.time.diff(values.time) / 1000)) * 100;
     const system = ((newValues.system - values.system) / (newValues.time.diff(values.time) / 1000)) * 100;
+    const dt = dateTime();
+
     /**
      * Calculate Usage
      */
     const value: { [id: string]: { time: DateTime; value: number } } = {
       user: {
-        time: dateTime(),
+        time: dt,
         value: user >= 0 ? user : 0,
       },
       system: {
-        time: dateTime(),
+        time: dt,
         value: system >= 0 ? system : 0,
       },
     };
 
-    ['user', 'system'].forEach((id) => {
+    Object.keys(DisplayNameByFieldName).forEach((id) => {
       if (!result[id]) {
         result[id] = [value[id]];
       } else if (result[id].length + 1 > itemsLimit) {

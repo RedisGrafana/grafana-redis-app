@@ -20,6 +20,7 @@ The Redis Application is a plugin for Grafana that provides application pages, c
 - [Command Latency (graph and table)](https://redisgrafana.github.io/redis-app/panels/redis-latency-panel/)
 - [Keys consuming a lot of memory](https://redisgrafana.github.io/redis-app/panels/redis-keys-panel/)
 - [RedisGears Script Editor](https://redisgrafana.github.io/redis-app/panels/redis-gears-panel/)
+- [CPU Usage](https://redisgrafana.github.io/redis-app/panels/redis-cpu-panel/)
 
 ### Dashboards
 
@@ -45,11 +46,13 @@ Demo is available on [demo.volkovlabs.io](https://demo.volkovlabs.io):
 
 ## Getting Started
 
-Use the `grafana-cli` tool to install from the command line:
+Redis Application plugin can be installed from the Grafana Marketplace or use the `grafana-cli` tool to install from the command line:
 
 ```bash
 grafana-cli plugins install redis-app
 ```
+
+![Grafana-Marketplace](https://raw.githubusercontent.com/RedisGrafana/grafana-redis-app/master/src/img/grafana-marketplace.png)
 
 For Docker instructions and installation without Internet access, follow the [Quickstart](https://redisgrafana.github.io/quickstart/) page.
 

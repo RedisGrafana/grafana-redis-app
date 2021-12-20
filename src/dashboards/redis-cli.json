@@ -1,11 +1,12 @@
 {
   "__inputs": [],
+  "__elements": [],
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.2.3"
+      "version": "8.3.3"
     },
     {
       "type": "panel",
@@ -14,10 +15,16 @@
       "version": ""
     },
     {
+      "type": "panel",
+      "id": "redis-cpu-panel",
+      "name": "Redis CPU Usage",
+      "version": ""
+    },
+    {
       "type": "datasource",
       "id": "redis-datasource",
       "name": "Redis",
-      "version": "2.0.0"
+      "version": "2.1.0"
     },
     {
       "type": "panel",
@@ -65,10 +72,9 @@
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1636563149746,
+  "iteration": 1640026843659,
   "links": [
     {
       "asDropdown": false,
@@ -86,7 +92,37 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": "$redis",
+      "datasource": {
+        "type": "redis-datasource",
+        "uid": "$redis"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 31,
+      "options": {
+        "interval": 1000,
+        "maxItemsPerSeries": 300
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "redis-datasource",
+            "uid": "$redis"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "CPU Usage",
+      "type": "redis-cpu-panel"
+    },
+    {
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -140,8 +176,8 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 0,
+        "w": 9,
+        "x": 12,
         "y": 0
       },
       "id": 2,
@@ -168,8 +204,6 @@
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Ops/sec",
       "transformations": [
         {
@@ -184,113 +218,9 @@
       "type": "timeseries"
     },
     {
-      "datasource": "$redis",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 50,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
+      "datasource": {
+        "uid": "$redis"
       },
-      "gridPos": {
-        "h": 9,
-        "w": 9,
-        "x": 12,
-        "y": 0
-      },
-      "id": 3,
-      "options": {
-        "legend": {
-          "calcs": ["mean", "lastNotNull"],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      },
-      "pluginVersion": "8.0.0",
-      "targets": [
-        {
-          "command": "info",
-          "query": "",
-          "refId": "A",
-          "section": "clients",
-          "streaming": true,
-          "streamingCapacity": 1000,
-          "streamingInterval": 1000,
-          "type": "command"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Clients",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "client_recent_max_input_buffer": true,
-              "client_recent_max_output_buffer": true
-            },
-            "indexByName": {},
-            "renameByName": {
-              "blocked_clients": "Pending on a blocking call ",
-              "clients_in_timeout_table": "Clients in the timeout table",
-              "connected_clients": "Client connections",
-              "tracking_clients": "Clients being tracked"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": "$redis",
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
@@ -328,7 +258,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.3",
+      "pluginVersion": "8.3.3",
       "targets": [
         {
           "command": "info",
@@ -340,8 +270,6 @@
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Uptime",
       "transformations": [
         {
@@ -356,7 +284,9 @@
       "type": "stat"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -392,7 +322,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.3",
+      "pluginVersion": "8.3.3",
       "targets": [
         {
           "command": "info",
@@ -404,8 +334,6 @@
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Version",
       "transformations": [
         {
@@ -420,7 +348,9 @@
       "type": "stat"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -457,7 +387,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.3",
+      "pluginVersion": "8.3.3",
       "targets": [
         {
           "command": "info",
@@ -469,8 +399,6 @@
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Eviction Policy",
       "transformations": [
         {
@@ -485,45 +413,30 @@
       "type": "stat"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "gridPos": {
-        "h": 15,
+        "h": 9,
         "w": 12,
         "x": 0,
         "y": 9
       },
-      "id": 23,
+      "id": 29,
       "options": {
-        "height": 20,
-        "help": {
-          "since": "1.0.0",
-          "summary": "Get information and statistics about the server.",
-          "syntax": "INFO [section]",
-          "url": "https://redis.io/commands/info"
-        },
-        "output": "",
-        "query": "",
-        "raw": false
+        "hideZero": true,
+        "interval": 1000,
+        "maxItemsPerSeries": 300,
+        "viewMode": "Graph"
       },
-      "pluginVersion": "7.2.1",
-      "targets": [
-        {
-          "command": "",
-          "query": "ping",
-          "refId": "A",
-          "section": "commandstats",
-          "streaming": false,
-          "type": "cli"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Redis CLI",
-      "transformations": [],
-      "type": "redis-cli-panel"
+      "pluginVersion": "7.3.7",
+      "title": "Latency",
+      "type": "redis-latency-panel"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -576,8 +489,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 6,
+        "h": 9,
+        "w": 12,
         "x": 12,
         "y": 9
       },
@@ -605,8 +518,6 @@
           "type": "command"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Memory",
       "transformations": [
         {
@@ -644,7 +555,155 @@
       "type": "timeseries"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "uid": "$redis"
+      },
+      "gridPos": {
+        "h": 15,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
+      "id": 23,
+      "options": {
+        "height": 20,
+        "help": {
+          "since": "1.0.0",
+          "summary": "Get information and statistics about the server.",
+          "syntax": "INFO [section]",
+          "url": "https://redis.io/commands/info"
+        },
+        "output": "",
+        "query": "",
+        "raw": false
+      },
+      "pluginVersion": "7.2.1",
+      "targets": [
+        {
+          "command": "",
+          "query": "ping",
+          "refId": "A",
+          "section": "commandstats",
+          "streaming": false,
+          "type": "cli"
+        }
+      ],
+      "title": "Redis CLI",
+      "transformations": [],
+      "type": "redis-cli-panel"
+    },
+    {
+      "datasource": {
+        "uid": "$redis"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 50,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 18
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": ["mean", "lastNotNull"],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.0.0",
+      "targets": [
+        {
+          "command": "info",
+          "query": "",
+          "refId": "A",
+          "section": "clients",
+          "streaming": true,
+          "streamingCapacity": 1000,
+          "streamingInterval": 1000,
+          "type": "command"
+        }
+      ],
+      "title": "Clients",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "client_recent_max_input_buffer": true,
+              "client_recent_max_output_buffer": true,
+              "maxclients": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "blocked_clients": "Pending on a blocking call ",
+              "clients_in_timeout_table": "Clients in the timeout table",
+              "connected_clients": "Client connections",
+              "tracking_clients": "Clients being tracked"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -700,7 +759,7 @@
         "h": 8,
         "w": 6,
         "x": 18,
-        "y": 9
+        "y": 18
       },
       "id": 5,
       "options": {
@@ -720,8 +779,6 @@
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Network",
       "transformations": [
         {
@@ -747,7 +804,9 @@
       "type": "timeseries"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -804,7 +863,7 @@
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 17
+        "y": 26
       },
       "id": 9,
       "options": {
@@ -829,13 +888,14 @@
           "type": "cli"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Number of Keys",
       "type": "timeseries"
     },
     {
-      "datasource": "-- Dashboard --",
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -891,7 +951,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 17
+        "y": 26
       },
       "id": 11,
       "options": {
@@ -911,8 +971,6 @@
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Keys Statistics",
       "transformations": [
         {
@@ -939,12 +997,11 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 33
       },
       "id": 27,
       "panels": [],
@@ -952,47 +1009,26 @@
       "type": "row"
     },
     {
-      "datasource": "$redis",
+      "datasource": {
+        "uid": "$redis"
+      },
       "gridPos": {
-        "h": 13,
-        "w": 12,
+        "h": 9,
+        "w": 24,
         "x": 0,
-        "y": 25
-      },
-      "id": 29,
-      "options": {
-        "hideZero": true,
-        "interval": 1000,
-        "maxItemsPerSeries": 300,
-        "viewMode": "Graph"
-      },
-      "pluginVersion": "7.3.7",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Latency",
-      "type": "redis-latency-panel"
-    },
-    {
-      "datasource": "$redis",
-      "gridPos": {
-        "h": 13,
-        "w": 12,
-        "x": 12,
-        "y": 25
+        "y": 34
       },
       "id": 25,
       "options": {
         "interval": 1000
       },
       "pluginVersion": "7.3.7",
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Keys consuming a lot of memory (LATENCY MAY INCREASE - USE OFF-PEAK)",
       "type": "redis-keys-panel"
     }
   ],
   "refresh": "",
-  "schemaVersion": 31,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": ["redis"],
   "templating": {
@@ -1003,8 +1039,6 @@
           "text": "Redis",
           "value": "Redis"
         },
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Redis",
@@ -1030,5 +1064,6 @@
   "timezone": "",
   "title": "Redis CLI",
   "uid": "_SGxCBNGk",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
