@@ -1,5 +1,3 @@
-import { DataQuery } from '@grafana/data';
-
 /**
  * Panel Options
  */
@@ -31,25 +29,6 @@ export interface PanelOptions {
    * @type {HelpCommand}
    */
   help: HelpCommand;
-}
-
-/**
- * Redis Query
- */
-export interface RedisQuery extends DataQuery {
-  /**
-   * Query command
-   *
-   * @type {string}
-   */
-  query?: string;
-
-  /**
-   * CLI or Raw mode
-   *
-   * @type {boolean}
-   */
-  cli?: boolean;
 }
 
 /**
