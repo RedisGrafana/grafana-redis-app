@@ -38,6 +38,13 @@ export interface RedisQuery extends DataQuery {
   command?: string;
 
   /**
+   * Redis Section
+   *
+   * @type {string}
+   */
+  section?: string;
+
+  /**
    * How many fields are showed in table
    */
   size?: number;

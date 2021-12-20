@@ -2,7 +2,7 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { setLocationSrv } from '@grafana/runtime';
 import { ApplicationRoot } from '../../constants';
-import { Config } from './config';
+import { Config } from './Config';
 
 /*
  Plugin

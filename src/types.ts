@@ -1,4 +1,4 @@
-import { DataSourceInstanceSettings, DataSourceJsonData } from '@grafana/data';
+import { DataQuery, DataSourceInstanceSettings, DataSourceJsonData } from '@grafana/data';
 import { ClientTypeValue } from './constants';
 
 /**
@@ -131,4 +131,44 @@ export interface RedisDataSourceInstanceSettings extends DataSourceInstanceSetti
    * @type {string[]}
    */
   commands: string[];
+}
+
+/**
+ * Redis Query
+ */
+export interface RedisQuery extends DataQuery {
+  /**
+   * Query command
+   *
+   * @type {string}
+   */
+  query?: string;
+
+  /**
+   * Redis Command type
+   *
+   * @type {string}
+   */
+  type?: string;
+
+  /**
+   * Redis Command
+   *
+   * @type {string}
+   */
+  command?: string;
+
+  /**
+   * Redis Section
+   *
+   * @type {string}
+   */
+  section?: string;
+
+  /**
+   * CLI or Raw mode
+   *
+   * @type {boolean}
+   */
+  cli?: boolean;
 }

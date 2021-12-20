@@ -1,3 +1,3 @@
-export * from './config';
-export * from './data-source-list';
-export * from './root-page';
+export * from './Config';
+export * from './DataSourceList';
+export * from './RootPage';

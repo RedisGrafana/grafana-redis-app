@@ -1,4 +1,4 @@
-import { DataQuery, DateTime } from '@grafana/data';
+import { DateTime } from '@grafana/data';
 
 /**
  * Panel Options
@@ -17,39 +17,6 @@ export interface PanelOptions {
    * @type {number}
    */
   maxItemsPerSeries: number;
-}
-
-/**
- * Redis Query
- */
-export interface RedisQuery extends DataQuery {
-  /**
-   * Query command
-   *
-   * @type {string}
-   */
-  query?: string;
-
-  /**
-   * Redis Command type
-   *
-   * @type {string}
-   */
-  type?: string;
-
-  /**
-   * Redis Command
-   *
-   * @type {string}
-   */
-  command?: string;
-
-  /**
-   * Redis Section
-   *
-   * @type {string}
-   */
-  section?: string;
 }
 
 /**

@@ -1,3 +1,3 @@
-export * from './redis-latency-panel-graph';
-export * from './redis-latency-panel-table';
-export * from './redis-latency-panel';
+export * from './RedisLatencyGraph';
+export * from './RedisLatencyPanel';
+export * from './RedisLatencyTable';
