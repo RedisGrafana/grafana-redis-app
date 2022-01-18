@@ -1,6 +1,6 @@
 # Change Log
 
-## 2.2.0 (IN PROGRESS)
+## 2.2.0 (2022-01-17)
 
 ### Features / Enhancements
 
@@ -10,6 +10,9 @@
 - Upgrade to Grafana 8.3.0 (#93)
 - Fix LGTM and Update Panel Options (#95)
 - Add Redis CPU Usage panel (#96)
+- Update Components naming (#97)
+- Add CPU Usage Stacking and Gradient (#98)
+- Update "Can't retrieve a list of commands" error message (#100)
 
 ## 2.1.0 (2021-11-10)
 

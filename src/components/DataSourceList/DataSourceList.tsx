@@ -97,7 +97,9 @@ export const DataSourceList: FC<Props> = ({ dataSources }) => {
       <section className="card-section card-list-layout-list">
         <ol className="card-list">
           {dataSources.map((redis, index) => {
-            const title = redis.commands?.length ? 'Working as expected' : "Can't retrieve a list of commands";
+            const title = redis.commands?.length
+              ? 'Working as expected'
+              : "Can't retrieve a list of commands. Check that user has permissions to see a list of all commands.";
             const fill = redis.commands?.length ? '#DC382D' : '#A7A7A7';
             const url = redis.url ? redis.url : 'Not specified';
 
