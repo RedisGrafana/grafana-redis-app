@@ -39,7 +39,7 @@ describe('DataSourceList', () => {
   };
   const TITLES = {
     success: 'Working as expected',
-    error: `Can't retrieve a list of commands`,
+    error: `Can't retrieve a list of commands. Check that user has permissions to see a list of all commands.`,
   };
 
   beforeEach(() => {
