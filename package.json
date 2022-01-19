@@ -2,17 +2,16 @@
   "author": "RedisGrafana",
   "description": "Redis Application for Grafana",
   "devDependencies": {
-    "@grafana/data": "8.3.0",
-    "@grafana/runtime": "8.3.0",
-    "@grafana/toolkit": "8.3.0",
-    "@grafana/ui": "8.3.0",
+    "@grafana/data": "8.3.4",
+    "@grafana/runtime": "8.3.4",
+    "@grafana/toolkit": "8.3.4",
+    "@grafana/ui": "8.3.4",
     "@monaco-editor/react": "^4.3.1",
     "@types/enzyme": "^3.10.11",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "emotion": "11.0.0",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.6",
-    "tslib": "^2.3.1"
+    "enzyme-adapter-react-16": "^1.15.6"
   },
   "engines": {
     "node": ">=14"
@@ -33,5 +32,5 @@
     "upgrade": "yarn upgrade --latest",
     "watch": "grafana-toolkit plugin:dev --watch"
   },
-  "version": "2.2.0"
+  "version": "2.2.1"
 }
