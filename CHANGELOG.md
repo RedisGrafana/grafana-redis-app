@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.2.1 (2022-01-18)
+
+### Features / Enhancements
+
+- Rebuild using 8.3.4 (#99)
+
 ## 2.2.0 (2022-01-17)
 
 ### Features / Enhancements
