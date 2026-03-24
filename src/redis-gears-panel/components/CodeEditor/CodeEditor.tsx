@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Themeable2, withTheme2 } from '@grafana/ui';
-import Editor from '@monaco-editor/react';
+import { Themeable2, withTheme2, CodeEditor as GrafanaCodeEditor } from '@grafana/ui';
 
 /**
  * Properties
@@ -64,49 +63,22 @@ interface Props {
 /**
  * Unthemed Code Editor
  *
- * @see https://github.com/suren-atoyan/monaco-react
+ * @see https://grafana.com/developers/plugin-tools
  */
 export class UnthemedCodeEditor extends PureComponent<Props & Themeable2, {}> {
   render() {
-    const { width, height, theme, showMiniMap, showLineNumbers, language = 'python', onChange, readOnly } = this.props;
-
-    /**
-     * Options similar to Grafana
-     */
-    const options: any = {
-      wordWrap: 'off',
-      codeLens: false, // not included in the bundle
-      minimap: {
-        enabled: showMiniMap,
-        renderCharacters: false,
-      },
-      readOnly: !!readOnly,
-      lineNumbersMinChars: 4,
-      lineDecorationsWidth: 0,
-      overviewRulerBorder: false,
-      automaticLayout: true,
-    };
-
-    /**
-     * Line numbers similar to Grafana
-     */
-    if (!showLineNumbers) {
-      options.glyphMargin = false;
-      options.folding = false;
-      options.lineNumbers = 'off';
-      options.lineDecorationsWidth = 5; // left margin when not showing line numbers
-      options.lineNumbersMinChars = 0;
-    }
+    const { width, height, showMiniMap, showLineNumbers, language = 'python', onChange, readOnly } = this.props;
 
     return (
-      <Editor
+      <GrafanaCodeEditor
         width={width}
         height={height}
-        theme={theme.isDark ? 'vs-dark' : 'vs-light'}
-        onChange={onChange}
         language={language}
-        options={options}
         value={this.props.value ?? ''}
+        readOnly={readOnly}
+        showMiniMap={showMiniMap}
+        showLineNumbers={showLineNumbers}
+        onBlur={onChange}
       />
     );
   }
