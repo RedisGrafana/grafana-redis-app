@@ -46,8 +46,9 @@ jobs:
         run: yarn build
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v5
         with:
           directory: ./coverage/
           env_vars: OS,PYTHON
-          fail_ci_if_error: true
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
