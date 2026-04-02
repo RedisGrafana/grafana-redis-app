@@ -50,5 +50,4 @@ jobs:
         with:
           directory: ./coverage/
           env_vars: OS,PYTHON
-          fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
