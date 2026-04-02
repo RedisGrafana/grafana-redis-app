@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.3.0 (2026-04-02)
+
+### Features / Enhancements
+
+- Add support for Grafana with React 19
+- Refactor CodeEditor to use Grafana's built-in CodeEditor component
+
 ## 2.2.1 (2022-01-18)
 
 ### Features / Enhancements
