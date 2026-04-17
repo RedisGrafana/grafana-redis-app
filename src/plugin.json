@@ -69,19 +69,28 @@
     },
     {
       "name": "Redis CLI Panel",
-      "type": "panel"
+      "type": "panel",
+      "path": "redis-cli-panel/plugin.json"
     },
     {
       "name": "Redis Latency Panel",
-      "type": "panel"
+      "type": "panel",
+      "path": "redis-latency-panel/plugin.json"
     },
     {
       "name": "RedisGears Panel",
-      "type": "panel"
+      "type": "panel",
+      "path": "redis-gears-panel/plugin.json"
     },
     {
       "name": "Redis CPU Panel",
-      "type": "panel"
+      "type": "panel",
+      "path": "redis-cpu-panel/plugin.json"
+    },
+    {
+      "name": "Redis Keys Panel",
+      "type": "panel",
+      "path": "redis-keys-panel/plugin.json"
     }
   ],
   "info": {
