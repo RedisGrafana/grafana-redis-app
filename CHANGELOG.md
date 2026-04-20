@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.3.1 (2026-04-17)
+
+### Bug Fixes
+
+- Declare nested plugin paths in `plugin.json` for Grafana Plugins CDN compatibility (#113)
+- Re-encode `redis-cpu-panel/img/logo.svg` as UTF-8 to satisfy `@grafana/plugin-validator`
+
 ## 2.3.0 (2026-04-02)
 
 ### Features / Enhancements
