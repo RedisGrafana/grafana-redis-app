@@ -82,7 +82,7 @@ jobs:
       - name: Sign plugin
         run: yarn sign
         env:
-          GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
+          GRAFANA_ACCESS_POLICY_TOKEN: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -139,7 +139,7 @@ jobs:
       - name: Sign plugin
         run: yarn sign
         env:
-          GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
+          GRAFANA_ACCESS_POLICY_TOKEN: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
 
       - name: Download artifact
         uses: actions/download-artifact@v4
