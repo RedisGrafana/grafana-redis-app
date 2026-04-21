@@ -7,6 +7,12 @@
 - Fix picomatch high-severity vulnerability CVE-2026-33671
 - Replace deprecated `gf-form` CSS classes with `@grafana/ui` components
 
+### Maintenance
+
+- Migrate test framework from Enzyme to React Testing Library (#116)
+- Migrate build tooling from `@grafana/toolkit` to `@grafana/create-plugin` (#117)
+- Upgrade Node.js from 16 to 20, modernize CI workflows
+
 ## 2.3.1 (2026-04-17)
 
 ### Bug Fixes

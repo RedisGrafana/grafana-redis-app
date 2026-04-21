@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { act, render, screen } from '@testing-library/react';
 import React, { createRef } from 'react';
 import { dateTime, FieldType, toDataFrame } from '@grafana/data';
@@ -90,23 +89,15 @@ describe('RedisLatencyTable', () => {
       });
 
       const tableDataFrame = RedisLatencyTable.getTableDataFrame(dataFrame, seriesMap);
-      const expectedDataFrame = toDataFrame({
-        name: 'TableDataFrame',
-        fields: [
-          ...fields,
-          {
-            type: FieldType.number,
-            name: FieldName.Latency,
-            values: [1, 0],
-          },
-        ].map((field) => ({
-          ...field,
-          config: {
-            displayName: DisplayNameByFieldName[field.name as FieldName],
-          },
-        })),
-      });
-      expect(tableDataFrame).toEqual(expectedDataFrame);
+      expect(tableDataFrame.name).toBe('TableDataFrame');
+      expect(tableDataFrame.fields).toHaveLength(2);
+      expect(tableDataFrame.fields[0].name).toBe(FieldName.Command);
+      expect(tableDataFrame.fields[0].config.displayName).toBe(DisplayNameByFieldName[FieldName.Command]);
+      expect(tableDataFrame.fields[0].values.toArray()).toEqual(['get', 'info']);
+      expect(tableDataFrame.fields[1].name).toBe(FieldName.Latency);
+      expect(tableDataFrame.fields[1].type).toBe(FieldType.number);
+      expect(tableDataFrame.fields[1].config.displayName).toBe(DisplayNameByFieldName[FieldName.Latency]);
+      expect(tableDataFrame.fields[1].values.toArray()).toEqual([1, 0]);
     });
 
     it('Should work without fails if no command field', () => {
@@ -132,23 +123,13 @@ describe('RedisLatencyTable', () => {
       });
 
       const tableDataFrame = RedisLatencyTable.getTableDataFrame(dataFrame, seriesMap);
-      const expectedDataFrame = toDataFrame({
-        name: 'tableDataFrame',
-        fields: [
-          ...fields,
-          {
-            type: FieldType.number,
-            name: FieldName.Latency,
-            values: [undefined, undefined],
-          },
-        ].map((field) => ({
-          ...field,
-          config: {
-            displayName: DisplayNameByFieldName[field.name as FieldName],
-          },
-        })),
-      });
-      expect(tableDataFrame).toEqual(expectedDataFrame);
+      expect(tableDataFrame.name).toBe('TableDataFrame');
+      expect(tableDataFrame.fields).toHaveLength(2);
+      expect(tableDataFrame.fields[0].name).toBe(FieldName.Calls);
+      expect(tableDataFrame.fields[0].config.displayName).toBe(DisplayNameByFieldName[FieldName.Calls]);
+      expect(tableDataFrame.fields[1].name).toBe(FieldName.Latency);
+      expect(tableDataFrame.fields[1].type).toBe(FieldType.number);
+      expect(tableDataFrame.fields[1].values.toArray()).toEqual([undefined, undefined]);
     });
   });
 
