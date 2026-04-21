@@ -15,7 +15,16 @@ import {
   toDataFrame,
 } from '@grafana/data';
 import { config, getDataSourceSrv, toDataQueryError } from '@grafana/runtime';
-import { Alert, Button, InlineField, InlineFormLabel, Input, RadioButtonGroup, Table } from '@grafana/ui';
+import {
+  Alert,
+  Button,
+  HorizontalGroup,
+  InlineField,
+  InlineFormLabel,
+  Input,
+  RadioButtonGroup,
+  Table,
+} from '@grafana/ui';
 import { DefaultScript, ExecutionMode, ExecutionOptions } from '../../constants';
 import { PanelOptions } from '../../types';
 import { CodeEditor } from '../CodeEditor';
@@ -296,7 +305,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
         <div ref={this.footerRef}>
           {error && error.message && <Alert title={error.message} onRemove={this.onClearError} />}
 
-          <div className="gf-form">
+          <HorizontalGroup>
             <InlineField label={<InlineFormLabel width={6}>Requirements</InlineFormLabel>}>
               <Input value={requirements} onChange={this.onChangeRequirements} width={40} />
             </InlineField>
@@ -313,7 +322,7 @@ export class RedisGearsPanel extends PureComponent<Props, State> {
             <Button onClick={this.onRunScript} disabled={isRunning}>
               {isRunning ? 'Running...' : 'Run script'}
             </Button>
-          </div>
+          </HorizontalGroup>
 
           {result && (
             <>

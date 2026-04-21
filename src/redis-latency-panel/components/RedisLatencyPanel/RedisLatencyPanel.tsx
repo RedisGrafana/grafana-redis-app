@@ -11,7 +11,7 @@ import {
   PanelProps,
 } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { Label, RadioButtonGroup, Switch } from '@grafana/ui';
+import { HorizontalGroup, Label, RadioButtonGroup, Switch } from '@grafana/ui';
 import { RedisQuery } from '../../../types';
 import { DefaultInterval, FieldName, MaxItemsPerSeries, ViewMode, ViewModeOptions } from '../../constants';
 import { PanelOptions, SeriesMap, ValuesForCalculation } from '../../types';
@@ -414,27 +414,23 @@ export class RedisLatencyPanel extends PureComponent<Props, State> {
 
     return (
       <>
-        <div className="gf-form-inline" style={{ paddingBottom: 12 }} ref={this.formRef}>
-          <RadioButtonGroup value={options.viewMode} options={ViewModeOptions} onChange={this.onChangeViewMode} />
+        <div style={{ paddingBottom: 12 }} ref={this.formRef}>
+          <HorizontalGroup>
+            <RadioButtonGroup value={options.viewMode} options={ViewModeOptions} onChange={this.onChangeViewMode} />
 
-          {options.viewMode === ViewMode.Graph && (
-            <div
-              className={css`
-                display: flex;
-                align-items: center;
-                margin: 4px 0 4px 8px;
-              `}
-            >
-              <Switch value={options.hideZero} onChange={this.onChangeHideZero} />
-              <Label
-                className={css`
-                  margin: 0 0 0 4px;
-                `}
-              >
-                Hide commands which have only zero values
-              </Label>
-            </div>
-          )}
+            {options.viewMode === ViewMode.Graph && (
+              <HorizontalGroup align="center" spacing="xs">
+                <Switch value={options.hideZero} onChange={this.onChangeHideZero} />
+                <Label
+                  className={css`
+                    margin: 0 0 0 4px;
+                  `}
+                >
+                  Hide commands which have only zero values
+                </Label>
+              </HorizontalGroup>
+            )}
+          </HorizontalGroup>
         </div>
 
         <div style={{ display: 'flex', height: contentHeight }}>{component}</div>

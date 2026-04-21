@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.3.2 (2026-04-03)
+
+### Bug Fixes
+
+- Fix picomatch high-severity vulnerability CVE-2026-33671
+- Replace deprecated `gf-form` CSS classes with `@grafana/ui` components
+
 ## 2.3.1 (2026-04-17)
 
 ### Bug Fixes

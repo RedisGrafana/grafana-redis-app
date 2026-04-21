@@ -294,7 +294,9 @@ describe('RedisCLIPanel', () => {
    */
   describe('Query', () => {
     const getTestedComponent = (wrapper: ShallowComponent) => {
-      return wrapper.findWhere((node) => node.name() === 'input' && node.prop('name') === 'query');
+      return wrapper.findWhere(
+        (node) => node.prop('name') === 'query' && (node.name() === 'input' || node.name() === 'Input')
+      );
     };
 
     it('Should set value from options', () => {

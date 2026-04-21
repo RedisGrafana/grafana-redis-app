@@ -11,7 +11,7 @@ import {
   toDataFrame,
 } from '@grafana/data';
 import { config, getDataSourceSrv } from '@grafana/runtime';
-import { Button, InlineFormLabel, Input, Table, TableSortByFieldState } from '@grafana/ui';
+import { Button, HorizontalGroup, InlineField, Input, Table, TableSortByFieldState } from '@grafana/ui';
 import {
   DefaultCount,
   DefaultInterval,
@@ -654,52 +654,48 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
 
     return (
       <>
-        <div className="gf-form gf-form-inline" ref={this.formRef}>
-          <div className="gf-form gf-form-spacing">
-            <InlineFormLabel width={5}>Top keys</InlineFormLabel>
-            <Input
-              name="size"
-              value={queryConfig.size}
-              type="number"
-              onChange={this.onChangeSize}
-              width={8}
-              disabled={isUpdating}
-            />
-          </div>
+        <div ref={this.formRef}>
+          <HorizontalGroup>
+            <InlineField label="Top keys" labelWidth={5}>
+              <Input
+                name="size"
+                value={queryConfig.size}
+                type="number"
+                onChange={this.onChangeSize}
+                width={8}
+                disabled={isUpdating}
+              />
+            </InlineField>
 
-          <div className="gf-form gf-form-spacing">
-            <InlineFormLabel
+            <InlineField
+              label="Count"
+              labelWidth={5}
               tooltip="The amount of work that should be done at every call in order to retrieve elements from the collection."
-              width={5}
             >
-              Count
-            </InlineFormLabel>
-            <Input
-              name="count"
-              value={queryConfig.count}
-              type="number"
-              onChange={this.onChangeCount}
-              width={10}
-              disabled={isUpdating}
-            />
-          </div>
+              <Input
+                name="count"
+                value={queryConfig.count}
+                type="number"
+                onChange={this.onChangeCount}
+                width={10}
+                disabled={isUpdating}
+              />
+            </InlineField>
 
-          <div className="gf-form gf-form-spacing">
-            <InlineFormLabel width={6}>Match pattern</InlineFormLabel>
-            <Input
-              name="matchPattern"
-              value={queryConfig.matchPattern}
-              onChange={this.onChangeMatchPattern}
-              width={12}
-              disabled={isUpdating}
-            />
-          </div>
+            <InlineField label="Match pattern" labelWidth={6}>
+              <Input
+                name="matchPattern"
+                value={queryConfig.matchPattern}
+                onChange={this.onChangeMatchPattern}
+                width={12}
+                disabled={isUpdating}
+              />
+            </InlineField>
 
-          <div className="gf-form gf-form-spacing">
             <Button onClick={isUpdating ? this.clearRequestDataInterval : this.setRequestDataInterval}>
               {isUpdating ? `Stop scanning (${progress.processed}/${progress.total})` : 'Start scanning'}
             </Button>
-          </div>
+          </HorizontalGroup>
         </div>
 
         {!dataFrame || redisKeys.length === 0 ? (
