@@ -92,7 +92,7 @@ describe('RedisCPUGraph', () => {
   describe('Getting new props', () => {
     function renderComponent(overrides: Record<string, unknown> = {}) {
       const { ref, ...rest } = overrides as { ref?: React.Ref<RedisCPUGraph> } & Record<string, unknown>;
-      return render(<RedisCPUGraph ref={ref} width={400} height={300} timeZone="browser" {...rest} />);
+      return render(<RedisCPUGraph ref={ref} width={400} height={300} timeZone="browser" {...(rest as any)} />);
     }
 
     it('Should update timeRange when gets a new seriesMap or timeRange', () => {
@@ -110,8 +110,8 @@ describe('RedisCPUGraph', () => {
             width={400}
             height={300}
             timeZone="browser"
-            seriesMap={{ get: [{ time: dateTime(), value: 2 }] }}
-            timeRange={{ raw: { from: dateTime() } }}
+            seriesMap={{ get: [{ time: dateTime(), value: 2 }] } as any}
+            timeRange={{ raw: { from: dateTime(), to: dateTime() } } as any}
           />
         );
       });

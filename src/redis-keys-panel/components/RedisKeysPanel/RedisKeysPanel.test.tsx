@@ -493,6 +493,7 @@ describe('RedisKeysPanel', () => {
         const ref = createRef<RedisKeysPanel>();
         render(
           <RedisKeysPanel
+            {...({} as any)}
             ref={ref}
             data={REQUEST_DATA_SERIES as any}
             options={options as any}
@@ -530,6 +531,7 @@ describe('RedisKeysPanel', () => {
         const ref = createRef<RedisKeysPanel>();
         render(
           <RedisKeysPanel
+            {...({} as any)}
             ref={ref}
             data={REQUEST_DATA_SERIES as any}
             options={options as any}
@@ -567,6 +569,7 @@ describe('RedisKeysPanel', () => {
         const ref = createRef<RedisKeysPanel>();
         render(
           <RedisKeysPanel
+            {...({} as any)}
             ref={ref}
             data={REQUEST_DATA_SERIES as any}
             options={options as any}
@@ -713,6 +716,7 @@ describe('RedisKeysPanel', () => {
         const ref = createRef<RedisKeysPanel>();
         render(
           <RedisKeysPanel
+            {...({} as any)}
             ref={ref}
             data={REQUEST_DATA_SERIES as any}
             options={options as any}
@@ -910,7 +914,13 @@ describe('RedisKeysPanel', () => {
     it('If no dataFrame table should be rendered', () => {
       jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount').mockImplementation(() => {});
       render(
-        <RedisKeysPanel data={{ request: {} } as any} options={{ interval: 1000 } as any} width={800} height={600} />
+        <RedisKeysPanel
+          {...({} as any)}
+          data={{ request: {} } as any}
+          options={{ interval: 1000 } as any}
+          width={800}
+          height={600}
+        />
       );
       (jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount') as jest.Mock).mockRestore();
       expect(screen.queryByTestId('redis-keys-table')).not.toBeInTheDocument();
@@ -921,6 +931,7 @@ describe('RedisKeysPanel', () => {
       jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount').mockImplementation(() => {});
       render(
         <RedisKeysPanel
+          {...({} as any)}
           ref={ref}
           data={
             {

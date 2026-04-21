@@ -491,7 +491,7 @@ describe('RedisCLIPanel', () => {
     const overrideData = {
       ...data,
       request: { targets: [{ datasource: 'datasource/id' }] },
-    };
+    } as any;
 
     dataSourceInstanceSettingsMock.jsonData.cliDisabled = true;
     renderComponent({ data: overrideData, options });
