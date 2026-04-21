@@ -1,15 +1,22 @@
-import { shallow } from 'enzyme';
+import '@testing-library/jest-dom';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import { TextArea } from '@grafana/ui';
 import { CLITextArea } from './AutoScrollingTextArea';
 
 /**
  * CLI TextArea
  */
 describe('CLITextArea', () => {
+  function renderComponent(overrides: Partial<React.ComponentProps<typeof CLITextArea>> = {}) {
+    const defaultProps: Partial<React.ComponentProps<typeof CLITextArea>> = {
+      value: '',
+    };
+    return render(<CLITextArea {...defaultProps} {...overrides} />);
+  }
+
   it('Should set scrollTop if autoScroll=true', () => {
-    const wrapper = shallow<typeof CLITextArea>(<CLITextArea value="123" autoScroll />);
-    jest.spyOn(wrapper.instance(), 'render');
+    renderComponent({ value: '123', autoScroll: true });
+    jest.spyOn(CLITextArea.prototype, 'render');
     const element = {
       scrollHeight: 0,
       scrollTop: 0,
@@ -21,11 +28,11 @@ describe('CLITextArea', () => {
   it('Should pass props to Textarea', () => {
     const onChangeMock = jest.fn();
     const value = '1234';
-    const wrapper = shallow(<CLITextArea value={value} onChange={onChangeMock} />);
-    const testedComponent = wrapper.find(TextArea);
-    expect(testedComponent.exists()).toBeTruthy();
-    expect(testedComponent.prop('value')).toEqual(value);
-    expect(testedComponent.prop('onChange')).toEqual(onChangeMock);
+    renderComponent({ value, onChange: onChangeMock });
+    const textarea = screen.getByRole('textbox');
+    expect(textarea).toHaveValue(value);
+    fireEvent.change(textarea, { target: { value: 'x' } });
+    expect(onChangeMock).toHaveBeenCalled();
   });
 
   /*

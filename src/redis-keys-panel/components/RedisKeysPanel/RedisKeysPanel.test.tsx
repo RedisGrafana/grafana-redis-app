@@ -1,8 +1,8 @@
-import { shallow } from 'enzyme';
-import React from 'react';
+import '@testing-library/jest-dom';
+import React, { ChangeEvent, createRef } from 'react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { Observable } from 'rxjs';
 import { FieldType, toDataFrame } from '@grafana/data';
-import { Button, Table } from '@grafana/ui';
 import { DefaultInterval, DisplayNameByFieldName, FieldName } from '../../constants';
 import { RedisKeysPanel } from './RedisKeysPanel';
 
@@ -75,11 +75,48 @@ jest.mock('@grafana/runtime', () => ({
 }));
 
 /**
+ * Shallow Enzyme tests did not mount Grafana Table internals; a lightweight stub avoids
+ * theme/display dependencies when the panel renders a table after scanning.
+ */
+jest.mock('@grafana/ui', () => {
+  const actual = jest.requireActual('@grafana/ui');
+  return {
+    ...actual,
+    Table: function Table() {
+      return <table data-testid="redis-keys-table" />;
+    },
+  };
+});
+
+/**
+ * Panel `data` prop used by RequestData tests (hoisted so async / done-callback tests always see a stable reference).
+ */
+const REQUEST_DATA_SERIES = {
+  series: [
+    toDataFrame({
+      name: 'data',
+      fields: [
+        {
+          type: FieldType.string,
+          name: FieldName.Key,
+          values: ['key1', 'key2'],
+        },
+        {
+          type: FieldType.number,
+          name: FieldName.Memory,
+          values: [100, 200],
+        },
+      ],
+    }),
+  ],
+};
+
+/**
  * Redis Keys Panel
  */
 describe('RedisKeysPanel', () => {
-  const getComponent = ({ options = { interval: 1000 }, ...restProps }: any) => {
-    const data = {
+  const getRedisKeysPanelElement = (props: any) => {
+    const defaultPanelData = {
       request: {
         targets: [
           {
@@ -88,12 +125,20 @@ describe('RedisKeysPanel', () => {
         ],
       },
     };
-    return <RedisKeysPanel data={data} {...restProps} options={options} />;
+    const { options = { interval: 1000 }, ref, width = 800, height = 600, data: inputData, ...restProps } = props;
+    const panelData = inputData !== undefined ? inputData : defaultPanelData;
+    return <RedisKeysPanel ref={ref} data={panelData} width={width} height={height} {...restProps} options={options} />;
   };
+
+  const renderComponent = (props: any) => render(getRedisKeysPanelElement(props));
 
   beforeEach(() => {
     dataSourceSrvGetMock.mockClear();
     dataSourceMock.query.mockClear();
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   /**
@@ -355,26 +400,38 @@ describe('RedisKeysPanel', () => {
    * makeQuery
    */
   describe('makeQuery', () => {
+    let updateTotalKeysSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      updateTotalKeysSpy = jest.spyOn(RedisKeysPanel.prototype, 'updateTotalKeys').mockResolvedValue(undefined);
+    });
+
+    afterEach(() => {
+      updateTotalKeysSpy.mockRestore();
+    });
+
     it('If no targets nothing should be loaded and shown', async () => {
-      const wrapper = shallow<RedisKeysPanel>(getComponent({ data: { request: { targets: [] } } }));
-      const data = await wrapper.instance().makeQuery();
-      expect(data).toBeNull();
+      const ref = createRef<RedisKeysPanel>();
+      renderComponent({ data: { request: { targets: [] } }, ref });
+      await act(async () => {
+        const queryResult = await ref.current!.makeQuery();
+        expect(queryResult).toBeNull();
+      });
     });
 
     it('Should use default command if command empty in targets', async () => {
-      const wrapper = shallow<RedisKeysPanel>(
-        getComponent({
-          data: {
-            request: {
-              targets: [{ datasource: 'Redis111' }],
-            },
+      const ref = createRef<RedisKeysPanel>();
+      renderComponent({
+        data: {
+          request: {
+            targets: [{ datasource: 'Redis111' }],
           },
-        }),
-        {
-          disableLifecycleMethods: true,
-        }
-      );
-      await wrapper.instance().makeQuery();
+        },
+        ref,
+      });
+      await act(async () => {
+        await ref.current!.makeQuery();
+      });
       expect(dataSourceSrvGetMock).toHaveBeenCalledWith('Redis111');
       expect(dataSourceMock.query).toHaveBeenCalledWith({
         targets: [
@@ -392,21 +449,18 @@ describe('RedisKeysPanel', () => {
     });
 
     it('Should use query params from props if there are', async () => {
-      const wrapper = shallow<RedisKeysPanel>(
-        getComponent({
-          data: {
-            request: {
-              targets: [
-                { datasource: 'Redis111', command: 'command', type: 'type', count: 100, size: 11, match: 'abc' },
-              ],
-            },
+      const ref = createRef<RedisKeysPanel>();
+      renderComponent({
+        data: {
+          request: {
+            targets: [{ datasource: 'Redis111', command: 'command', type: 'type', count: 100, size: 11, match: 'abc' }],
           },
-        }),
-        {
-          disableLifecycleMethods: true,
-        }
-      );
-      await wrapper.instance().makeQuery();
+        },
+        ref,
+      });
+      await act(async () => {
+        await ref.current!.makeQuery();
+      });
       expect(dataSourceSrvGetMock).toHaveBeenCalledWith('Redis111');
       expect(dataSourceMock.query).toHaveBeenCalledWith({
         targets: [
@@ -428,172 +482,6 @@ describe('RedisKeysPanel', () => {
    * RequestData
    */
   describe('RequestData', () => {
-    const data = {
-      series: [
-        toDataFrame({
-          name: 'data',
-          fields: [
-            {
-              type: FieldType.string,
-              name: FieldName.Key,
-              values: ['key1', 'key2'],
-            },
-            {
-              type: FieldType.number,
-              name: FieldName.Memory,
-              values: [100, 200],
-            },
-          ],
-        }),
-      ],
-    };
-
-    /**
-     * Mount
-     */
-    describe('Mount', () => {
-      it('If passed no data as a prop, should work correctly', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data: null }), { disableLifecycleMethods: true });
-        expect(wrapper.state().redisKeys.length).toEqual(0);
-      });
-
-      it('Should not set interval by default', () => {
-        const options = {};
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
-        const testedMethod = jest
-          .spyOn(wrapper.instance(), 'setRequestDataInterval')
-          .mockImplementation(() => Promise.resolve());
-        expect(testedMethod).not.toHaveBeenCalled();
-      });
-
-      it('Should set formHeight', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }), { disableLifecycleMethods: true });
-        wrapper.instance().formRef = {
-          current: {
-            getBoundingClientRect: () => ({
-              height: 100,
-            }),
-          },
-        } as any;
-        expect(wrapper.state().formHeight).toEqual(0);
-        wrapper.instance().componentDidMount();
-        expect(wrapper.state().formHeight).toEqual(100);
-      });
-
-      it('Should request all keys', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }), { disableLifecycleMethods: true });
-        const updateTotalKeysMock = jest.spyOn(wrapper.instance(), 'updateTotalKeys');
-        wrapper.instance().componentDidMount();
-        expect(updateTotalKeysMock).toHaveBeenCalled();
-      });
-    });
-
-    /**
-     * Update
-     */
-    describe('Update', () => {
-      it('If options.interval was changed should clear interval', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }));
-        const testedMethod = jest
-          .spyOn(wrapper.instance(), 'clearRequestDataInterval')
-          .mockImplementation(() => Promise.resolve());
-        testedMethod.mockClear();
-        wrapper.setProps({
-          options: { interval: 2000 },
-        });
-        expect(testedMethod).toHaveBeenCalled();
-      });
-
-      it('If panel width was changed should set formHeight', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }));
-        wrapper.instance().formRef = {
-          current: {
-            getBoundingClientRect: () => ({
-              height: 105,
-            }),
-          },
-        } as any;
-        wrapper.setProps({ width: 1000 });
-        expect(wrapper.state().formHeight).toEqual(105);
-        wrapper.instance().formRef = {
-          current: null,
-        } as any;
-        wrapper.setProps({ width: 1001 });
-        expect(wrapper.state().formHeight).toEqual(105);
-      });
-
-      it('If cursor was changed and equal=0, scanning data should be stopped', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }));
-        const clearRequestDataIntervalMock = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
-        wrapper.setState({
-          cursor: '1',
-        });
-        expect(clearRequestDataIntervalMock).not.toHaveBeenCalled();
-        wrapper.setState({
-          cursor: '0',
-        });
-        expect(clearRequestDataIntervalMock).toHaveBeenCalled();
-      });
-
-      it('If query was changed, scanning should be stopped and queryConfig fields should be updated', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }));
-        const clearRequestDataIntervalMock = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
-        wrapper.setProps({
-          data: {
-            ...data,
-            request: {
-              targets: [
-                {
-                  count: 111,
-                  size: 11,
-                  match: '***',
-                },
-              ],
-            },
-          },
-        } as any);
-        expect(clearRequestDataIntervalMock).toHaveBeenCalled();
-        expect(wrapper.state().queryConfig).toEqual({
-          count: 111,
-          size: 11,
-          matchPattern: '***',
-        });
-        wrapper.setProps({
-          data: {
-            ...data,
-            request: {
-              targets: [{}],
-            },
-          },
-        } as any);
-        expect(wrapper.state().queryConfig).toEqual({
-          count: 111,
-          size: 11,
-          matchPattern: '***',
-        });
-        wrapper.setProps({
-          data: null,
-        } as any);
-        expect(wrapper.state().queryConfig).toEqual({
-          count: 111,
-          size: 11,
-          matchPattern: '***',
-        });
-      });
-    });
-
-    /**
-     * Unmount
-     */
-    describe('Unmount', () => {
-      it('Should clear interval', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data }));
-        const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval').mockImplementation(() => {});
-        wrapper.instance().componentWillUnmount();
-        expect(testedMethod).toHaveBeenCalled();
-      });
-    });
-
     /**
      * Update data
      */
@@ -602,11 +490,21 @@ describe('RedisKeysPanel', () => {
         const options = {
           interval: 1000,
         };
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
-        const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
-        const button = wrapper.find(Button);
-        button.simulate('click');
-
+        const ref = createRef<RedisKeysPanel>();
+        render(
+          <RedisKeysPanel
+            {...({} as any)}
+            ref={ref}
+            data={REQUEST_DATA_SERIES as any}
+            options={options as any}
+            width={800}
+            height={600}
+          />
+        );
+        const testedMethod = jest.spyOn(ref.current!, 'updateData');
+        act(() => {
+          fireEvent.click(screen.getByRole('button', { name: /Start scanning/i }));
+        });
         setImmediate(() => {
           testedMethod.mockClear();
           let checksCount = 2;
@@ -618,6 +516,7 @@ describe('RedisKeysPanel', () => {
               testedMethod.mockClear();
               setTimeout(check, options.interval);
             } else {
+              ref.current!.clearRequestDataInterval();
               done();
             }
           };
@@ -629,11 +528,21 @@ describe('RedisKeysPanel', () => {
         const options = {
           interval: null,
         };
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
-        const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
-        const button = wrapper.find(Button);
-        button.simulate('click');
-
+        const ref = createRef<RedisKeysPanel>();
+        render(
+          <RedisKeysPanel
+            {...({} as any)}
+            ref={ref}
+            data={REQUEST_DATA_SERIES as any}
+            options={options as any}
+            width={800}
+            height={600}
+          />
+        );
+        const testedMethod = jest.spyOn(ref.current!, 'updateData');
+        act(() => {
+          fireEvent.click(screen.getByRole('button', { name: /Start scanning/i }));
+        });
         setImmediate(() => {
           testedMethod.mockClear();
           let checksCount = 2;
@@ -645,6 +554,7 @@ describe('RedisKeysPanel', () => {
               testedMethod.mockClear();
               setTimeout(check, DefaultInterval);
             } else {
+              ref.current!.clearRequestDataInterval();
               done();
             }
           };
@@ -656,14 +566,26 @@ describe('RedisKeysPanel', () => {
         const options = {
           interval: null,
         };
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
-        const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
-        const button = wrapper.find(Button);
-        button.simulate('click');
-
+        const ref = createRef<RedisKeysPanel>();
+        render(
+          <RedisKeysPanel
+            {...({} as any)}
+            ref={ref}
+            data={REQUEST_DATA_SERIES as any}
+            options={options as any}
+            width={800}
+            height={600}
+          />
+        );
+        const testedMethod = jest.spyOn(ref.current!, 'updateData');
+        act(() => {
+          fireEvent.click(screen.getByRole('button', { name: /Start scanning/i }));
+        });
         expect(testedMethod).toHaveBeenCalled();
-        wrapper.setState({
-          isUpdating: false,
+        act(() => {
+          ref.current!.setState({
+            isUpdating: false,
+          });
         });
         setImmediate(() => {
           testedMethod.mockClear();
@@ -676,6 +598,7 @@ describe('RedisKeysPanel', () => {
               testedMethod.mockClear();
               setTimeout(check, DefaultInterval);
             } else {
+              ref.current!.clearRequestDataInterval();
               done();
             }
           };
@@ -687,12 +610,14 @@ describe('RedisKeysPanel', () => {
         const options = {
           interval: 1000,
         };
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
-        const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
-        wrapper.instance().setRequestDataInterval();
+        const ref = createRef<RedisKeysPanel>();
+        renderComponent({ data: REQUEST_DATA_SERIES, options, ref });
+        const testedMethod = jest.spyOn(ref.current!, 'clearRequestDataInterval');
+        ref.current!.setRequestDataInterval();
         setImmediate(() => {
-          wrapper.instance().setRequestDataInterval();
+          ref.current!.setRequestDataInterval();
           expect(testedMethod).toHaveBeenCalled();
+          ref.current!.clearRequestDataInterval();
           done();
         });
       });
@@ -702,7 +627,7 @@ describe('RedisKeysPanel', () => {
           interval: 1000,
         };
         const overrideData = {
-          ...data,
+          ...REQUEST_DATA_SERIES,
           request: {
             targets: [
               {
@@ -711,7 +636,7 @@ describe('RedisKeysPanel', () => {
             ],
           },
         };
-        shallow<RedisKeysPanel>(getComponent({ data: overrideData, options }));
+        renderComponent({ data: overrideData, options });
         setImmediate(() => {
           expect(dataSourceSrvGetMock).toHaveBeenCalledWith('redis');
           done();
@@ -722,16 +647,20 @@ describe('RedisKeysPanel', () => {
         const options = {
           interval: 1000,
         };
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }), {
-          disableLifecycleMethods: true,
-        });
-        const setStateMock = jest.spyOn(wrapper.instance(), 'setState');
-        jest.spyOn(wrapper.instance(), 'makeQuery').mockImplementation(() =>
+        const ref = createRef<RedisKeysPanel>();
+        jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount').mockImplementation(() => {});
+        renderComponent({ data: REQUEST_DATA_SERIES, options, ref });
+        (jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount') as jest.Mock).mockRestore();
+
+        const setStateMock = jest.spyOn(ref.current!, 'setState');
+        jest.spyOn(ref.current!, 'makeQuery').mockImplementation(() =>
           Promise.resolve({
             data: [],
-          })
+          } as any)
         );
-        await wrapper.instance().updateData();
+        await act(async () => {
+          await ref.current!.updateData();
+        });
         expect(setStateMock).not.toHaveBeenCalled();
       });
 
@@ -740,7 +669,7 @@ describe('RedisKeysPanel', () => {
           interval: 1000,
         };
         const overrideData = {
-          ...data,
+          ...REQUEST_DATA_SERIES,
           request: {
             targets: [
               {
@@ -749,17 +678,23 @@ describe('RedisKeysPanel', () => {
             ],
           },
         };
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data: overrideData, options }), {
-          disableLifecycleMethods: true,
+        const ref = createRef<RedisKeysPanel>();
+        jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount').mockImplementation(() => {});
+        renderComponent({ data: overrideData, options, ref });
+        (jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount') as jest.Mock).mockRestore();
+
+        act(() => {
+          ref.current!.setState({
+            progress: {
+              total: 1000,
+              processed: 10,
+            },
+          });
         });
-        wrapper.setState({
-          progress: {
-            total: 1000,
-            processed: 10,
-          },
+        await act(async () => {
+          await ref.current!.updateData();
         });
-        await wrapper.instance().updateData();
-        const state = wrapper.state();
+        const state = ref.current!.state;
         expect(state.dataFrame?.length).toEqual(2);
         expect(state.progress).toEqual({
           total: 1000,
@@ -778,14 +713,196 @@ describe('RedisKeysPanel', () => {
         const options = {
           interval: 1000,
         };
-        const wrapper = shallow<RedisKeysPanel>(getComponent({ data, options }));
-        wrapper.instance().setRequestDataInterval();
+        const ref = createRef<RedisKeysPanel>();
+        render(
+          <RedisKeysPanel
+            {...({} as any)}
+            ref={ref}
+            data={REQUEST_DATA_SERIES as any}
+            options={options as any}
+            width={800}
+            height={600}
+          />
+        );
+        ref.current!.setRequestDataInterval();
         setImmediate(() => {
-          expect(wrapper.instance().requestDataTimer).toBeDefined();
-          wrapper.instance().clearRequestDataInterval();
-          expect(wrapper.instance().requestDataTimer).not.toBeDefined();
+          expect(ref.current!.requestDataTimer).toBeDefined();
+          ref.current!.clearRequestDataInterval();
+          expect(ref.current!.requestDataTimer).not.toBeDefined();
           done();
         });
+      });
+    });
+
+    /**
+     * Mount
+     */
+    describe('Mount', () => {
+      it('If passed no data as a prop, should work correctly', () => {
+        renderComponent({ data: null });
+        const emptyKeysMessage = screen.getByText('No keys found. Please start scanning.');
+        expect(emptyKeysMessage).toBeInTheDocument();
+      });
+
+      it('Should not set interval by default', () => {
+        const ref = createRef<RedisKeysPanel>();
+        renderComponent({ data: REQUEST_DATA_SERIES, options: {}, ref });
+        const testedMethod = jest.spyOn(ref.current!, 'setRequestDataInterval').mockImplementation(() => undefined);
+        expect(testedMethod).not.toHaveBeenCalled();
+      });
+
+      it('Should set formHeight', () => {
+        jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+          height: 100,
+          width: 0,
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          x: 0,
+          y: 0,
+          toJSON: () => '',
+        } as DOMRect);
+        const ref = createRef<RedisKeysPanel>();
+        renderComponent({ data: REQUEST_DATA_SERIES, ref });
+        expect(ref.current!.state.formHeight).toEqual(100);
+        (jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect') as jest.Mock).mockRestore();
+      });
+
+      it('Should request all keys', () => {
+        const updateTotalKeysMock = jest.spyOn(RedisKeysPanel.prototype, 'updateTotalKeys');
+        const ref = createRef<RedisKeysPanel>();
+        renderComponent({ data: REQUEST_DATA_SERIES, ref });
+        expect(updateTotalKeysMock).toHaveBeenCalled();
+        updateTotalKeysMock.mockRestore();
+      });
+    });
+
+    /**
+     * Update
+     */
+    describe('Update', () => {
+      it('If options.interval was changed should clear interval', () => {
+        const ref = createRef<RedisKeysPanel>();
+        const { rerender } = renderComponent({ data: REQUEST_DATA_SERIES, ref });
+        const testedMethod = jest.spyOn(ref.current!, 'clearRequestDataInterval').mockResolvedValue(undefined as never);
+        testedMethod.mockClear();
+        rerender(getRedisKeysPanelElement({ data: REQUEST_DATA_SERIES, options: { interval: 2000 }, ref }));
+        expect(testedMethod).toHaveBeenCalled();
+      });
+
+      it('If panel width was changed should set formHeight', () => {
+        const rectSpy = jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+          height: 105,
+          width: 0,
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          x: 0,
+          y: 0,
+          toJSON: () => '',
+        } as DOMRect);
+        const ref = createRef<RedisKeysPanel>();
+        const { rerender } = renderComponent({ data: REQUEST_DATA_SERIES, ref });
+        expect(ref.current!.state.formHeight).toEqual(105);
+        act(() => {
+          rerender(getRedisKeysPanelElement({ data: REQUEST_DATA_SERIES, width: 1000, ref }));
+        });
+        expect(ref.current!.state.formHeight).toEqual(105);
+
+        const inst = ref.current!;
+        act(() => {
+          rerender(getRedisKeysPanelElement({ data: REQUEST_DATA_SERIES, width: 1001, ref }));
+        });
+        inst.formRef = { current: null } as any;
+        act(() => {
+          inst.componentDidUpdate({ ...inst.props, width: 1000 } as any, inst.state);
+        });
+        expect(inst.state.formHeight).toEqual(105);
+        rectSpy.mockRestore();
+      });
+
+      it('If cursor was changed and equal=0, scanning data should be stopped', () => {
+        const ref = createRef<RedisKeysPanel>();
+        renderComponent({ data: REQUEST_DATA_SERIES, ref });
+        const clearRequestDataIntervalMock = jest.spyOn(ref.current!, 'clearRequestDataInterval');
+        act(() => {
+          ref.current!.setState({
+            cursor: '1',
+          });
+        });
+        expect(clearRequestDataIntervalMock).not.toHaveBeenCalled();
+        act(() => {
+          ref.current!.setState({
+            cursor: '0',
+          });
+        });
+        expect(clearRequestDataIntervalMock).toHaveBeenCalled();
+      });
+
+      it('If query was changed, scanning should be stopped and queryConfig fields should be updated', () => {
+        const ref = createRef<RedisKeysPanel>();
+        const { rerender } = renderComponent({ data: REQUEST_DATA_SERIES, ref });
+        const clearRequestDataIntervalMock = jest.spyOn(ref.current!, 'clearRequestDataInterval');
+        rerender(
+          getRedisKeysPanelElement({
+            data: {
+              ...REQUEST_DATA_SERIES,
+              request: {
+                targets: [
+                  {
+                    count: 111,
+                    size: 11,
+                    match: '***',
+                  },
+                ],
+              },
+            },
+            ref,
+          } as any)
+        );
+        expect(clearRequestDataIntervalMock).toHaveBeenCalled();
+        expect(ref.current!.state.queryConfig).toEqual({
+          count: 111,
+          size: 11,
+          matchPattern: '***',
+        });
+        rerender(
+          getRedisKeysPanelElement({
+            data: {
+              ...REQUEST_DATA_SERIES,
+              request: {
+                targets: [{}],
+              },
+            },
+            ref,
+          } as any)
+        );
+        expect(ref.current!.state.queryConfig).toEqual({
+          count: 111,
+          size: 11,
+          matchPattern: '***',
+        });
+        rerender(getRedisKeysPanelElement({ data: null, ref } as any));
+        expect(ref.current!.state.queryConfig).toEqual({
+          count: 111,
+          size: 11,
+          matchPattern: '***',
+        });
+      });
+    });
+
+    /**
+     * Unmount
+     */
+    describe('Unmount', () => {
+      it('Should clear interval', () => {
+        const ref = createRef<RedisKeysPanel>();
+        const { unmount } = renderComponent({ data: REQUEST_DATA_SERIES, ref });
+        const testedMethod = jest.spyOn(ref.current!, 'clearRequestDataInterval').mockImplementation(() => {});
+        unmount();
+        expect(testedMethod).toHaveBeenCalled();
       });
     });
   });
@@ -794,18 +911,46 @@ describe('RedisKeysPanel', () => {
    * Rendering
    */
   describe('Rendering', () => {
-    it('If no dataFrame table should be rendered', (done) => {
-      const wrapper = shallow(getComponent({ data: { request: {} } }));
-      setImmediate(() => {
-        expect(wrapper.find(Table).exists()).not.toBeTruthy();
-        done();
-      });
+    it('If no dataFrame table should be rendered', () => {
+      jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount').mockImplementation(() => {});
+      render(
+        <RedisKeysPanel
+          {...({} as any)}
+          data={{ request: {} } as any}
+          options={{ interval: 1000 } as any}
+          width={800}
+          height={600}
+        />
+      );
+      (jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount') as jest.Mock).mockRestore();
+      expect(screen.queryByTestId('redis-keys-table')).not.toBeInTheDocument();
     });
 
     it('Should render table', async () => {
-      const wrapper = shallow<RedisKeysPanel>(getComponent({}));
-      await wrapper.instance().updateData();
-      expect(wrapper.find(Table).exists()).toBeTruthy();
+      const ref = createRef<RedisKeysPanel>();
+      jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount').mockImplementation(() => {});
+      render(
+        <RedisKeysPanel
+          {...({} as any)}
+          ref={ref}
+          data={
+            {
+              request: {
+                targets: [{ datasource: 'Redis' }],
+              },
+            } as any
+          }
+          options={{ interval: 1000 } as any}
+          width={800}
+          height={600}
+        />
+      );
+      (jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount') as jest.Mock).mockRestore();
+
+      await act(async () => {
+        await ref.current!.updateData();
+      });
+      expect(screen.getByTestId('redis-keys-table')).toBeInTheDocument();
     });
   });
 
@@ -814,14 +959,22 @@ describe('RedisKeysPanel', () => {
    */
   describe('Sorting', () => {
     it('Should set default sort and update sorting', async () => {
-      const wrapper = shallow<RedisKeysPanel>(getComponent({}), { disableLifecycleMethods: true });
+      const ref = createRef<RedisKeysPanel>();
+      jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount').mockImplementation(() => {});
+      renderComponent({ ref });
+      (jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount') as jest.Mock).mockRestore();
+
       const sortedFields = [{ displayName: DisplayNameByFieldName[FieldName.Memory], desc: true }];
-      expect(wrapper.state().sortedFields).toEqual(sortedFields);
-      await wrapper.instance().updateData();
-      const tableComponent = wrapper.find(Table);
-      expect(tableComponent.prop('initialSortBy')).toEqual(sortedFields);
-      tableComponent.simulate('sortByChange', [{ displayName: DisplayNameByFieldName[FieldName.Type], desc: true }]);
-      expect(wrapper.state().sortedFields).toEqual([
+      expect(ref.current!.state.sortedFields).toEqual(sortedFields);
+      await act(async () => {
+        await ref.current!.updateData();
+      });
+      const sortedKeysTable = screen.getByTestId('redis-keys-table');
+      expect(sortedKeysTable).toBeInTheDocument();
+      act(() => {
+        ref.current!.onChangeSort([{ displayName: DisplayNameByFieldName[FieldName.Type], desc: true }]);
+      });
+      expect(ref.current!.state.sortedFields).toEqual([
         { displayName: DisplayNameByFieldName[FieldName.Type], desc: true },
       ]);
     });
@@ -836,13 +989,20 @@ describe('RedisKeysPanel', () => {
      */
     describe('Size', () => {
       it('Should use value from queryConfig.size and update it', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({}));
-        const testedComponent = wrapper.findWhere((node) => node.prop('onChange') === wrapper.instance().onChangeSize);
-        expect(testedComponent.prop('value')).toEqual(wrapper.state().queryConfig.size);
-        testedComponent.simulate('change', { target: { value: '111' } });
-        expect(wrapper.state().queryConfig.size).toEqual(111);
-        testedComponent.simulate('change', { target: { value: '' } });
-        expect(wrapper.state().queryConfig.size).toEqual(0);
+        const ref = createRef<RedisKeysPanel>();
+        renderComponent({ ref });
+        const sizeInputDefault = screen.getByDisplayValue('10');
+        expect(sizeInputDefault).toBeInTheDocument();
+        act(() => {
+          ref.current!.onChangeSize({ target: { value: '111' } } as ChangeEvent<HTMLInputElement>);
+        });
+        const sizeInputUpdated = screen.getByDisplayValue('111');
+        expect(sizeInputUpdated).toBeInTheDocument();
+        act(() => {
+          ref.current!.onChangeSize({ target: { value: '' } } as ChangeEvent<HTMLInputElement>);
+        });
+        const sizeInputEmpty = screen.getByDisplayValue('0');
+        expect(sizeInputEmpty).toBeInTheDocument();
       });
     });
 
@@ -851,13 +1011,20 @@ describe('RedisKeysPanel', () => {
      */
     describe('Count', () => {
       it('Should use value from queryConfig.count and update it', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({}));
-        const testedComponent = wrapper.findWhere((node) => node.prop('onChange') === wrapper.instance().onChangeCount);
-        expect(testedComponent.prop('value')).toEqual(wrapper.state().queryConfig.count);
-        testedComponent.simulate('change', { target: { value: '111' } });
-        expect(wrapper.state().queryConfig.count).toEqual(111);
-        testedComponent.simulate('change', { target: { value: '' } });
-        expect(wrapper.state().queryConfig.count).toEqual(0);
+        const ref = createRef<RedisKeysPanel>();
+        renderComponent({ ref });
+        const countInputDefault = screen.getByDisplayValue('100');
+        expect(countInputDefault).toBeInTheDocument();
+        act(() => {
+          ref.current!.onChangeCount({ target: { value: '111' } } as ChangeEvent<HTMLInputElement>);
+        });
+        const countInputUpdated = screen.getByDisplayValue('111');
+        expect(countInputUpdated).toBeInTheDocument();
+        act(() => {
+          ref.current!.onChangeCount({ target: { value: '' } } as ChangeEvent<HTMLInputElement>);
+        });
+        const countInputEmpty = screen.getByDisplayValue('0');
+        expect(countInputEmpty).toBeInTheDocument();
       });
     });
 
@@ -866,13 +1033,15 @@ describe('RedisKeysPanel', () => {
      */
     describe('MatchPattern', () => {
       it('Should use value from queryConfig.matchPattern and update it', () => {
-        const wrapper = shallow<RedisKeysPanel>(getComponent({}));
-        const testedComponent = wrapper.findWhere(
-          (node) => node.prop('onChange') === wrapper.instance().onChangeMatchPattern
-        );
-        expect(testedComponent.prop('value')).toEqual(wrapper.state().queryConfig.matchPattern);
-        testedComponent.simulate('change', { target: { value: '***' } });
-        expect(wrapper.state().queryConfig.matchPattern).toEqual('***');
+        const ref = createRef<RedisKeysPanel>();
+        renderComponent({ ref });
+        const matchPatternInputDefault = screen.getByDisplayValue('*');
+        expect(matchPatternInputDefault).toBeInTheDocument();
+        act(() => {
+          ref.current!.onChangeMatchPattern({ target: { value: '***' } } as ChangeEvent<HTMLInputElement>);
+        });
+        const matchPatternInputUpdated = screen.getByDisplayValue('***');
+        expect(matchPatternInputUpdated).toBeInTheDocument();
       });
     });
   });

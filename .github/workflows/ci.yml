@@ -37,7 +37,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile;
+        run: yarn install --frozen-lockfile --ignore-engines;
         if: |
           steps.cache-yarn-cache.outputs.cache-hit != 'true' ||
           steps.cache-node-modules.outputs.cache-hit != 'true'

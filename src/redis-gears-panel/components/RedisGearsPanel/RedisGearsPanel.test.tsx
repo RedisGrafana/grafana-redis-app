@@ -1,18 +1,9 @@
-import { shallow } from 'enzyme';
-import React from 'react';
+import '@testing-library/jest-dom';
+import React, { createRef } from 'react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Observable } from 'rxjs';
 import { FieldType, LoadingState, toDataFrame } from '@grafana/data';
-import { Alert, Button, Input, RadioButtonGroup, Table } from '@grafana/ui';
-import { ExecutionMode } from '../../constants';
-import { CodeEditor } from '../CodeEditor';
 import { RedisGearsPanel } from './RedisGearsPanel';
-
-/**
- * Get Component
- *
- * @param props
- */
-const getComponent = ({ ...props } = {}) => <RedisGearsPanel {...(props as any)} />;
 
 /**
  * Data Source
@@ -43,64 +34,119 @@ jest.mock('@grafana/runtime', () => ({
   config: { theme2: {} },
 }));
 
+jest.mock('../CodeEditor', () => ({
+  CodeEditor: function CodeEditor({ onChange, value, width, height }: any) {
+    return (
+      <div data-testid="code-editor" data-width={width} data-height={height} data-value={value}>
+        <button type="button" onClick={() => onChange('myscript')}>
+          apply-script
+        </button>
+      </div>
+    );
+  },
+}));
+
+jest.mock('@grafana/ui', () => {
+  const React = require('react');
+  const actual = jest.requireActual('@grafana/ui');
+  return {
+    ...actual,
+    Table: function Table() {
+      return React.createElement('div', { role: 'table', 'data-testid': 'result-table' });
+    },
+  };
+});
+
+/**
+ * Default panel props so the panel can render in JSDOM (real shallow tests omitted these).
+ */
+const defaultPanelProps = {
+  width: 800,
+  height: 600,
+  data: { request: { targets: [] } },
+} as const;
+
 /**
  * RedisGears Panel
  */
 describe('RedisGearsPanel', () => {
+  function renderComponent(overrides: { ref?: React.Ref<RedisGearsPanel>; [key: string]: any } = {}) {
+    const { ref, ...props } = overrides;
+    return render(<RedisGearsPanel ref={ref} {...(defaultPanelProps as any)} {...(props as any)} />);
+  }
+
   beforeEach(() => {
     dataSourceSrvGetMock.mockClear();
     dataSourceMock.query.mockClear();
   });
 
-  it('Should update script', () => {
-    const wrapper = shallow<RedisGearsPanel>(getComponent());
-    const component = wrapper.find(CodeEditor);
-    component.simulate('change', 'myscript');
-    expect(wrapper.state().script).toEqual('myscript');
+  it('Should update script', async () => {
+    renderComponent();
+    fireEvent.click(screen.getByRole('button', { name: 'apply-script' }));
+    await waitFor(() => {
+      const codeEditor = screen.getByTestId('code-editor');
+      expect(codeEditor).toHaveAttribute('data-value', 'myscript');
+    });
   });
 
   it('Should update requirements', () => {
-    const wrapper = shallow<RedisGearsPanel>(getComponent());
-    const component = wrapper.find(Input);
-    component.simulate('change', { target: { value: 'some' } });
-    expect(wrapper.state().requirements).toEqual('some');
+    renderComponent();
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'some' } });
+    expect(input).toHaveValue('some');
   });
 
-  it('Should update unblocking', () => {
-    const wrapper = shallow<RedisGearsPanel>(getComponent());
-    const component = wrapper.find(RadioButtonGroup);
-    component.simulate('change', ExecutionMode.Unblocking);
-    expect(wrapper.state().unblocking).toEqual(true);
+  it('Should update unblocking', async () => {
+    renderComponent();
+    fireEvent.click(screen.getByRole('radio', { name: 'Unblocking' }));
+    await waitFor(() => {
+      const unblockingRadio = screen.getByRole('radio', { name: 'Unblocking' });
+      expect(unblockingRadio).toBeChecked();
+    });
   });
 
-  it('Should not update unblocking', () => {
-    const wrapper = shallow<RedisGearsPanel>(getComponent());
-    const component = wrapper.find(RadioButtonGroup);
-    component.simulate('change', ExecutionMode.Blocking);
-    expect(wrapper.state().unblocking).toEqual(false);
+  it('Should not update unblocking', async () => {
+    renderComponent();
+    fireEvent.click(screen.getByRole('radio', { name: 'Blocking' }));
+    await waitFor(() => {
+      const blockingRadio = screen.getByRole('radio', { name: 'Blocking' });
+      expect(blockingRadio).toBeChecked();
+    });
   });
 
   /**
    * Run script button
    */
   describe('Run script button', () => {
+    function renderComponent(overrides: { ref?: React.Ref<RedisGearsPanel>; [key: string]: any } = {}) {
+      const { ref, ...props } = overrides;
+      return render(<RedisGearsPanel ref={ref} {...(defaultPanelProps as any)} {...(props as any)} />);
+    }
+
     it('Should run script', () => {
-      const wrapper = shallow<RedisGearsPanel>(getComponent());
-      const testedMethod = jest.spyOn(wrapper.instance(), 'onRunScript').mockImplementation(() => Promise.resolve());
-      wrapper.instance().forceUpdate();
-      const component = wrapper.find(Button);
-      component.simulate('click');
+      const ref = createRef<RedisGearsPanel>();
+      renderComponent({ ref });
+      const testedMethod = jest.spyOn(ref.current!, 'onRunScript').mockImplementation(() => Promise.resolve());
+      act(() => {
+        ref.current!.forceUpdate();
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Run script' }));
       expect(testedMethod).toHaveBeenCalled();
+      testedMethod.mockRestore();
     });
 
     it('Should have alt view if isRunning=true', () => {
-      const wrapper = shallow<RedisGearsPanel>(getComponent());
-      expect(wrapper.find(Button).text()).toEqual('Run script');
-      wrapper.setState({
-        isRunning: true,
+      const ref = createRef<RedisGearsPanel>();
+      renderComponent({ ref });
+      const runScriptButton = screen.getByRole('button', { name: 'Run script' });
+      expect(runScriptButton).toBeEnabled();
+      act(() => {
+        ref.current!.setState({
+          isRunning: true,
+        });
       });
-      expect(wrapper.find(Button).text()).toEqual('Running...');
-      expect(wrapper.find(Button).prop('disabled')).toBeTruthy();
+      const runningButton = screen.getByRole('button', { name: 'Running...' });
+      expect(runningButton).toBeDisabled();
     });
   });
 
@@ -108,21 +154,28 @@ describe('RedisGearsPanel', () => {
    * Result
    */
   describe('Result', () => {
+    function renderComponent(overrides: { ref?: React.Ref<RedisGearsPanel>; [key: string]: any } = {}) {
+      const { ref, ...props } = overrides;
+      return render(<RedisGearsPanel ref={ref} {...(defaultPanelProps as any)} {...(props as any)} />);
+    }
+
     it('if result is empty should not be rendered', () => {
-      const wrapper = shallow<RedisGearsPanel>(getComponent());
-      expect(wrapper.state().result).not.toBeDefined();
-      expect(wrapper.find(Table).exists()).not.toBeTruthy();
+      renderComponent();
+      expect(screen.queryByRole('table')).not.toBeInTheDocument();
     });
 
     it('if result is filled should be rendered', () => {
-      const wrapper = shallow<RedisGearsPanel>(getComponent());
-      wrapper.setState({
-        result: toDataFrame({
-          fields: [],
-        }),
+      const ref = createRef<RedisGearsPanel>();
+      renderComponent({ ref });
+      act(() => {
+        ref.current!.setState({
+          result: toDataFrame({
+            fields: [],
+          }),
+        });
       });
-      expect(wrapper.state().result).toBeDefined();
-      expect(wrapper.find(Table).exists()).toBeTruthy();
+      const resultTable = screen.getByRole('table');
+      expect(resultTable).toBeInTheDocument();
     });
   });
 
@@ -130,28 +183,40 @@ describe('RedisGearsPanel', () => {
    * Error
    */
   describe('Error', () => {
+    function renderComponent(overrides: { ref?: React.Ref<RedisGearsPanel>; [key: string]: any } = {}) {
+      const { ref, ...props } = overrides;
+      return render(<RedisGearsPanel ref={ref} {...(defaultPanelProps as any)} {...(props as any)} />);
+    }
+
     it('Should show error if state.error is defined', () => {
-      const wrapper = shallow<RedisGearsPanel>(getComponent());
-      expect(wrapper.find(Alert).exists()).not.toBeTruthy();
-      wrapper.setState({
-        error: {
-          message: 'my message',
-        },
+      const ref = createRef<RedisGearsPanel>();
+      renderComponent({ ref });
+      expect(screen.queryByText('my message')).not.toBeInTheDocument();
+      act(() => {
+        ref.current!.setState({
+          error: {
+            message: 'my message',
+          },
+        });
       });
-      expect(wrapper.find(Alert).exists()).toBeTruthy();
-      expect(wrapper.find(Alert).prop('title')).toEqual('my message');
+      const errorMessage = screen.getByText('my message');
+      expect(errorMessage).toBeInTheDocument();
     });
 
-    it('Should clear error', () => {
-      const wrapper = shallow<RedisGearsPanel>(getComponent());
-      wrapper.setState({
-        error: {
-          message: 'my message',
-        },
+    it('Should clear error', async () => {
+      const ref = createRef<RedisGearsPanel>();
+      renderComponent({ ref });
+      act(() => {
+        ref.current!.setState({
+          error: {
+            message: 'my message',
+          },
+        });
       });
-      wrapper.find(Alert).simulate('remove');
-      expect(wrapper.state().error).toEqual(null);
-      expect(wrapper.find(Alert).exists()).not.toBeTruthy();
+      fireEvent.click(screen.getByRole('button', { name: 'Close alert' }));
+      await waitFor(() => {
+        expect(screen.queryByText('my message')).not.toBeInTheDocument();
+      });
     });
   });
 
@@ -159,42 +224,58 @@ describe('RedisGearsPanel', () => {
    * Calc footer height
    */
   describe('Calc footer height', () => {
-    it('Should be calculated on mount', () => {
-      const wrapper = shallow<RedisGearsPanel>(getComponent(), { disableLifecycleMethods: true });
-      wrapper.instance().footerRef = {
+    function renderComponent(overrides: { ref?: React.Ref<RedisGearsPanel>; [key: string]: any } = {}) {
+      const { ref, ...props } = overrides;
+      return render(<RedisGearsPanel ref={ref} {...(defaultPanelProps as any)} {...(props as any)} />);
+    }
+
+    it('Should be calculated on mount', async () => {
+      const ref = createRef<RedisGearsPanel>();
+      renderComponent({ ref });
+      ref.current!.footerRef = {
         current: {
           getBoundingClientRect: () => ({
             height: 100,
           }),
         },
       } as any;
-      wrapper.instance().componentDidMount();
-      expect(wrapper.state().footerHeight).toEqual(100);
+      ref.current!.componentDidMount();
+      await waitFor(() => {
+        expect(ref.current!.state.footerHeight).toEqual(100);
+      });
     });
 
-    it('Should be calculated when width was changed', () => {
-      const wrapper = shallow<RedisGearsPanel>(getComponent());
-      wrapper.instance().footerRef = {
-        current: {
-          getBoundingClientRect: () => ({
-            height: 200,
-          }),
-        },
-      } as any;
-      wrapper.setProps({
-        width: 1000,
+    it('Should be calculated when width was changed', async () => {
+      const ref = createRef<RedisGearsPanel>();
+      const rectSpy = jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
+        height: 200,
+        width: 0,
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        x: 0,
+        y: 0,
+        toJSON: () => {},
+      } as DOMRect);
+      const { rerender } = renderComponent({ ref });
+      rerender(<RedisGearsPanel ref={ref} {...(defaultPanelProps as any)} width={1000} />);
+      await waitFor(() => {
+        expect(ref.current!.state.footerHeight).toEqual(200);
       });
-      expect(wrapper.state().footerHeight).toEqual(200);
-      wrapper.instance().footerRef = {
+      rectSpy.mockRestore();
+      ref.current!.footerRef = {
         current: null,
       } as any;
-      wrapper.setState({
-        footerHeight: 0,
+      act(() => {
+        ref.current!.setState({
+          footerHeight: 0,
+        });
       });
-      wrapper.setProps({
-        width: 2000,
+      rerender(<RedisGearsPanel ref={ref} {...(defaultPanelProps as any)} width={2000} />);
+      await waitFor(() => {
+        expect(ref.current!.state.footerHeight).toEqual(0);
       });
-      expect(wrapper.state().footerHeight).toEqual(0);
     });
   });
 
@@ -202,6 +283,11 @@ describe('RedisGearsPanel', () => {
    * makeQuery
    */
   describe('makeQuery', () => {
+    function renderComponent(overrides: { ref?: React.Ref<RedisGearsPanel>; [key: string]: any } = {}) {
+      const { ref, ...props } = overrides;
+      return render(<RedisGearsPanel ref={ref} {...(defaultPanelProps as any)} {...(props as any)} />);
+    }
+
     it('Should make correct query', async () => {
       const data = {
         request: {
@@ -213,23 +299,28 @@ describe('RedisGearsPanel', () => {
         },
       };
 
-      const wrapper = shallow<RedisGearsPanel>(getComponent({ data }));
-      wrapper.setState({
-        script: 'my-script',
-        unblocking: true,
-        requirements: 'requierements',
+      const ref = createRef<RedisGearsPanel>();
+      const { rerender } = renderComponent({ ref, data });
+      act(() => {
+        ref.current!.setState({
+          script: 'my-script',
+          unblocking: true,
+          requirements: 'requierements',
+        });
       });
 
-      const result = await wrapper.instance().makeQuery();
+      await waitFor(() => expect(ref.current!.state.script).toEqual('my-script'));
+
+      const result = await ref.current!.makeQuery();
       expect(dataSourceMock.query).toHaveBeenCalledWith({
         ...data.request,
         targets: [
           {
             ...data.request.targets[0],
             command: 'rg.pyexecute',
-            keyName: wrapper.state().script,
-            unblocking: wrapper.state().unblocking,
-            requirements: wrapper.state().requirements,
+            keyName: ref.current!.state.script,
+            unblocking: ref.current!.state.unblocking,
+            requirements: ref.current!.state.requirements,
           },
         ],
       });
@@ -237,13 +328,9 @@ describe('RedisGearsPanel', () => {
         data: 123,
       });
 
-      wrapper.setProps({
-        data: {
-          request: null,
-        },
-      } as any);
       dataSourceMock.query.mockClear();
-      const result2 = await wrapper.instance().makeQuery();
+      rerender(<RedisGearsPanel ref={ref} {...(defaultPanelProps as any)} data={{ request: null }} />);
+      const result2 = await ref.current!.makeQuery();
       expect(result2).toEqual(null);
       expect(dataSourceMock.query).not.toHaveBeenCalled();
     });
@@ -253,16 +340,31 @@ describe('RedisGearsPanel', () => {
    * onRunScript
    */
   describe('onRunScript', () => {
-    const wrapper = shallow<RedisGearsPanel>(getComponent());
-    const makeQueryMock = jest.spyOn(wrapper.instance(), 'makeQuery').mockImplementation(() => Promise.resolve(null));
+    function renderComponent(overrides: { ref?: React.Ref<RedisGearsPanel>; [key: string]: any } = {}) {
+      const { ref, ...props } = overrides;
+      return render(<RedisGearsPanel ref={ref} {...(defaultPanelProps as any)} {...(props as any)} />);
+    }
+
+    let panelRef: React.RefObject<RedisGearsPanel>;
+    let makeQueryMock: jest.SpyInstance;
+
+    beforeEach(() => {
+      panelRef = createRef<RedisGearsPanel>();
+      renderComponent({ ref: panelRef });
+      makeQueryMock = jest.spyOn(panelRef.current!, 'makeQuery').mockImplementation(() => Promise.resolve(null));
+    });
+
+    afterEach(() => {
+      makeQueryMock.mockRestore();
+    });
 
     it('Should set error if responseData contains error', async () => {
       makeQueryMock.mockImplementationOnce(() => Promise.resolve(null));
-      await wrapper.instance().onRunScript();
+      await panelRef.current!.onRunScript();
       expect(makeQueryMock).toHaveBeenCalled();
-      expect(wrapper.state().result).not.toBeDefined();
-      expect(wrapper.state().isRunning).toBeFalsy();
-      expect(wrapper.state().error).toEqual({ message: 'Common error' });
+      expect(panelRef.current!.state.result).not.toBeDefined();
+      expect(panelRef.current!.state.isRunning).toBeFalsy();
+      expect(panelRef.current!.state.error).toEqual({ message: 'Common error' });
 
       makeQueryMock.mockImplementationOnce(
         () =>
@@ -273,11 +375,11 @@ describe('RedisGearsPanel', () => {
             },
           } as any)
       );
-      await wrapper.instance().onRunScript();
+      await panelRef.current!.onRunScript();
       expect(makeQueryMock).toHaveBeenCalled();
-      expect(wrapper.state().result).not.toBeDefined();
-      expect(wrapper.state().isRunning).toBeFalsy();
-      expect(wrapper.state().error).toEqual({ message: 'error from datasource' });
+      expect(panelRef.current!.state.result).not.toBeDefined();
+      expect(panelRef.current!.state.isRunning).toBeFalsy();
+      expect(panelRef.current!.state.error).toEqual({ message: 'error from datasource' });
     });
 
     it('Should set error if responseData.data[1].length > 0', async () => {
@@ -298,11 +400,11 @@ describe('RedisGearsPanel', () => {
         })
       );
 
-      await wrapper.instance().onRunScript();
+      await panelRef.current!.onRunScript();
       expect(makeQueryMock).toHaveBeenCalled();
-      expect(wrapper.state().result).not.toBeDefined();
-      expect(wrapper.state().isRunning).toBeFalsy();
-      expect(wrapper.state().error).toEqual({ message: 'Data error' });
+      expect(panelRef.current!.state.result).not.toBeDefined();
+      expect(panelRef.current!.state.isRunning).toBeFalsy();
+      expect(panelRef.current!.state.error).toEqual({ message: 'Data error' });
     });
 
     it('Should set result if responseData.data[1].length === 0', async () => {
@@ -333,21 +435,21 @@ describe('RedisGearsPanel', () => {
         })
       );
 
-      await wrapper.instance().onRunScript();
+      await panelRef.current!.onRunScript();
       expect(makeQueryMock).toHaveBeenCalled();
-      expect(wrapper.state().result).toBeDefined();
-      expect(wrapper.state().isRunning).toBeFalsy();
-      expect(wrapper.state().error).toEqual(null);
+      expect(panelRef.current!.state.result).toBeDefined();
+      expect(panelRef.current!.state.isRunning).toBeFalsy();
+      expect(panelRef.current!.state.error).toEqual(null);
       makeQueryMock.mockImplementationOnce(() =>
         Promise.resolve({
           data: [result],
         })
       );
-      await wrapper.instance().onRunScript();
+      await panelRef.current!.onRunScript();
       expect(makeQueryMock).toHaveBeenCalled();
-      expect(wrapper.state().result).toBeDefined();
-      expect(wrapper.state().isRunning).toBeFalsy();
-      expect(wrapper.state().error).toEqual(null);
+      expect(panelRef.current!.state.result).toBeDefined();
+      expect(panelRef.current!.state.isRunning).toBeFalsy();
+      expect(panelRef.current!.state.error).toEqual(null);
     });
 
     it('Should transform result if result.length=0', async () => {
@@ -365,12 +467,12 @@ describe('RedisGearsPanel', () => {
           data: [result],
         })
       );
-      await wrapper.instance().onRunScript();
+      await panelRef.current!.onRunScript();
       expect(makeQueryMock).toHaveBeenCalled();
-      expect(wrapper.state().result?.length).toEqual(1);
-      expect(wrapper.state().result?.fields[0].values.toArray()).toEqual(['OK']);
-      expect(wrapper.state().isRunning).toBeFalsy();
-      expect(wrapper.state().error).toEqual(null);
+      expect(panelRef.current!.state.result?.length).toEqual(1);
+      expect(panelRef.current!.state.result?.fields[0].values.toArray()).toEqual(['OK']);
+      expect(panelRef.current!.state.isRunning).toBeFalsy();
+      expect(panelRef.current!.state.error).toEqual(null);
     });
   });
 

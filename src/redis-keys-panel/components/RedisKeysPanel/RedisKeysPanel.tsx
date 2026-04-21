@@ -405,7 +405,7 @@ export class RedisKeysPanel extends PureComponent<Props, State> {
    * Make Query using request.targets with default commands
    */
   async makeQuery(queryType: QueryType = QueryType.Data): Promise<DataQueryResponse | null> {
-    const targets = this.props.data.request?.targets;
+    const targets = this.props.data?.request?.targets;
 
     /**
      * Data Source

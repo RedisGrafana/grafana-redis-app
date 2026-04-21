@@ -1,12 +1,19 @@
-import { shallow, ShallowWrapper } from 'enzyme';
+import '@testing-library/jest-dom';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
+import { Simulate } from 'react-dom/test-utils';
 import { Observable } from 'rxjs';
 import { LoadingState, PanelData } from '@grafana/data';
-import { Button, RadioButtonGroup } from '@grafana/ui';
-import { Help, ResponseMode } from '../../constants';
+import { Help } from '../../constants';
 import { PanelOptions } from '../../types';
-import { CLITextArea } from '../AutoScrollingTextArea';
 import { RedisCLIPanel } from './RedisCLIPanel';
+
+/**
+ * Use React TestUtils Simulate so `onKeyPress` receives a proper synthetic event with `key` (React 17 + jsdom).
+ */
+function fireKeyPressEnter(element: HTMLElement) {
+  Simulate.keyPress(element, { key: 'Enter', charCode: 13 });
+}
 
 /**
  * Override
@@ -30,8 +37,6 @@ const getOptions = ({ help = {}, ...overrideOptions }: OverrideOptions = {}): Pa
     ...help,
   },
 });
-
-type ShallowComponent = ShallowWrapper<typeof RedisCLIPanel>;
 
 /**
  * Query result
@@ -82,6 +87,15 @@ jest.mock('@grafana/runtime', () => ({
   }),
 }));
 
+interface RedisCLIPanelRenderOverrides {
+  width?: number;
+  height?: number;
+  data?: PanelData;
+  options?: PanelOptions;
+  onOptionsChange?: jest.Mock;
+  replaceVariables?: jest.Mock;
+}
+
 /**
  * Redis CLI Panel
  */
@@ -98,73 +112,68 @@ describe('RedisCLIPanel', () => {
   const options: PanelOptions = getOptions();
   const additionalProps = {} as any;
 
+  const getCommandInput = () => screen.getByPlaceholderText('PING') as HTMLInputElement;
+
   beforeEach(() => {
     onOptionsChangeMock.mockClear();
     replaceVariablesMock.mockClear();
     dataSourceSrvGetMock.mockClear();
+    dataSourceInstanceSettingsMock.jsonData = { cliDisabled: false };
   });
+
+  function buildRedisCLIPanelProps(overrides: RedisCLIPanelRenderOverrides = {}) {
+    return {
+      ...additionalProps,
+      width: overrides.width ?? width,
+      height: overrides.height ?? height,
+      data: overrides.data ?? data,
+      onOptionsChange: overrides.onOptionsChange ?? onOptionsChangeMock,
+      replaceVariables: overrides.replaceVariables ?? replaceVariablesMock,
+      options: overrides.options ?? options,
+    };
+  }
+
+  function renderComponent(overrides: RedisCLIPanelRenderOverrides = {}) {
+    return render(<RedisCLIPanel {...buildRedisCLIPanelProps(overrides)} />);
+  }
 
   /**
    * Rendering elements
    */
   describe('Rendering elements', () => {
+    function renderComponent(overrides: RedisCLIPanelRenderOverrides = {}) {
+      return render(<RedisCLIPanel {...buildRedisCLIPanelProps(overrides)} />);
+    }
+
     it('Should show AutoScrollingTextarea', () => {
-      const wrapper = shallow(
-        <RedisCLIPanel
-          {...additionalProps}
-          width={width}
-          height={height}
-          data={data}
-          onOptionsChange={onOptionsChangeMock}
-          replaceVariables={replaceVariablesMock}
-          options={options}
-        />
-      );
-      const testedComponent = wrapper.find(CLITextArea);
-      expect(testedComponent.exists()).toBeTruthy();
-      expect(testedComponent.prop('value')).toEqual(options.output);
+      renderComponent();
+      const textarea = document.querySelector('textarea');
+      expect(textarea).toBeInTheDocument();
+      expect(textarea).toHaveValue(options.output);
     });
 
     /**
      * Help
      */
     describe('Help', () => {
-      const getHelpComponent = (wrapper: ShallowComponent) => {
-        return wrapper.find('#help');
-      };
+      function renderComponent(overrides: RedisCLIPanelRenderOverrides = {}) {
+        return render(<RedisCLIPanel {...buildRedisCLIPanelProps(overrides)} />);
+      }
+
+      const getHelpSection = () => document.querySelector('#help');
 
       it('Should be shown if query and help are filled', () => {
         const options = getOptions({ query: '123', help: {} });
-        const wrapper = shallow(
-          <RedisCLIPanel
-            {...additionalProps}
-            width={width}
-            height={height}
-            data={data}
-            onOptionsChange={onOptionsChangeMock}
-            replaceVariables={replaceVariablesMock}
-            options={options}
-          />
-        );
-        const testedComponent = getHelpComponent(wrapper);
-        expect(testedComponent.exists()).toBeTruthy();
+        renderComponent({ options });
+        const helpSection = getHelpSection();
+        expect(helpSection).toBeInTheDocument();
       });
 
       it('Should not be shown if query or help are empty', () => {
         const options = getOptions({ query: '', help: null });
-        const wrapper = shallow(
-          <RedisCLIPanel
-            {...additionalProps}
-            width={width}
-            height={height}
-            data={data}
-            onOptionsChange={onOptionsChangeMock}
-            replaceVariables={replaceVariablesMock}
-            options={options}
-          />
-        );
-        const testedComponent = getHelpComponent(wrapper);
-        expect(testedComponent.exists()).not.toBeTruthy();
+        renderComponent({ options });
+        const helpSection = getHelpSection();
+        expect(helpSection).not.toBeInTheDocument();
       });
 
       it('Danger: Should be shown if the field is filled', () => {
@@ -175,20 +184,12 @@ describe('RedisCLIPanel', () => {
             danger: value,
           },
         });
-        const wrapper = shallow(
-          <RedisCLIPanel
-            {...additionalProps}
-            width={width}
-            height={height}
-            data={data}
-            onOptionsChange={onOptionsChangeMock}
-            replaceVariables={replaceVariablesMock}
-            options={options}
-          />
-        );
-        const testedComponent = getHelpComponent(wrapper).find('#help-danger');
-        expect(testedComponent.exists());
-        expect(testedComponent.text()).toEqual(value);
+        renderComponent({ options });
+        const helpSection = getHelpSection() as HTMLElement;
+        expect(helpSection).toBeInTheDocument();
+        const danger = helpSection.querySelector('#help-danger');
+        expect(danger).toBeInTheDocument();
+        expect(danger).toHaveTextContent(value);
       });
 
       it('Warning: Should be shown if the field is filled', () => {
@@ -199,20 +200,12 @@ describe('RedisCLIPanel', () => {
             warning: value,
           },
         });
-        const wrapper = shallow(
-          <RedisCLIPanel
-            {...additionalProps}
-            width={width}
-            height={height}
-            data={data}
-            onOptionsChange={onOptionsChangeMock}
-            replaceVariables={replaceVariablesMock}
-            options={options}
-          />
-        );
-        const testedComponent = getHelpComponent(wrapper).find('#help-warning');
-        expect(testedComponent.exists());
-        expect(testedComponent.text()).toEqual(value);
+        renderComponent({ options });
+        const helpSection = getHelpSection() as HTMLElement;
+        expect(helpSection).toBeInTheDocument();
+        const warning = helpSection.querySelector('#help-warning');
+        expect(warning).toBeInTheDocument();
+        expect(warning).toHaveTextContent(value);
       });
 
       it('Complexity: should be shown if the field is filled', () => {
@@ -223,20 +216,12 @@ describe('RedisCLIPanel', () => {
             complexity: value,
           },
         });
-        const wrapper = shallow(
-          <RedisCLIPanel
-            {...additionalProps}
-            width={width}
-            height={height}
-            data={data}
-            onOptionsChange={onOptionsChangeMock}
-            replaceVariables={replaceVariablesMock}
-            options={options}
-          />
-        );
-        const testedComponent = getHelpComponent(wrapper).find('#help-complexity');
-        expect(testedComponent.exists());
-        expect(testedComponent.text().indexOf(value) >= 0).toBeTruthy();
+        renderComponent({ options });
+        const helpSection = getHelpSection() as HTMLElement;
+        expect(helpSection).toBeInTheDocument();
+        const complexity = helpSection.querySelector('#help-complexity');
+        expect(complexity).toBeInTheDocument();
+        expect((complexity?.textContent?.indexOf(value) ?? -1) >= 0).toBeTruthy();
       });
 
       it('Since: should be shown if the field is filled', () => {
@@ -247,20 +232,12 @@ describe('RedisCLIPanel', () => {
             since: value,
           },
         });
-        const wrapper = shallow(
-          <RedisCLIPanel
-            {...additionalProps}
-            width={width}
-            height={height}
-            data={data}
-            onOptionsChange={onOptionsChangeMock}
-            replaceVariables={replaceVariablesMock}
-            options={options}
-          />
-        );
-        const testedComponent = getHelpComponent(wrapper).find('#help-since');
-        expect(testedComponent.exists());
-        expect(testedComponent.text().indexOf(value) >= 0).toBeTruthy();
+        renderComponent({ options });
+        const helpSection = getHelpSection() as HTMLElement;
+        expect(helpSection).toBeInTheDocument();
+        const since = helpSection.querySelector('#help-since');
+        expect(since).toBeInTheDocument();
+        expect((since?.textContent?.indexOf(value) ?? -1) >= 0).toBeTruthy();
       });
 
       it('Url: should be shown if the field is filled', () => {
@@ -271,20 +248,12 @@ describe('RedisCLIPanel', () => {
             url: value,
           },
         });
-        const wrapper = shallow(
-          <RedisCLIPanel
-            {...additionalProps}
-            width={width}
-            height={height}
-            data={data}
-            onOptionsChange={onOptionsChangeMock}
-            replaceVariables={replaceVariablesMock}
-            options={options}
-          />
-        );
-        const testedComponent = getHelpComponent(wrapper).find('#help-url');
-        expect(testedComponent.exists());
-        expect(testedComponent.text().indexOf(value) >= 0).toBeTruthy();
+        renderComponent({ options });
+        const helpSection = getHelpSection() as HTMLElement;
+        expect(helpSection).toBeInTheDocument();
+        const urlBlock = helpSection.querySelector('#help-url');
+        expect(urlBlock).toBeInTheDocument();
+        expect((urlBlock?.textContent?.indexOf(value) ?? -1) >= 0).toBeTruthy();
       });
     });
   });
@@ -293,56 +262,34 @@ describe('RedisCLIPanel', () => {
    * Query
    */
   describe('Query', () => {
-    const getTestedComponent = (wrapper: ShallowComponent) => {
-      return wrapper.findWhere(
-        (node) => node.prop('name') === 'query' && (node.name() === 'input' || node.name() === 'Input')
-      );
-    };
+    function renderComponent(overrides: RedisCLIPanelRenderOverrides = {}) {
+      return render(<RedisCLIPanel {...buildRedisCLIPanelProps(overrides)} />);
+    }
 
     it('Should set value from options', () => {
       const options = getOptions({
         query: '123',
       });
-      const wrapper = shallow(
-        <RedisCLIPanel
-          {...additionalProps}
-          width={width}
-          height={height}
-          data={data}
-          onOptionsChange={onOptionsChangeMock}
-          replaceVariables={replaceVariablesMock}
-          options={options}
-        />
-      );
-      const testedComponent = getTestedComponent(wrapper);
-      expect(testedComponent.prop('value')).toEqual(options.query);
+      renderComponent({ options });
+      expect(getCommandInput()).toHaveValue(options.query);
     });
 
     it('Should update query and help when value was changed', () => {
       const options = getOptions({
         query: '123',
       });
-      const wrapper = shallow(
-        <RedisCLIPanel
-          {...additionalProps}
-          width={width}
-          height={height}
-          data={data}
-          onOptionsChange={onOptionsChangeMock}
-          replaceVariables={replaceVariablesMock}
-          options={options}
-        />
-      );
-      const testedComponent = getTestedComponent(wrapper);
+      renderComponent({ options });
+      const input = getCommandInput();
       const newValue = 'acl.load';
-      testedComponent.simulate('change', { target: { value: newValue } });
+      fireEvent.change(input, { target: { value: newValue } });
       expect(onOptionsChangeMock).toHaveBeenCalledWith({
         ...options,
         query: newValue,
         help: Help['ACL LOAD'],
       });
+      onOptionsChangeMock.mockClear();
       const newValue2 = 'acl';
-      testedComponent.simulate('change', { target: { value: newValue2 } });
+      fireEvent.change(input, { target: { value: newValue2 } });
       expect(onOptionsChangeMock).toHaveBeenCalledWith({
         ...options,
         query: newValue2,
@@ -354,19 +301,9 @@ describe('RedisCLIPanel', () => {
       const options = getOptions({
         query: 'ACL.LOAD',
       });
-      const wrapper = shallow(
-        <RedisCLIPanel
-          {...additionalProps}
-          width={width}
-          height={height}
-          data={data}
-          onOptionsChange={onOptionsChangeMock}
-          replaceVariables={replaceVariablesMock}
-          options={options}
-        />
-      );
-      const testedComponent = getTestedComponent(wrapper);
-      testedComponent.simulate('keypress', { key: 'Esc' });
+      renderComponent({ options });
+      const input = getCommandInput();
+      fireEvent.keyPress(input, { key: 'Esc' });
       expect(onOptionsChangeMock).not.toHaveBeenCalled();
     });
 
@@ -374,26 +311,16 @@ describe('RedisCLIPanel', () => {
       const options = getOptions({
         query: 'ACL.LOAD',
       });
-      const wrapper = shallow(
-        <RedisCLIPanel
-          {...additionalProps}
-          width={width}
-          height={height}
-          data={data}
-          onOptionsChange={onOptionsChangeMock}
-          replaceVariables={replaceVariablesMock}
-          options={options}
-        />
-      );
-      const testedComponent = getTestedComponent(wrapper);
-      testedComponent.simulate('keypress', { key: 'Enter' });
+      renderComponent({ options });
+      const input = getCommandInput();
+      fireKeyPressEnter(input);
       expect(onOptionsChangeMock).toHaveBeenCalledWith({
         ...options,
         output: 'Unknown Data Source',
       });
     });
 
-    it('Should run query and process it when Enter key was entered', (done) => {
+    it('Should run query and process it when Enter key was entered', async () => {
       const options = getOptions({
         query: 'ACL.LOAD',
         output: 'custom-output',
@@ -401,31 +328,20 @@ describe('RedisCLIPanel', () => {
       const overrideData = {
         ...data,
         request: { targets: [{ datasource: 'datasource/id' }] },
-      };
-      const wrapper = shallow(
-        <RedisCLIPanel
-          {...additionalProps}
-          width={width}
-          height={height}
-          data={overrideData}
-          onOptionsChange={onOptionsChangeMock}
-          replaceVariables={replaceVariablesMock}
-          options={options}
-        />
-      );
-      const testedComponent = getTestedComponent(wrapper);
-      testedComponent.simulate('keypress', { key: 'Enter' });
-      setImmediate(() => {
+      } as any;
+      renderComponent({ data: overrideData, options });
+      const input = getCommandInput();
+      fireKeyPressEnter(input);
+      await waitFor(() => {
         expect(onOptionsChangeMock).toHaveBeenCalledWith({
           ...options,
           output: `${options.output}\n${dataSourceMock.name}> ${options.query}\ninfo`,
           query: '',
         });
-        done();
       });
     });
 
-    it('Run query when output is empty', (done) => {
+    it('Run query when output is empty', async () => {
       const options = getOptions({
         query: 'ACL.LOAD',
         output: '',
@@ -433,31 +349,20 @@ describe('RedisCLIPanel', () => {
       const overrideData = {
         ...data,
         request: { targets: [{ datasource: 'datasource/id' }] },
-      };
-      const wrapper = shallow(
-        <RedisCLIPanel
-          {...additionalProps}
-          width={width}
-          height={height}
-          data={overrideData}
-          onOptionsChange={onOptionsChangeMock}
-          replaceVariables={replaceVariablesMock}
-          options={options}
-        />
-      );
-      const testedComponent = getTestedComponent(wrapper);
-      testedComponent.simulate('keypress', { key: 'Enter' });
-      setImmediate(() => {
+      } as any;
+      renderComponent({ data: overrideData, options });
+      const input = getCommandInput();
+      fireKeyPressEnter(input);
+      await waitFor(() => {
         expect(onOptionsChangeMock).toHaveBeenCalledWith({
           ...options,
           output: `${dataSourceMock.name}> ${options.query}\ninfo`,
           query: '',
         });
-        done();
       });
     });
 
-    it('Run query when datasource is empty', (done) => {
+    it('Run query when datasource is empty', async () => {
       dataSourceMock.query.mockImplementationOnce(
         () =>
           new Observable((subscriber) => {
@@ -472,31 +377,20 @@ describe('RedisCLIPanel', () => {
       const overrideData = {
         ...data,
         request: { targets: [{ datasource: 'datasource/id' }] },
-      };
-      const wrapper = shallow(
-        <RedisCLIPanel
-          {...additionalProps}
-          width={width}
-          height={height}
-          data={overrideData}
-          onOptionsChange={onOptionsChangeMock}
-          replaceVariables={replaceVariablesMock}
-          options={options}
-        />
-      );
-      const testedComponent = getTestedComponent(wrapper);
-      testedComponent.simulate('keypress', { key: 'Enter' });
-      setImmediate(() => {
+      } as any;
+      renderComponent({ data: overrideData, options });
+      const input = getCommandInput();
+      fireKeyPressEnter(input);
+      await waitFor(() => {
         expect(onOptionsChangeMock).toHaveBeenCalledWith({
           ...options,
           output: `${dataSourceMock.name}> ${options.query}\nERROR`,
           query: '',
         });
-        done();
       });
     });
 
-    it('Run query with error received', (done) => {
+    it('Run query with error received', async () => {
       const getDataSourceQueryError = () => ({
         error: {
           message: 'Error',
@@ -519,25 +413,14 @@ describe('RedisCLIPanel', () => {
       const overrideData = {
         ...data,
         request: { targets: [{ datasource: 'datasource/id' }] },
-      };
+      } as any;
 
-      const wrapper = shallow(
-        <RedisCLIPanel
-          {...additionalProps}
-          width={width}
-          height={height}
-          data={overrideData}
-          onOptionsChange={onOptionsChangeMock}
-          replaceVariables={replaceVariablesMock}
-          options={options}
-        />
-      );
+      renderComponent({ data: overrideData, options });
 
-      const testedComponent = getTestedComponent(wrapper);
-      testedComponent.simulate('keypress', { key: 'Enter' });
-      setImmediate(() => {
+      const input = getCommandInput();
+      fireKeyPressEnter(input);
+      await waitFor(() => {
         expect(onOptionsChangeMock).toHaveBeenCalled();
-        done();
       });
     });
   });
@@ -546,19 +429,9 @@ describe('RedisCLIPanel', () => {
     const options = getOptions({
       output: 'custom-output',
     });
-    const wrapper = shallow(
-      <RedisCLIPanel
-        {...additionalProps}
-        width={width}
-        height={height}
-        data={data}
-        onOptionsChange={onOptionsChangeMock}
-        replaceVariables={replaceVariablesMock}
-        options={options}
-      />
-    );
-    const testedComponent = wrapper.find(Button);
-    testedComponent.simulate('click');
+    renderComponent({ options });
+    const clearButton = screen.getByRole('button', { name: 'Clear' });
+    fireEvent.click(clearButton);
     expect(onOptionsChangeMock).toHaveBeenCalledWith({
       ...options,
       output: '',
@@ -570,32 +443,35 @@ describe('RedisCLIPanel', () => {
      * Response Mode
      */
     describe('ResponseMode', () => {
-      it('Should apply options value and change', () => {
-        const options = {};
-        const wrapper = shallow(
-          <RedisCLIPanel
-            {...additionalProps}
-            width={width}
-            height={height}
-            data={data}
-            onOptionsChange={onOptionsChangeMock}
-            replaceVariables={replaceVariablesMock}
-            options={options}
-          />
-        );
-        const testedComponent = wrapper.find(RadioButtonGroup);
-        expect(testedComponent.prop('value')).toEqual(ResponseMode.CLI);
+      function renderComponent(overrides: RedisCLIPanelRenderOverrides = {}) {
+        return render(<RedisCLIPanel {...buildRedisCLIPanelProps(overrides)} />);
+      }
 
-        testedComponent.simulate('change');
+      it('Should apply options value and change', () => {
+        let options = {} as PanelOptions;
+        const { rerender } = renderComponent({ options });
+        const cliRadio = screen.getByRole('radio', { name: 'CLI' });
+        expect(cliRadio).toBeChecked();
+
+        const radioGroup = cliRadio.parentElement as HTMLDivElement;
+        expect(radioGroup).toBeTruthy();
+        fireEvent.change(radioGroup);
         expect(onOptionsChangeMock).not.toHaveBeenCalled();
 
-        testedComponent.simulate('change', ResponseMode.RAW);
+        const inGroup = within(radioGroup);
+        fireEvent.click(inGroup.getByText('Raw', { selector: 'label' }));
         expect(onOptionsChangeMock).toHaveBeenCalledWith({
           ...options,
           raw: true,
         });
 
-        testedComponent.simulate('change', ResponseMode.CLI);
+        options = { ...options, raw: true };
+        rerender(<RedisCLIPanel {...buildRedisCLIPanelProps({ options })} />);
+
+        onOptionsChangeMock.mockClear();
+        const rawRadio = screen.getByRole('radio', { name: 'Raw' });
+        const inGroupAfter = within(rawRadio.parentElement as HTMLElement);
+        fireEvent.click(inGroupAfter.getByText('CLI', { selector: 'label' }));
         expect(onOptionsChangeMock).toHaveBeenCalledWith({
           ...options,
           raw: false,
@@ -611,22 +487,11 @@ describe('RedisCLIPanel', () => {
     const overrideData = {
       ...data,
       request: { targets: [{ datasource: 'datasource/id' }] },
-    };
+    } as any;
 
     dataSourceInstanceSettingsMock.jsonData.cliDisabled = true;
-    const wrapper = shallow(
-      <RedisCLIPanel
-        {...additionalProps}
-        width={width}
-        height={height}
-        data={overrideData}
-        onOptionsChange={onOptionsChangeMock}
-        replaceVariables={replaceVariablesMock}
-        options={options}
-      />
-    );
-    const button = wrapper.find(Button);
-    expect(button.exists()).toBeFalsy();
+    renderComponent({ data: overrideData, options });
+    expect(screen.queryByRole('button', { name: 'Clear' })).not.toBeInTheDocument();
   });
 
   afterAll(() => {

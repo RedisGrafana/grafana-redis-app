@@ -1,66 +1,97 @@
-import { shallow } from 'enzyme';
-import React from 'react';
-import { Observable } from 'rxjs';
-import { FieldType, toDataFrame } from '@grafana/data';
+import '@testing-library/jest-dom';
+import { act, render, screen, waitFor } from '@testing-library/react';
+import React, { createRef } from 'react';
+import { dateTime, FieldType, toDataFrame } from '@grafana/data';
 import { DefaultInterval, FieldName } from '../../constants';
-import { RedisCPUGraph } from '../RedisCPUGraph';
-import { RedisCPUPanel } from './RedisCPUPanel';
 
-/**
- * Query Result
- */
-const getDataSourceQueryResult = (fields: Array<{ name: FieldName; type: FieldType; values: number[] }>) => ({
-  data: [
-    toDataFrame({
-      name: 'data',
-      fields,
-    }),
-  ],
+jest.mock('@grafana/ui', () => {
+  const React = require('react');
+  const actual = jest.requireActual('@grafana/ui');
+  return {
+    ...actual,
+    TooltipDisplayMode: actual.TooltipDisplayMode ?? { Multi: 0 },
+    TimeSeries: function TimeSeries({
+      children,
+    }: {
+      children?: (config: unknown, alignedDataFrame: unknown) => React.ReactNode;
+    }) {
+      return (
+        <div data-testid="redis-cpu-timeseries">{typeof children === 'function' ? children({}, {}) : children}</div>
+      );
+    },
+    TooltipPlugin: function TooltipPlugin() {
+      return <div data-testid="tooltip-plugin" />;
+    },
+  };
 });
 
-/*
- DataSource
- */
-const dataSourceMock = {
-  query: jest.fn().mockImplementation(
-    () =>
-      new Observable((subscriber) => {
-        subscriber.next(
-          getDataSourceQueryResult([
-            {
-              type: FieldType.number,
-              name: FieldName.User,
-              values: [2000, 3000],
-            },
-            {
-              type: FieldType.number,
-              name: FieldName.System,
-              values: [10, 20],
-            },
-          ])
-        );
-        subscriber.complete();
-      })
-  ),
-  name: 'datasource',
-};
-
-const dataSourceSrvGetMock = jest.fn().mockImplementation(() => Promise.resolve(dataSourceMock));
-
 /**
- * Mock getDataSourceSrv function
+ * Mock getDataSourceSrv function (fully inside factory so Jest hoisting always wires `get` to a real jest.fn).
  */
-jest.mock('@grafana/runtime', () => ({
-  getDataSourceSrv: () => ({
-    get: dataSourceSrvGetMock,
-  }),
-}));
+jest.mock('@grafana/runtime', () => {
+  const { Observable } = require('rxjs');
+  const { FieldType, toDataFrame } = require('@grafana/data');
+  const { FieldName } = require('../../constants');
+
+  const getDataSourceQueryResult = (fields: Array<{ name: FieldName; type: FieldType; values: number[] }>) => ({
+    data: [
+      toDataFrame({
+        name: 'data',
+        fields,
+      }),
+    ],
+  });
+
+  const dataSourceMock = {
+    query: jest.fn().mockImplementation(
+      () =>
+        new Observable((subscriber: { next: (v: unknown) => void; complete: () => void }) => {
+          subscriber.next(
+            getDataSourceQueryResult([
+              {
+                type: FieldType.number,
+                name: FieldName.User,
+                values: [2000, 3000],
+              },
+              {
+                type: FieldType.number,
+                name: FieldName.System,
+                values: [10, 20],
+              },
+            ])
+          );
+          subscriber.complete();
+        })
+    ),
+    name: 'datasource',
+  };
+
+  const dataSourceSrvGetMock = jest.fn().mockImplementation(() => Promise.resolve(dataSourceMock));
+
+  const actual = jest.requireActual('@grafana/runtime');
+
+  return {
+    ...actual,
+    getDataSourceSrv: () => ({
+      get: dataSourceSrvGetMock,
+    }),
+  };
+});
+
+import { getDataSourceSrv } from '@grafana/runtime';
+import { RedisCPUPanel } from './RedisCPUPanel';
+
+const dataSourceSrvGetMock = getDataSourceSrv().get as jest.Mock;
+let dataSourceMock: { query: jest.Mock; name: string };
 
 /**
  * CPU Panel
  */
 describe('RedisCPUPanel', () => {
-  const getComponent = ({ options = { interval: 1000 }, ...restProps }: any) => {
+  beforeAll(async () => {
+    dataSourceMock = await dataSourceSrvGetMock('redis');
+  });
+  function redisCpuPanelUi({ options = { interval: 1000 }, ref, ...restProps }: any = {}) {
     const data = {
       request: {
         targets: [
@@ -70,8 +101,28 @@ describe('RedisCPUPanel', () => {
         ],
       },
     };
-    return <RedisCPUPanel data={data} {...restProps} options={options} />;
-  };
+    const timeRange = {
+      from: dateTime(),
+      to: dateTime(),
+      raw: { from: 'now-6h', to: 'now' },
+    };
+    return (
+      <RedisCPUPanel
+        ref={ref}
+        data={data}
+        height={400}
+        width={600}
+        timeRange={timeRange}
+        timeZone="browser"
+        {...restProps}
+        options={options}
+      />
+    );
+  }
+
+  function renderComponent(overrides: Record<string, unknown> = {}) {
+    return render(redisCpuPanelUi(overrides));
+  }
 
   beforeEach(() => {
     dataSourceSrvGetMock.mockClear();
@@ -83,26 +134,32 @@ describe('RedisCPUPanel', () => {
    */
   describe('makeQuery', () => {
     it('If no targets nothing should be loaded and shown', async () => {
-      const wrapper = shallow<RedisCPUPanel>(getComponent({ data: { request: { targets: [] } } }));
-      const data = await wrapper.instance().makeQuery();
-      expect(data).toBeNull();
+      const ref = createRef<RedisCPUPanel>();
+      renderComponent({ ref, data: { request: { targets: [] } } });
+
+      await act(async () => {
+        const data = await ref.current!.makeQuery();
+        expect(data).toBeNull();
+      });
     });
 
     it('Should use default command if command empty in targets', async () => {
-      const wrapper = shallow<RedisCPUPanel>(
-        getComponent({
-          data: {
-            request: {
-              targets: [{ datasource: 'Redis111' }],
-            },
+      const ref = createRef<RedisCPUPanel>();
+      renderComponent({
+        ref,
+        data: {
+          request: {
+            targets: [{ datasource: 'Redis111' }],
           },
-        })
-      );
+        },
+      });
 
       /**
        * Query
        */
-      await wrapper.instance().makeQuery();
+      await act(async () => {
+        await ref.current!.makeQuery();
+      });
       expect(dataSourceSrvGetMock).toHaveBeenCalledWith('Redis111');
       expect(dataSourceMock.query).toHaveBeenCalledWith({
         targets: [
@@ -116,20 +173,22 @@ describe('RedisCPUPanel', () => {
     });
 
     it('Should use query params from props if there are', async () => {
-      const wrapper = shallow<RedisCPUPanel>(
-        getComponent({
-          data: {
-            request: {
-              targets: [{ datasource: 'Redis111', command: 'command', section: 'section', type: 'type' }],
-            },
+      const ref = createRef<RedisCPUPanel>();
+      renderComponent({
+        ref,
+        data: {
+          request: {
+            targets: [{ datasource: 'Redis111', command: 'command', section: 'section', type: 'type' }],
           },
-        })
-      );
+        },
+      });
 
       /**
        * Query
        */
-      await wrapper.instance().makeQuery();
+      await act(async () => {
+        await ref.current!.makeQuery();
+      });
       expect(dataSourceSrvGetMock).toHaveBeenCalledWith('Redis111');
       expect(dataSourceMock.query).toHaveBeenCalledWith({
         targets: [
@@ -213,22 +272,22 @@ describe('RedisCPUPanel', () => {
      */
     describe('Mount', () => {
       it('If options.interval is filled should set interval', () => {
-        const wrapper = shallow<RedisCPUPanel>(getComponent({ data }));
-        const testedMethod = jest
-          .spyOn(wrapper.instance(), 'setRequestDataInterval')
-          .mockImplementation(() => Promise.resolve());
-        wrapper.instance().componentDidMount();
-        expect(testedMethod).toHaveBeenCalled();
+        const spy = jest.spyOn(RedisCPUPanel.prototype, 'setRequestDataInterval').mockImplementation(() => {
+          return undefined as any;
+        });
+        renderComponent({ data });
+        expect(spy).toHaveBeenCalled();
+        spy.mockRestore();
       });
 
       it('If options.interval is empty should not set interval', () => {
         const options = {};
-        const wrapper = shallow<RedisCPUPanel>(getComponent({ data, options }));
-        const testedMethod = jest
-          .spyOn(wrapper.instance(), 'setRequestDataInterval')
-          .mockImplementation(() => Promise.resolve());
-        wrapper.instance().componentDidMount();
-        expect(testedMethod).not.toHaveBeenCalled();
+        const spy = jest.spyOn(RedisCPUPanel.prototype, 'setRequestDataInterval').mockImplementation(() => {
+          return undefined as any;
+        });
+        renderComponent({ data, options });
+        expect(spy).not.toHaveBeenCalled();
+        spy.mockRestore();
       });
     });
 
@@ -237,24 +296,25 @@ describe('RedisCPUPanel', () => {
      */
     describe('Update', () => {
       it('If options.interval was changed should set interval', () => {
-        const wrapper = shallow<RedisCPUPanel>(getComponent({ data }));
-        const testedMethod = jest
-          .spyOn(wrapper.instance(), 'setRequestDataInterval')
-          .mockImplementation(() => Promise.resolve());
-        wrapper.instance().componentDidMount();
-        expect(testedMethod).toHaveBeenCalled();
-
-        testedMethod.mockClear();
-        wrapper.setProps({
-          options: { interval: 2000, maxItemsPerSeries: 1000 },
+        const ref = createRef<RedisCPUPanel>();
+        const spy = jest.spyOn(RedisCPUPanel.prototype, 'setRequestDataInterval').mockImplementation(() => {
+          return undefined as any;
         });
-        expect(testedMethod).toHaveBeenCalled();
+        const { rerender } = renderComponent({ ref, data });
+        expect(spy).toHaveBeenCalled();
 
-        testedMethod.mockClear();
-        wrapper.setProps({
-          options: { interval: 2000, maxItemsPerSeries: 1000 },
+        spy.mockClear();
+        act(() => {
+          rerender(redisCpuPanelUi({ ref, data, options: { interval: 2000, maxItemsPerSeries: 1000 } }));
         });
-        expect(testedMethod).not.toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
+
+        spy.mockClear();
+        act(() => {
+          rerender(redisCpuPanelUi({ ref, data, options: { interval: 2000, maxItemsPerSeries: 1000 } }));
+        });
+        expect(spy).not.toHaveBeenCalled();
+        spy.mockRestore();
       });
     });
 
@@ -263,10 +323,11 @@ describe('RedisCPUPanel', () => {
      */
     describe('Unmount', () => {
       it('Should clear interval', () => {
-        const wrapper = shallow<RedisCPUPanel>(getComponent({ data }));
-        const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval').mockImplementation(() => {});
-        wrapper.instance().componentWillUnmount();
-        expect(testedMethod).toHaveBeenCalled();
+        const spy = jest.spyOn(RedisCPUPanel.prototype, 'clearRequestDataInterval').mockImplementation(() => {});
+        const { unmount } = renderComponent({ data });
+        unmount();
+        expect(spy).toHaveBeenCalled();
+        spy.mockRestore();
       });
     });
 
@@ -274,56 +335,87 @@ describe('RedisCPUPanel', () => {
      * Update seriesMap
      */
     describe('Update seriesMap', () => {
-      it('Should set timer and request data with interval', (done) => {
+      it('Should set timer and request data with interval', async () => {
+        jest.useFakeTimers();
         const options = {
           interval: 1000,
           maxItemsPerSeries: 1,
         };
-        const wrapper = shallow<RedisCPUPanel>(getComponent({ data, options }));
-        const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
+        const ref = createRef<RedisCPUPanel>();
+        const testedMethod = jest.spyOn(RedisCPUPanel.prototype, 'updateData');
 
-        setImmediate(() => {
-          testedMethod.mockClear();
-          let checksCount = 2;
+        renderComponent({ ref, data, options });
 
-          const check = () => {
-            expect(testedMethod).toHaveBeenCalled();
-
-            checksCount--;
-            if (checksCount > 0) {
-              testedMethod.mockClear();
-              setTimeout(check, options.interval);
-            } else {
-              done();
-            }
-          };
-          setTimeout(check, options.interval);
+        await act(async () => {
+          await Promise.resolve();
         });
+
+        testedMethod.mockClear();
+        let checksCount = 2;
+
+        const check = async () => {
+          expect(testedMethod).toHaveBeenCalled();
+
+          checksCount--;
+          if (checksCount > 0) {
+            testedMethod.mockClear();
+            await act(async () => {
+              jest.advanceTimersByTime(options.interval);
+              await Promise.resolve();
+            });
+            await check();
+          }
+        };
+
+        await act(async () => {
+          jest.advanceTimersByTime(options.interval);
+          await Promise.resolve();
+        });
+        await check();
+
+        testedMethod.mockRestore();
+        jest.useRealTimers();
       });
 
-      it('Should set timer with default interval if no interval option and request data with interval', (done) => {
+      it('Should set timer with default interval if no interval option and request data with interval', async () => {
+        jest.useFakeTimers();
         const options = {
           interval: null,
         };
-        const wrapper = shallow<RedisCPUPanel>(getComponent({ data, options }));
-        const testedMethod = jest.spyOn(wrapper.instance(), 'updateData');
+        const ref = createRef<RedisCPUPanel>();
+        const testedMethod = jest.spyOn(RedisCPUPanel.prototype, 'updateData');
 
-        setImmediate(() => {
-          testedMethod.mockClear();
-          let checksCount = 2;
-          const check = () => {
-            expect(testedMethod).toHaveBeenCalled();
+        renderComponent({ ref, data, options });
 
-            checksCount--;
-            if (checksCount > 0) {
-              testedMethod.mockClear();
-              setTimeout(check, DefaultInterval);
-            } else {
-              done();
-            }
-          };
-          setTimeout(check, DefaultInterval);
+        await act(async () => {
+          await Promise.resolve();
         });
+
+        testedMethod.mockClear();
+        let checksCount = 2;
+
+        const check = async () => {
+          expect(testedMethod).toHaveBeenCalled();
+
+          checksCount--;
+          if (checksCount > 0) {
+            testedMethod.mockClear();
+            await act(async () => {
+              jest.advanceTimersByTime(DefaultInterval);
+              await Promise.resolve();
+            });
+            await check();
+          }
+        };
+
+        await act(async () => {
+          jest.advanceTimersByTime(DefaultInterval);
+          await Promise.resolve();
+        });
+        await check();
+
+        testedMethod.mockRestore();
+        jest.useRealTimers();
       });
 
       it('Should clear interval before setting new one', (done) => {
@@ -332,12 +424,17 @@ describe('RedisCPUPanel', () => {
           maxItemsPerSeries: 1000,
         };
 
-        const wrapper = shallow<RedisCPUPanel>(getComponent({ data, options }));
-        const testedMethod = jest.spyOn(wrapper.instance(), 'clearRequestDataInterval');
+        const ref = createRef<RedisCPUPanel>();
+        const testedMethod = jest.spyOn(RedisCPUPanel.prototype, 'clearRequestDataInterval');
+
+        renderComponent({ ref, data, options });
 
         setImmediate(() => {
-          wrapper.instance().setRequestDataInterval();
+          act(() => {
+            ref.current!.setRequestDataInterval();
+          });
           expect(testedMethod).toHaveBeenCalled();
+          testedMethod.mockRestore();
           done();
         });
       });
@@ -358,7 +455,7 @@ describe('RedisCPUPanel', () => {
             ],
           },
         };
-        shallow<RedisCPUPanel>(getComponent({ data: overrideData, options }));
+        renderComponent({ data: overrideData, options });
         setImmediate(() => {
           expect(dataSourceSrvGetMock).toHaveBeenCalledWith('redis');
           done();
@@ -370,16 +467,22 @@ describe('RedisCPUPanel', () => {
           interval: 1000,
         };
 
-        const wrapper = shallow<RedisCPUPanel>(getComponent({ data, options }), { disableLifecycleMethods: true });
-        jest.spyOn(wrapper.instance(), 'makeQuery').mockImplementation(() =>
-          Promise.resolve({
-            data: [],
-          })
-        );
+        const mountSpy = jest.spyOn(RedisCPUPanel.prototype, 'componentDidMount').mockImplementation(() => {
+          /* skip mount to mirror shallow({ disableLifecycleMethods: true }) */
+        });
+        jest.spyOn(RedisCPUPanel.prototype, 'makeQuery').mockResolvedValue({ data: [] } as any);
+        const setStateMock = jest.spyOn(RedisCPUPanel.prototype, 'setState');
 
-        const setStateMock = jest.spyOn(wrapper.instance(), 'setState');
-        await wrapper.instance().updateData();
+        const ref = createRef<RedisCPUPanel>();
+        renderComponent({ ref, data, options });
+
+        await act(async () => {
+          await ref.current!.updateData();
+        });
         expect(setStateMock).not.toHaveBeenCalled();
+
+        mountSpy.mockRestore();
+        setStateMock.mockRestore();
       });
     });
 
@@ -393,13 +496,18 @@ describe('RedisCPUPanel', () => {
           maxItemsPerSeries: 1000,
         };
 
-        const wrapper = shallow<RedisCPUPanel>(getComponent({ data, options }));
+        const ref = createRef<RedisCPUPanel>();
+        renderComponent({ ref, data, options });
         setImmediate(() => {
-          expect(wrapper.instance().requestDataTimer).toBeDefined();
-          wrapper.instance().clearRequestDataInterval();
-          expect(wrapper.instance().requestDataTimer).not.toBeDefined();
-          wrapper.instance().clearRequestDataInterval();
-          expect(wrapper.instance().requestDataTimer).not.toBeDefined();
+          expect(ref.current!.requestDataTimer).toBeDefined();
+          act(() => {
+            ref.current!.clearRequestDataInterval();
+          });
+          expect(ref.current!.requestDataTimer).not.toBeDefined();
+          act(() => {
+            ref.current!.clearRequestDataInterval();
+          });
+          expect(ref.current!.requestDataTimer).not.toBeDefined();
           done();
         });
       });
@@ -410,12 +518,13 @@ describe('RedisCPUPanel', () => {
    * Rendering
    */
   describe('Rendering', () => {
-    it('Should render graph', (done) => {
-      const wrapper = shallow(getComponent({ options: { interval: 1000, maxItemsPerSeries: 1000 } }));
+    it('Should render graph', async () => {
+      renderComponent({ options: { interval: 1000, maxItemsPerSeries: 1000 } });
 
-      setImmediate(() => {
-        expect(wrapper.find(RedisCPUGraph).exists()).toBeTruthy();
-        done();
+      await waitFor(() => {
+        const gathering = screen.queryByText('Gathering usage data...');
+        const canvas = document.querySelector('canvas');
+        expect(gathering || canvas).toBeTruthy();
       });
     });
   });

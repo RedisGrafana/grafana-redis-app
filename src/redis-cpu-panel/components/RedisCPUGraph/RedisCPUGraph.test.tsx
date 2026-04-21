@@ -1,6 +1,32 @@
-import { shallow } from 'enzyme';
-import React from 'react';
+import '@testing-library/jest-dom';
+import { act, render, screen } from '@testing-library/react';
+import React, { createRef } from 'react';
 import { DataFrame, dateTime, dateTimeParse } from '@grafana/data';
+
+/**
+ * Full TimeSeries mount pulls in Grafana chart internals; shallow Enzyme did not run the render prop.
+ */
+jest.mock('@grafana/ui', () => {
+  const React = require('react');
+  const actual = jest.requireActual('@grafana/ui');
+  return {
+    ...actual,
+    TooltipDisplayMode: actual.TooltipDisplayMode ?? { Multi: 0 },
+    TimeSeries: function TimeSeries({
+      children,
+    }: {
+      children?: (config: unknown, alignedDataFrame: unknown) => React.ReactNode;
+    }) {
+      return (
+        <div data-testid="redis-cpu-timeseries">{typeof children === 'function' ? children({}, {}) : children}</div>
+      );
+    },
+    TooltipPlugin: function TooltipPlugin() {
+      return <div data-testid="tooltip-plugin" />;
+    },
+  };
+});
+
 import { RedisCPUGraph } from './RedisCPUGraph';
 
 /**
@@ -64,44 +90,52 @@ describe('RedisCPUGraph', () => {
    * Getting new props
    */
   describe('Getting new props', () => {
-    const getComponent = (props: any = {}) => <RedisCPUGraph {...props} />;
+    function renderComponent(overrides: Record<string, unknown> = {}) {
+      const { ref, ...rest } = overrides as { ref?: React.Ref<RedisCPUGraph> } & Record<string, unknown>;
+      return render(<RedisCPUGraph ref={ref} width={400} height={300} timeZone="browser" {...(rest as any)} />);
+    }
 
     it('Should update timeRange when gets a new seriesMap or timeRange', () => {
-      const wrapper = shallow<RedisCPUGraph>(
-        getComponent({
-          seriesMap: { get: [{ time: dateTime(), value: 1 }] },
-          timeRange: { raw: { from: dateTime() } },
-        })
-      );
-      const currentTimeRange = wrapper.state().timeRange;
-      wrapper.setProps({
-        seriesMap: { get: [{ time: dateTime(), value: 2 }] },
+      const ref = createRef<RedisCPUGraph>();
+      const { rerender } = renderComponent({
+        ref,
+        seriesMap: { get: [{ time: dateTime(), value: 1 }] },
+        timeRange: { raw: { from: dateTime() } },
       });
-      expect(currentTimeRange !== wrapper.state().timeRange).toBeTruthy();
+      const currentTimeRange = ref.current!.state.timeRange;
+      act(() => {
+        rerender(
+          <RedisCPUGraph
+            {...({} as any)}
+            ref={ref}
+            width={400}
+            height={300}
+            timeZone="browser"
+            seriesMap={{ get: [{ time: dateTime(), value: 2 }] } as any}
+            timeRange={{ raw: { from: dateTime(), to: dateTime() } } as any}
+          />
+        );
+      });
+      expect(currentTimeRange !== ref.current!.state.timeRange).toBeTruthy();
     });
 
     it('Should return gathering results div if data frame is empty', () => {
-      const wrapper = shallow<RedisCPUGraph>(
-        getComponent({
-          seriesMap: {},
-          timeRange: { raw: { from: dateTime() } },
-        })
-      );
+      renderComponent({
+        seriesMap: {},
+        timeRange: { raw: { from: dateTime() } },
+      });
 
-      const div = wrapper.findWhere((node) => node.name() === 'div');
-      expect(div.exists()).toBeTruthy();
+      const gatheringMessage = screen.getByText('Gathering usage data...');
+      expect(gatheringMessage).toBeInTheDocument();
     });
 
     it('Should return Time Series if data frame has data', () => {
-      const wrapper = shallow<RedisCPUGraph>(
-        getComponent({
-          seriesMap: { get: [{ time: dateTime(), value: 1 }] },
-          timeRange: { raw: { from: dateTime() } },
-        })
-      );
+      renderComponent({
+        seriesMap: { get: [{ time: dateTime(), value: 1 }] },
+        timeRange: { raw: { from: dateTime() } },
+      });
 
-      const timeSeries = wrapper.findWhere((node) => node.name() === 'TimeSeries');
-      expect(timeSeries.exists()).toBeTruthy();
+      expect(screen.queryByText('Gathering usage data...')).not.toBeInTheDocument();
     });
   });
 });
