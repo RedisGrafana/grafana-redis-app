@@ -106,6 +106,7 @@ describe('RedisCPUGraph', () => {
       act(() => {
         rerender(
           <RedisCPUGraph
+            {...({} as any)}
             ref={ref}
             width={400}
             height={300}

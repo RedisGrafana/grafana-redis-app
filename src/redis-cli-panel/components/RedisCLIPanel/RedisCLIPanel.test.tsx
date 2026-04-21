@@ -4,7 +4,7 @@ import React from 'react';
 import { Simulate } from 'react-dom/test-utils';
 import { Observable } from 'rxjs';
 import { LoadingState, PanelData } from '@grafana/data';
-import { Help, ResponseMode } from '../../constants';
+import { Help } from '../../constants';
 import { PanelOptions } from '../../types';
 import { RedisCLIPanel } from './RedisCLIPanel';
 
@@ -328,7 +328,7 @@ describe('RedisCLIPanel', () => {
       const overrideData = {
         ...data,
         request: { targets: [{ datasource: 'datasource/id' }] },
-      };
+      } as any;
       renderComponent({ data: overrideData, options });
       const input = getCommandInput();
       fireKeyPressEnter(input);
@@ -349,7 +349,7 @@ describe('RedisCLIPanel', () => {
       const overrideData = {
         ...data,
         request: { targets: [{ datasource: 'datasource/id' }] },
-      };
+      } as any;
       renderComponent({ data: overrideData, options });
       const input = getCommandInput();
       fireKeyPressEnter(input);
@@ -377,7 +377,7 @@ describe('RedisCLIPanel', () => {
       const overrideData = {
         ...data,
         request: { targets: [{ datasource: 'datasource/id' }] },
-      };
+      } as any;
       renderComponent({ data: overrideData, options });
       const input = getCommandInput();
       fireKeyPressEnter(input);
@@ -413,7 +413,7 @@ describe('RedisCLIPanel', () => {
       const overrideData = {
         ...data,
         request: { targets: [{ datasource: 'datasource/id' }] },
-      };
+      } as any;
 
       renderComponent({ data: overrideData, options });
 
@@ -439,10 +439,6 @@ describe('RedisCLIPanel', () => {
   });
 
   describe('Options', () => {
-    function renderComponent(overrides: RedisCLIPanelRenderOverrides = {}) {
-      return render(<RedisCLIPanel {...buildRedisCLIPanelProps(overrides)} />);
-    }
-
     /**
      * Response Mode
      */
