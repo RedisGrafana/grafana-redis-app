@@ -35,13 +35,15 @@ jest.mock('@grafana/runtime', () => ({
 }));
 
 jest.mock('../CodeEditor', () => ({
-  CodeEditor: ({ onChange, value, width, height }: any) => (
-    <div data-testid="code-editor" data-width={width} data-height={height} data-value={value}>
-      <button type="button" onClick={() => onChange('myscript')}>
-        apply-script
-      </button>
-    </div>
-  ),
+  CodeEditor: function CodeEditor({ onChange, value, width, height }: any) {
+    return (
+      <div data-testid="code-editor" data-width={width} data-height={height} data-value={value}>
+        <button type="button" onClick={() => onChange('myscript')}>
+          apply-script
+        </button>
+      </div>
+    );
+  },
 }));
 
 jest.mock('@grafana/ui', () => {
@@ -49,7 +51,7 @@ jest.mock('@grafana/ui', () => {
   const actual = jest.requireActual('@grafana/ui');
   return {
     ...actual,
-    Table: () => React.createElement('div', { role: 'table', 'data-testid': 'result-table' }),
+    Table: function Table() { return React.createElement('div', { role: 'table', 'data-testid': 'result-table' }); },
   };
 });
 

@@ -7,10 +7,10 @@ import { DefaultInterval, FieldName, ViewMode } from '../../constants';
 import { RedisLatencyPanel } from './RedisLatencyPanel';
 
 jest.mock('../RedisLatencyGraph', () => ({
-  RedisLatencyGraph: () => <div data-testid="redis-latency-graph" />,
+  RedisLatencyGraph: function RedisLatencyGraph() { return <div data-testid="redis-latency-graph" />; },
 }));
 jest.mock('../RedisLatencyTable', () => ({
-  RedisLatencyTable: () => <div data-testid="redis-latency-table" />,
+  RedisLatencyTable: function RedisLatencyTable() { return <div data-testid="redis-latency-table" />; },
 }));
 
 /**

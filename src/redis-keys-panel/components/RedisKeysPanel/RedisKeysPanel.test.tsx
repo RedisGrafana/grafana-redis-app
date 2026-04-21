@@ -82,7 +82,7 @@ jest.mock('@grafana/ui', () => {
   const actual = jest.requireActual('@grafana/ui');
   return {
     ...actual,
-    Table: () => <table data-testid="redis-keys-table" />,
+    Table: function Table() { return <table data-testid="redis-keys-table" />; },
   };
 });
 
