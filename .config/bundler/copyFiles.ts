@@ -15,6 +15,8 @@ export const copyFilePatterns = [
   { from: '../CHANGELOG.md', to: '.', force: true },
   { from: '**/*.json', to: '.' },
   { from: '**/query_help.md', to: '.', noErrorOnMissing: true },
+  // Copy nested panel img/ directories (multi-plugin app)
+  { from: '**/img/*.svg', to: '.', noErrorOnMissing: true },
   ...logoPaths.map((logoPath) => ({ from: logoPath, to: logoPath })),
   ...screenshotPaths.map((screenshotPath) => ({
     from: screenshotPath,
