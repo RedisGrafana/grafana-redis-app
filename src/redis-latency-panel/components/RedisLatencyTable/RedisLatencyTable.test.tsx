@@ -16,9 +16,7 @@ jest.mock('@grafana/runtime', () => ({
 jest.mock('@grafana/ui', () => {
   const React = require('react');
   const actual = jest.requireActual('@grafana/ui');
-  const MockTable = jest.fn((props: any) =>
-    React.createElement('div', { 'data-testid': 'mock-table' })
-  );
+  const MockTable = jest.fn((props: any) => React.createElement('div', { 'data-testid': 'mock-table' }));
   return {
     ...actual,
     Table: MockTable,

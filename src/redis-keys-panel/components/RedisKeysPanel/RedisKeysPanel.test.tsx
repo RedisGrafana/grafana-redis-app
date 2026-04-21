@@ -123,25 +123,9 @@ describe('RedisKeysPanel', () => {
         ],
       },
     };
-    const {
-      options = { interval: 1000 },
-      ref,
-      width = 800,
-      height = 600,
-      data: inputData,
-      ...restProps
-    } = props;
+    const { options = { interval: 1000 }, ref, width = 800, height = 600, data: inputData, ...restProps } = props;
     const panelData = inputData !== undefined ? inputData : defaultPanelData;
-    return (
-      <RedisKeysPanel
-        ref={ref}
-        data={panelData}
-        width={width}
-        height={height}
-        {...restProps}
-        options={options}
-      />
-    );
+    return <RedisKeysPanel ref={ref} data={panelData} width={width} height={height} {...restProps} options={options} />;
   };
 
   const renderComponent = (props: any) => render(getRedisKeysPanelElement(props));
@@ -924,12 +908,7 @@ describe('RedisKeysPanel', () => {
     it('If no dataFrame table should be rendered', () => {
       jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount').mockImplementation(() => {});
       render(
-        <RedisKeysPanel
-          data={{ request: {} } as any}
-          options={{ interval: 1000 } as any}
-          width={800}
-          height={600}
-        />
+        <RedisKeysPanel data={{ request: {} } as any} options={{ interval: 1000 } as any} width={800} height={600} />
       );
       (jest.spyOn(RedisKeysPanel.prototype, 'componentDidMount') as jest.Mock).mockRestore();
       expect(screen.queryByTestId('redis-keys-table')).not.toBeInTheDocument();

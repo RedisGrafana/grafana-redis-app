@@ -26,12 +26,10 @@ describe('Config', () => {
   let getBackendSrvSpy: jest.SpyInstance;
 
   beforeAll(() => {
-    jest.spyOn(Config, 'getLocation').mockImplementation(
-      (): any => ({
-        assign: jest.fn(),
-        reload: jest.fn(),
-      })
-    );
+    jest.spyOn(Config, 'getLocation').mockImplementation((): any => ({
+      assign: jest.fn(),
+      reload: jest.fn(),
+    }));
   });
 
   beforeEach(() => {

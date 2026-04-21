@@ -11,9 +11,7 @@ jest.mock('@grafana/ui', () => {
     ...actual,
     TooltipDisplayMode: actual.TooltipDisplayMode ?? { Multi: 0 },
     TimeSeries: ({ children }: { children?: (config: unknown, alignedDataFrame: unknown) => React.ReactNode }) => (
-      <div data-testid="redis-cpu-timeseries">
-        {typeof children === 'function' ? children({}, {}) : children}
-      </div>
+      <div data-testid="redis-cpu-timeseries">{typeof children === 'function' ? children({}, {}) : children}</div>
     ),
     TooltipPlugin: () => <div data-testid="tooltip-plugin" />,
   };

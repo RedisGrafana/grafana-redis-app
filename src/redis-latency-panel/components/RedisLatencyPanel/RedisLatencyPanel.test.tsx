@@ -530,16 +530,14 @@ describe('RedisLatencyPanel', () => {
         rerender(redisLatencyPanelElement({ data, ref, width: 300, options: stableOptions }));
         expect(ref.current!.state.formHeight).toEqual(200);
 
-        const didUpdateSpy = jest.spyOn(RedisLatencyPanel.prototype, 'componentDidUpdate').mockImplementation(function (
-          this: RedisLatencyPanel,
-          prevProps,
-          prevState
-        ) {
-          if (this.props.width === 400 && prevProps.width === 300) {
-            this.formRef = { current: null } as React.RefObject<HTMLDivElement>;
-          }
-          return origDidUpdate.call(this, prevProps, prevState);
-        });
+        const didUpdateSpy = jest
+          .spyOn(RedisLatencyPanel.prototype, 'componentDidUpdate')
+          .mockImplementation(function (this: RedisLatencyPanel, prevProps, prevState) {
+            if (this.props.width === 400 && prevProps.width === 300) {
+              this.formRef = { current: null } as React.RefObject<HTMLDivElement>;
+            }
+            return origDidUpdate.call(this, prevProps, prevState);
+          });
 
         rerender(redisLatencyPanelElement({ data, ref, width: 400, options: stableOptions }));
 

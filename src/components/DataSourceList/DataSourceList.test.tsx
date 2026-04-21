@@ -22,7 +22,8 @@ const ICON_LINK_TITLES = {
   RedisTimeSeries: 'RedisTimeSeries is a Redis Module adding a Time Series data structure to Redis.',
   RedisAI: 'RedisAI is a Redis module for executing Deep Learning/Machine Learning models and managing their data.',
   RediSearch: 'RediSearch is a Full-Text and Secondary Index engine over Redis.',
-  RedisJSON: 'RedisJSON is a Redis module that implements ECMA-404 The JSON Data Interchange Standard as a native data type.',
+  RedisJSON:
+    'RedisJSON is a Redis module that implements ECMA-404 The JSON Data Interchange Standard as a native data type.',
   RedisGraph:
     'RedisGraph is the first queryable Property Graph database to use sparse matrices to represent the adjacency matrix in graphs and linear algebra to query the graph.',
   RedisBloom:
