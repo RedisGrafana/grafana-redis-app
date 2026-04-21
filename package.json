@@ -6,11 +6,11 @@
     "@grafana/runtime": "8.3.4",
     "@grafana/toolkit": "8.3.4",
     "@grafana/ui": "8.3.4",
-    "@types/enzyme": "^3.10.11",
-    "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@testing-library/jest-dom": "^5",
+    "@testing-library/react": "^12",
+    "@testing-library/user-event": "^14",
     "emotion": "11.0.0",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.6"
+    "tslib": "^2"
   },
   "engines": {
     "node": ">=14"

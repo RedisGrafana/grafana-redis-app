@@ -1,5 +1,6 @@
-import { shallow } from 'enzyme';
-import React from 'react';
+import '@testing-library/jest-dom';
+import { act, render, screen } from '@testing-library/react';
+import React, { createRef } from 'react';
 import { dateTime, FieldType, toDataFrame } from '@grafana/data';
 import { Table } from '@grafana/ui';
 import { DisplayNameByFieldName, FieldName } from '../../constants';
@@ -12,11 +13,47 @@ jest.mock('@grafana/runtime', () => ({
   config: { theme2: {} },
 }));
 
+jest.mock('@grafana/ui', () => {
+  const React = require('react');
+  const actual = jest.requireActual('@grafana/ui');
+  const MockTable = jest.fn((props: any) =>
+    React.createElement('div', { 'data-testid': 'mock-table' })
+  );
+  return {
+    ...actual,
+    Table: MockTable,
+  };
+});
+
 /**
  * Latency Table
  */
 describe('RedisLatencyTable', () => {
-  const getComponent = (props: any = {}) => <RedisLatencyTable {...props} />;
+  const renderComponent = ({ ref, ...props }: any = {}) => {
+    const defaultProps = {
+      width: 400,
+      height: 300,
+      dataFrame: toDataFrame({
+        name: 'prev',
+        fields: [
+          {
+            type: FieldType.string,
+            name: FieldName.Command,
+            values: ['get', 'info'],
+          },
+        ],
+      }),
+      seriesMap: {
+        get: [
+          {
+            time: dateTime(),
+            value: 1,
+          },
+        ],
+      },
+    };
+    return render(<RedisLatencyTable ref={ref} {...defaultProps} {...props} />);
+  };
 
   /**
    * getTableDataFrame
@@ -153,9 +190,9 @@ describe('RedisLatencyTable', () => {
         fields,
       });
 
-      const wrapper = shallow(getComponent({ dataFrame, seriesMap }));
-      const tableComponent = wrapper.find(Table);
-      expect(tableComponent.exists()).toBeTruthy();
+      renderComponent({ dataFrame, seriesMap, width: 400, height: 300 });
+      const mockTable = screen.getByTestId('mock-table');
+      expect(mockTable).toBeInTheDocument();
     });
   });
 
@@ -195,20 +232,20 @@ describe('RedisLatencyTable', () => {
         fields,
       });
 
-      const wrapper = shallow<RedisLatencyTable>(getComponent({ dataFrame, seriesMap }), {
-        disableLifecycleMethods: true,
-      });
+      const tableRef = createRef<RedisLatencyTable>();
+      renderComponent({ ref: tableRef, dataFrame, seriesMap, width: 400, height: 300 });
 
       const sortedFields = [{ displayName: DisplayNameByFieldName[FieldName.Latency], desc: true }];
-      expect(wrapper.state().sortedFields).toEqual(sortedFields);
+      const TableMock = Table as jest.Mock;
+      const initialProps = TableMock.mock.calls[TableMock.mock.calls.length - 1][0];
+      expect(initialProps.initialSortBy).toEqual(sortedFields);
+      expect(tableRef.current!.state.sortedFields).toEqual(sortedFields);
 
-      const tableComponent = wrapper.find(Table);
-      expect(tableComponent.prop('initialSortBy')).toEqual(sortedFields);
+      await act(async () => {
+        initialProps.onSortByChange([{ displayName: DisplayNameByFieldName[FieldName.Duration], desc: true }]);
+      });
 
-      tableComponent.simulate('sortByChange', [
-        { displayName: DisplayNameByFieldName[FieldName.Duration], desc: true },
-      ]);
-      expect(wrapper.state().sortedFields).toEqual([
+      expect(tableRef.current!.state.sortedFields).toEqual([
         { displayName: DisplayNameByFieldName[FieldName.Duration], desc: true },
       ]);
     });

@@ -1,12 +1,28 @@
-import { shallow } from 'enzyme';
+import '@testing-library/jest-dom';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { DataFrame, dateTime, dateTimeParse } from '@grafana/data';
 import { RedisLatencyGraph } from './RedisLatencyGraph';
+
+jest.mock('@grafana/ui', () => {
+  const React = require('react');
+  const actual = jest.requireActual('@grafana/ui');
+  return {
+    ...actual,
+    TimeSeries: () => <div data-testid="mock-time-series" />,
+  };
+});
 
 /**
  * Latency Graph
  */
 describe('RedisLatencyGraph', () => {
+  const basePanelProps = {
+    width: 400,
+    height: 300,
+    timeZone: 'browser' as const,
+  };
+
   /**
    * getGraphSeries
    */
@@ -97,47 +113,51 @@ describe('RedisLatencyGraph', () => {
    * Getting new props
    */
   describe('Getting new props', () => {
-    const getComponent = (props: any = {}) => <RedisLatencyGraph {...props} />;
+    const renderComponent = (props: any = {}) => {
+      const defaultProps = {
+        ...basePanelProps,
+        seriesMap: {},
+        timeRange: { raw: { from: dateTime() } },
+        options: { hideZero: true },
+      };
+      return render(<RedisLatencyGraph {...defaultProps} {...props} />);
+    };
 
     it('Should update timeRange when gets a new seriesMap or timeRange', () => {
-      const wrapper = shallow<RedisLatencyGraph>(
-        getComponent({
-          seriesMap: { get: [{ time: dateTime(), value: 1 }] },
-          timeRange: { raw: { from: dateTime() } },
-          options: { hideZero: true },
-        })
-      );
-      const currentTimeRange = wrapper.state().timeRange;
-      wrapper.setProps({
+      const sharedProps = {
+        seriesMap: { get: [{ time: dateTime(), value: 1 }] },
+        timeRange: { raw: { from: dateTime() } },
+        options: { hideZero: true },
+        timeZone: 'browser' as const,
+      };
+      const currentTimeRange = RedisLatencyGraph.getDerivedStateFromProps(sharedProps as any).timeRange;
+      const nextState = RedisLatencyGraph.getDerivedStateFromProps({
+        ...sharedProps,
         seriesMap: { get: [{ time: dateTime(), value: 2 }] },
-      });
-      expect(currentTimeRange !== wrapper.state().timeRange).toBeTruthy();
+      } as any);
+      expect(currentTimeRange !== nextState.timeRange).toBeTruthy();
     });
 
     it('Should return gathering results div if data frame is empty', () => {
-      const wrapper = shallow<RedisLatencyGraph>(
-        getComponent({
-          seriesMap: {},
-          timeRange: { raw: { from: dateTime() } },
-          options: { hideZero: true },
-        })
-      );
+      renderComponent({
+        seriesMap: {},
+        timeRange: { raw: { from: dateTime() } },
+        options: { hideZero: true },
+      });
 
-      const div = wrapper.findWhere((node) => node.name() === 'div');
-      expect(div.exists()).toBeTruthy();
+      const gatheringMessage = screen.getByText('Gathering latency data...');
+      expect(gatheringMessage).toBeInTheDocument();
     });
 
     it('Should return Time Series if data frame has data', () => {
-      const wrapper = shallow<RedisLatencyGraph>(
-        getComponent({
-          seriesMap: { get: [{ time: dateTime(), value: 1 }] },
-          timeRange: { raw: { from: dateTime() } },
-          options: { hideZero: true },
-        })
-      );
+      renderComponent({
+        seriesMap: { get: [{ time: dateTime(), value: 1 }] },
+        timeRange: { raw: { from: dateTime() } },
+        options: { hideZero: true },
+      });
 
-      const timeSeries = wrapper.findWhere((node) => node.name() === 'TimeSeries');
-      expect(timeSeries.exists()).toBeTruthy();
+      const mockTimeSeries = screen.getByTestId('mock-time-series');
+      expect(mockTimeSeries).toBeInTheDocument();
     });
   });
 });
