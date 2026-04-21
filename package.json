@@ -79,6 +79,7 @@
     "test": "jest --watch --onlyChanged",
     "test:ci": "jest --passWithNoTests --maxWorkers 4",
     "typecheck": "tsc --noEmit",
+    "validate": "bash scripts/validate-plugin.sh",
     "upgrade": "yarn upgrade --latest"
   },
   "version": "2.3.2",

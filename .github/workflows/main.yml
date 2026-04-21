@@ -118,14 +118,9 @@ jobs:
           md5sum ${{ steps.metadata.outputs.archive }} > ${{ steps.metadata.outputs.archive-checksum }}
           echo "checksum=$(cat ./${{ steps.metadata.outputs.archive-checksum }} | cut -d' ' -f1)" >> $GITHUB_OUTPUT
 
-      - name: Lint plugin
+      - name: Validate plugin
         continue-on-error: true
-        run: |
-          git clone https://github.com/grafana/plugin-validator
-          pushd ./plugin-validator/pkg/cmd/plugincheck
-          go install
-          popd
-          plugincheck ${{ steps.metadata.outputs.archive }}
+        run: npx --yes @grafana/plugin-validator@latest -sourceCodeUri file://. ${{ steps.metadata.outputs.archive }}
 
       - name: Create release
         id: create_release
