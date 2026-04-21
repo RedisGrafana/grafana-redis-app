@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { AppPluginMeta, PluginConfigPageProps } from '@grafana/data';
 import { BackendSrv, getBackendSrv, getLocationSrv } from '@grafana/runtime';
-import { Button } from '@grafana/ui';
+import { Button, HorizontalGroup } from '@grafana/ui';
 import { ApplicationName, ApplicationRoot } from '../../constants';
 import { GlobalSettings } from '../../types';
 
@@ -107,7 +107,7 @@ export class Config extends PureComponent<Props, State> {
             Click below to <b>Enable</b> the Application and start monitoring your Redis instances today.
           </p>
         )}
-        <div className="gf-form gf-form-button-row">
+        <HorizontalGroup>
           {isEnabled ? (
             <Button variant="destructive" onClick={this.onDisable}>
               Disable
@@ -115,7 +115,7 @@ export class Config extends PureComponent<Props, State> {
           ) : (
             <Button onClick={this.onEnable}>Enable</Button>
           )}
-        </div>
+        </HorizontalGroup>
       </>
     );
   }

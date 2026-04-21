@@ -10,7 +10,7 @@ import {
   PanelProps,
 } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { Button, RadioButtonGroup, useTheme2 } from '@grafana/ui';
+import { Button, HorizontalGroup, InlineField, Input, RadioButtonGroup, useTheme2 } from '@grafana/ui';
 import { RedisDataSourceOptions, RedisQuery } from '../../../types';
 import { Help, ResponseMode, ResponseModeOptions } from '../../constants';
 import { Styles } from '../../styles';
@@ -193,7 +193,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
         `
       )}
     >
-      <div className={cx('gf-form', styles.form)}>
+      <div className={cx(styles.form)}>
         <CLITextArea className={cx(styles.textarea)} value={output} />
       </div>
 
@@ -234,16 +234,16 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
         </div>
       )}
 
-      <div className="gf-form">
-        <span className="gf-form-label width-10">Command</span>
-        <input
-          name="query"
-          placeholder="PING"
-          className="gf-form-input"
-          onChange={onQueryChange}
-          onKeyPress={runQuery}
-          value={query}
-        />
+      <HorizontalGroup>
+        <InlineField label="Command" labelWidth={10}>
+          <Input
+            name="query"
+            placeholder="PING"
+            onChange={onQueryChange}
+            onKeyPress={runQuery}
+            value={query}
+          />
+        </InlineField>
 
         <RadioButtonGroup
           className={cx(styles.cli)}
@@ -260,7 +260,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
         >
           Clear
         </Button>
-      </div>
+      </HorizontalGroup>
     </div>
   );
 };
