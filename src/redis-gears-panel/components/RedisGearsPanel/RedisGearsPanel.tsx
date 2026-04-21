@@ -15,7 +15,16 @@ import {
   toDataFrame,
 } from '@grafana/data';
 import { config, getDataSourceSrv, toDataQueryError } from '@grafana/runtime';
-import { Alert, Button, HorizontalGroup, InlineField, InlineFormLabel, Input, RadioButtonGroup, Table } from '@grafana/ui';
+import {
+  Alert,
+  Button,
+  HorizontalGroup,
+  InlineField,
+  InlineFormLabel,
+  Input,
+  RadioButtonGroup,
+  Table,
+} from '@grafana/ui';
 import { DefaultScript, ExecutionMode, ExecutionOptions } from '../../constants';
 import { PanelOptions } from '../../types';
 import { CodeEditor } from '../CodeEditor';

@@ -236,13 +236,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
 
       <HorizontalGroup>
         <InlineField label="Command" labelWidth={10}>
-          <Input
-            name="query"
-            placeholder="PING"
-            onChange={onQueryChange}
-            onKeyPress={runQuery}
-            value={query}
-          />
+          <Input name="query" placeholder="PING" onChange={onQueryChange} onKeyPress={runQuery} value={query} />
         </InlineField>
 
         <RadioButtonGroup
