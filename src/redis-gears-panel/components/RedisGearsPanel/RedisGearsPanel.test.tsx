@@ -51,7 +51,9 @@ jest.mock('@grafana/ui', () => {
   const actual = jest.requireActual('@grafana/ui');
   return {
     ...actual,
-    Table: function Table() { return React.createElement('div', { role: 'table', 'data-testid': 'result-table' }); },
+    Table: function Table() {
+      return React.createElement('div', { role: 'table', 'data-testid': 'result-table' });
+    },
   };
 });
 

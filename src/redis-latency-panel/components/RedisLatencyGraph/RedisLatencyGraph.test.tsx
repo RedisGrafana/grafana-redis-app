@@ -9,7 +9,9 @@ jest.mock('@grafana/ui', () => {
   const actual = jest.requireActual('@grafana/ui');
   return {
     ...actual,
-    TimeSeries: function TimeSeries() { return <div data-testid="mock-time-series" />; },
+    TimeSeries: function TimeSeries() {
+      return <div data-testid="mock-time-series" />;
+    },
   };
 });
 
