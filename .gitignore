@@ -31,3 +31,6 @@ e2e-results/
 .DS_Store
 .idea
 .vscode
+
+# ESLint cache
+.eslintcache

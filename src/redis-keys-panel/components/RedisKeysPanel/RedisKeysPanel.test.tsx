@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import React, { ChangeEvent, createRef } from 'react';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { Observable } from 'rxjs';

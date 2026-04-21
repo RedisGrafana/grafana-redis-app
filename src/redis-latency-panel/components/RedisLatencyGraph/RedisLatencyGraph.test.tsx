@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { DataFrame, dateTime, dateTimeParse } from '@grafana/data';

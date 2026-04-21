@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { render, screen, within, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import { DataSourceType, RedisCommand } from '../../constants';
