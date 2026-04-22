@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
+          node-version: "16.x"
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -38,12 +38,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: ${{ runner.os }}-20.x-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-16.x-nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-20.x-nodemodules-
+            ${{ runner.os }}-16.x-nodemodules-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --ignore-engines
         if: |
           steps.cache-yarn-cache.outputs.cache-hit != 'true' ||
           steps.cache-node-modules.outputs.cache-hit != 'true'
