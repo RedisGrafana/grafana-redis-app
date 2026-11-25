@@ -1,18 +1,10 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
-import { Simulate } from 'react-dom/test-utils';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { LoadingState, PanelData } from '@grafana/data';
 import { Help } from '../../constants';
 import { PanelOptions } from '../../types';
 import { RedisCLIPanel } from './RedisCLIPanel';
-
-/**
- * Use React TestUtils Simulate so `onKeyPress` receives a proper synthetic event with `key` (React 17 + jsdom).
- */
-function fireKeyPressEnter(element: HTMLElement) {
-  Simulate.keyPress(element, { key: 'Enter', charCode: 13 });
-}
 
 /**
  * Override
@@ -54,7 +46,7 @@ const getDataSourceQueryResult = (values: string[]) => ({
           },
         },
       ],
-      length: 1,
+      length: values.length,
     },
   ],
 });
@@ -149,6 +141,15 @@ describe('RedisCLIPanel', () => {
       const textarea = document.querySelector('textarea');
       expect(textarea).toBeInTheDocument();
       expect(textarea).toHaveValue(options.output);
+    });
+
+    it('Should show the command bar', () => {
+      renderComponent();
+      expect(screen.getByText('Command')).toBeVisible();
+      expect(getCommandInput()).toBeVisible();
+      expect(screen.getByText('CLI', { selector: 'label' })).toBeVisible();
+      expect(screen.getByText('Raw', { selector: 'label' })).toBeVisible();
+      expect(screen.getByRole('button', { name: 'Clear' })).toBeVisible();
     });
 
     /**
@@ -302,7 +303,7 @@ describe('RedisCLIPanel', () => {
       });
       renderComponent({ options });
       const input = getCommandInput();
-      fireEvent.keyPress(input, { key: 'Esc' });
+      fireEvent.keyDown(input, { key: 'Escape' });
       expect(onOptionsChangeMock).not.toHaveBeenCalled();
     });
 
@@ -312,14 +313,18 @@ describe('RedisCLIPanel', () => {
       });
       renderComponent({ options });
       const input = getCommandInput();
-      fireKeyPressEnter(input);
+      fireEvent.keyDown(input, { key: 'Enter' });
       expect(onOptionsChangeMock).toHaveBeenCalledWith({
         ...options,
         output: 'Unknown Data Source',
       });
     });
 
-    it('Should run query and process it when Enter key was entered', async () => {
+    it.each([
+      ['a legacy Vector', getDataSourceQueryResult(['info', 'second line'])],
+      ['an array', { data: [{ fields: [{ values: ['info', 'second line'] }], length: 2 }] }],
+    ])('Should execute on Enter and print values from %s', async (_, result) => {
+      dataSourceMock.query.mockReturnValueOnce(of(result));
       const options = getOptions({
         query: 'ACL.LOAD',
         output: 'custom-output',
@@ -330,11 +335,11 @@ describe('RedisCLIPanel', () => {
       } as any;
       renderComponent({ data: overrideData, options });
       const input = getCommandInput();
-      fireKeyPressEnter(input);
+      fireEvent.keyDown(input, { key: 'Enter' });
       await waitFor(() => {
         expect(onOptionsChangeMock).toHaveBeenCalledWith({
           ...options,
-          output: `${options.output}\n${dataSourceMock.name}> ${options.query}\ninfo`,
+          output: `${options.output}\n${dataSourceMock.name}> ${options.query}\ninfo\nsecond line`,
           query: '',
         });
       });
@@ -351,7 +356,7 @@ describe('RedisCLIPanel', () => {
       } as any;
       renderComponent({ data: overrideData, options });
       const input = getCommandInput();
-      fireKeyPressEnter(input);
+      fireEvent.keyDown(input, { key: 'Enter' });
       await waitFor(() => {
         expect(onOptionsChangeMock).toHaveBeenCalledWith({
           ...options,
@@ -379,7 +384,7 @@ describe('RedisCLIPanel', () => {
       } as any;
       renderComponent({ data: overrideData, options });
       const input = getCommandInput();
-      fireKeyPressEnter(input);
+      fireEvent.keyDown(input, { key: 'Enter' });
       await waitFor(() => {
         expect(onOptionsChangeMock).toHaveBeenCalledWith({
           ...options,
@@ -417,7 +422,7 @@ describe('RedisCLIPanel', () => {
       renderComponent({ data: overrideData, options });
 
       const input = getCommandInput();
-      fireKeyPressEnter(input);
+      fireEvent.keyDown(input, { key: 'Enter' });
       await waitFor(() => {
         expect(onOptionsChangeMock).toHaveBeenCalled();
       });

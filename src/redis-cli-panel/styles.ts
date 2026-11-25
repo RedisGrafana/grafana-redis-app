@@ -8,7 +8,8 @@ export const Styles = (theme: GrafanaTheme2) => {
   return {
     wrapper: css`
       position: relative;
-      min-height: 100px;
+      display: flex;
+      flex-direction: column;
     `,
     textarea: css`
       font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
@@ -16,7 +17,14 @@ export const Styles = (theme: GrafanaTheme2) => {
       height: 100%;
     `,
     form: css`
-      height: calc(100% - 40px);
+      flex: 1;
+      min-height: 0;
+    `,
+    commandBar: css`
+      display: flex;
+      flex: none;
+      align-items: center;
+      gap: ${theme.spacing(1)};
     `,
     help: css`
       position: absolute;
@@ -44,9 +52,6 @@ export const Styles = (theme: GrafanaTheme2) => {
       bottom: 0;
       right: 0;
       margin-right: 12px;
-    `,
-    cli: css`
-      margin-right: 4px;
     `,
   };
 };

@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, KeyboardEvent } from 'react';
 import { lastValueFrom, Observable } from 'rxjs';
 import { css, cx } from '@emotion/css';
 import {
@@ -10,7 +10,7 @@ import {
   PanelProps,
 } from '@grafana/data';
 import { getDataSourceSrv } from '@grafana/runtime';
-import { Button, HorizontalGroup, InlineField, Input, RadioButtonGroup, useTheme2 } from '@grafana/ui';
+import { Button, InlineField, Input, RadioButtonGroup, useTheme2 } from '@grafana/ui';
 import { RedisDataSourceOptions, RedisQuery } from '../../../types';
 import { Help, ResponseMode, ResponseModeOptions } from '../../constants';
 import { Styles } from '../../styles';
@@ -43,9 +43,9 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
   /**
    * Run Query
    *
-   * @param event {any} Event
+   * @param event {KeyboardEvent<HTMLInputElement>} Event
    */
-  const runQuery = async (event: any) => {
+  const runQuery = async (event: KeyboardEvent<HTMLInputElement>) => {
     /**
      * Return if not Enter or no query
      */
@@ -90,9 +90,8 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
       .then((data: DataQueryResponseData[]) =>
         data.forEach((item: DataQueryResponseData) => {
           item.fields.forEach((field: Field) => {
-            field.values.toArray().map((value) => {
-              results.push(value);
-            });
+            const values = Array.isArray(field.values) ? field.values : field.values.toArray();
+            values.forEach((value) => results.push(value));
           });
         })
       );
@@ -234,13 +233,12 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
         </div>
       )}
 
-      <HorizontalGroup>
+      <div className={styles.commandBar}>
         <InlineField label="Command" labelWidth={10}>
-          <Input name="query" placeholder="PING" onChange={onQueryChange} onKeyPress={runQuery} value={query} />
+          <Input name="query" placeholder="PING" onChange={onQueryChange} onKeyDown={runQuery} value={query} />
         </InlineField>
 
         <RadioButtonGroup
-          className={cx(styles.cli)}
           value={options.raw ? ResponseMode.RAW : ResponseMode.CLI}
           options={ResponseModeOptions}
           onChange={onChangeResponseMode}
@@ -254,7 +252,7 @@ export const RedisCLIPanel: React.FC<PanelProps<PanelOptions>> = ({
         >
           Clear
         </Button>
-      </HorizontalGroup>
+      </div>
     </div>
   );
 };
